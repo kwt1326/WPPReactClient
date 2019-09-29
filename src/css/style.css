@@ -1,0 +1,430 @@
+
+.header {
+    background-color: white;
+    margin: 0;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    min-height: 50px;
+    min-width: 400px;
+    display: table; 
+    position: fixed;
+    overflow-y: scroll hidden;
+    overflow-x: scroll hidden;
+    z-index: 2;
+}
+
+.all-middle-text {
+    display: table-cell;
+    margin: 0;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.footer {
+    color : white;
+    background-color: black;
+    margin: 0;
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto; 
+}
+
+#footer {
+    background-color: white;
+}
+
+.Menubar {
+    background-color: white;
+    color: black;
+    position: absolute;
+    width: 100%;
+    height: 70px;
+    z-index: 1;
+}
+
+.Menubar-mobile {
+    background-color: white;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 70px;
+    z-index: 1;
+}
+
+.Menubar-mobile .box-main .Menuicon {
+    left: 0px;
+    top: 0px;
+    width: 70px;
+    height: 70px;
+    background: url(../image/list-ico.png) no-repeat center;
+    background-size: contain;
+}
+
+.Menubar-mobile .box {
+    left: 70px;
+    top: 0px;
+}
+
+.NoMargin {
+    margin: 0;
+}
+
+.intro {
+    width: 100%;
+    height: 300px;    
+    text-align: center;
+    background-image: url(../image/Cafe-background-1-1000x1000.jpg);
+    background-size: cover;
+}
+
+#MenulistPane {
+    opacity: 0;
+    top:70px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: white;
+    background-color: black;
+    visibility: hidden;
+    z-index: -1;
+}
+
+#virtual-cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    top : 0;
+    background-color: transparent;
+}
+
+#cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top : 0;
+    z-index: -1; 
+    background-image: url(../image/cafebackground.jpg);
+    background-size: cover;
+    background-color: rgba(65, 49, 49, 0.3);
+}
+
+#main {
+    width: 100%;
+    height: 100%;
+}
+
+/* Grid box (flex container)*/
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    padding: 5%;
+    overflow: hidden;
+    background-color: white;
+}
+
+.box-main {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.box-child {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: 200px;
+    display: table;
+    border: 1px ridge rgba(170, 170, 170, .3);
+    border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px;
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+}
+
+.box-child-main {
+    display: table;
+    border: none;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+}
+
+.selector:hover {
+    background-color: rgb(200, 200, 200);    
+    cursor: pointer;
+}
+
+.selector-deep:hover {
+    background-color: rgb(90, 90, 90);
+    color : rgb(220, 220, 220);    
+    cursor: pointer;
+}
+
+.selectorIcon:hover {
+    animation-name : jumpscare-icon;
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+    cursor: pointer;
+}
+
+.selectorList:hover {
+    background-color: rgb(200, 200, 200);   
+    color: black; 
+    cursor: pointer;
+}
+
+.squere-menu-title {
+    width: 150px;
+    height: 50px;
+}
+
+.squere-menu-title h3 {
+    margin-inline-start: 15px;
+}
+
+.squere-menu-child {
+    width: 70px;
+    height: 50px;
+}
+
+.squere-menu-user {
+    flex: none;
+    margin-left: auto;
+    width: 100px;
+    height: 50px;
+    display: table;
+}
+
+/* split 2:8 LEFT */
+.split-left {
+    float: left;
+    padding: 5%;
+    width: 20%;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* split 2:8 RIGHT */
+.split-right {
+    float: right;
+    padding: 5%;
+    min-width: 360px;
+    width: 60%;
+    height: 100%;
+    min-height: 500px;
+}
+
+.usericon {
+    display: table-cell;
+    float: right;
+    width: 50%;
+    height: 100%;
+    background-image: url(../image/user-ico.png);
+    background-size: contain;
+    background-color: white;
+}
+
+.nickname {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    font-size: 0.9em;
+    top : 25px;
+    left: calc(100% - 100px);
+    right: calc(100% - 50px);
+}
+
+.nickname {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    font-size: 0.9em;
+    top : 25px;
+    left: calc(100% - 200px);
+    right: calc(100% - 100px);
+}
+
+.btn-logout {
+    display: table-cell;
+    border-collapse:collapse;
+    background-image : url(../image/logout-ico.png);
+    background-size: contain;
+    background-color: white;
+    width: 50%;
+    height: 100%;
+}
+
+.btn-heart {
+    display: table-cell;
+    border-collapse:collapse;
+    background-image : url(../image/heart-ico.png);
+    background-size: 50px;
+    background-color: white;
+    background-position: center;
+    max-height: 50px;
+    max-width: 50px;
+    width: 100%;
+    height: 100%;
+}
+
+#three-renderer {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* Login Form */
+.Login {
+    background-color: white;
+    padding: 50px;
+}
+
+.inputform {
+    text-align: center;
+    padding: 0px;
+}
+
+.btn-style {
+    padding:5px 15px; 
+    background:#ccc; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+}
+
+select {
+    margin: 10px;
+    padding:5px 5px; 
+    border-radius: 5px; 
+    border:1 solid;
+}
+
+input[type=email] {
+    margin: 10px;
+    padding:5px 5px; 
+    border-radius: 5px; 
+    border:1 solid;
+}
+
+input[type=password] {
+    margin: 10px;
+    padding:5px 5px; 
+    border-radius: 5px; 
+    border:1 solid;
+}
+
+input[type=text] {
+    margin: 10px;
+    padding:5px 5px; 
+    border-radius: 5px; 
+    border:1 solid;
+}
+
+input[type=submit] {
+    padding:5px 15px; 
+    background:#ccc; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+}
+
+@keyframes slide-menu-bounce
+{
+    0% {
+        opacity: 0.3;
+        left: -50px;
+    }
+    35% {
+        opacity: 0.45;
+        left: 5px;
+    }
+    77% {
+        opacity: 0.55;
+        left: -5px;
+    }
+    100% {
+        opacity: 0.7;
+        left: 0px;
+    }
+}
+
+@keyframes slide-menu
+{
+    0% {
+        opacity: 0.3;
+        left: -50px;
+    }
+    100% {
+        opacity: 0.7;
+        left: 0px;
+    }
+}
+
+@keyframes slide-menu-reverse
+{
+    0% {
+        opacity: 0.7;
+        left: 0px;
+    }
+    100% {
+        opacity: 0;
+        left: -50px;
+    }
+}
+
+@keyframes jumpscare-icon
+{
+    0% {
+        transform: scale(1.0);
+    }
+    100% {
+        transform: scale(1.35);
+    }
+}
+
+@media screen and (max-width: 720px)
+{
+    /* .header .Menubar {
+        display: none;
+    } */
+    /* .header .Menubar-mobile {
+        display: block;
+    } */
+    .box {
+        flex-flow: row wrap;
+    }
+}
+
+@media screen and (min-width: 720px)
+{
+    /* .header .Menubar {
+        display: inline;
+    }
+    .header .Menubar-mobile {
+        display: none;
+    } */
+    .box {
+        flex-flow: row wrap;
+    }
+    #virtual-cover {
+        display: none;
+    }
+    #MenulistPane {
+        display: none;
+    }
+}
