@@ -26,6 +26,7 @@ class Reading extends Component
            images : [],
            loaded : false,
            heart : false,
+           heart_loaded : false,
            // comment only
            comments : [],
            comment_loaded : false,
@@ -103,10 +104,9 @@ class Reading extends Component
                     return await this.onLoadReple(res); 
                 } 
                 reple_contents()
-                .then(res => {
-
-                })
+                .then(res => {})
                 .catch(err => {console.log(err)})
+                this.historyheart();
             })
             .catch(err => {console.log(err)})
         }
@@ -182,7 +182,14 @@ class Reading extends Component
                     });
                 })
                 .catch ((err) => {
-                    return Promise.reject(err);
+                    return new Promise((resolve, reject) => {
+                        self.setState({
+                            content: res.content,
+                            comments : "댓글이 없습니다. 첫 댓글을 작성해주세요!",
+                            loaded : res.loaded,
+                            comment_loaded: true
+                        }, () => { return reject() });
+                    })    
                 });
             }
             return process().then((response) => {
@@ -229,14 +236,13 @@ class Reading extends Component
         else
             rightratio = '60%';
 
-        if(self.state.loaded === false) {
+        if(self.state.heart_loaded === false) {
             return (
                 <div className="board-main split-right" style={{ width : rightratio }}>
                     <h1>{self.state.loadingText}</h1>
                 </div>
             )
         }
-
         else {
             return (
                 <div className="board-main split-right" style={{ width : rightratio }}>
@@ -259,7 +265,13 @@ class Reading extends Component
                                     {self.spliterV()}
                                     <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '39%', left : '40%'}}>{self.state.content.category}게시판</div>
                                     {self.spliterV()}
-                                    <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ display : 'table-cell', verticalAlign : 'middle', width : '10%', left : '80%'}} onClick={this.onClick_Heart.bind(this)}></div>
+                                    <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ 
+                                        display : 'table-cell', 
+                                        verticalAlign : 'middle', 
+                                        width : '10%', 
+                                        left : '80%', 
+                                        backgroundImage : (this.state.heart) ? "url('" + require('../image/heartSelected-ico.png') + "')" : "url('" + require('../image/heart-ico.png') + "')"}} 
+                                        onClick={this.onClick_Heart.bind(this)}></div>
                                 </div>
                             </td>
                         </tr>
@@ -370,19 +382,17 @@ class Reading extends Component
     history_heart () 
     {
         const self = this;
-        if(this.hearticon) 
-        {   
-            traveledUserhistory( self.getguid(), 'heart' )
-            .then((res) => {
-                if(res.result === true) {
-                    const heartSelectedimg = require('../image/heartSelected-ico.png');
-                    if(heartSelectedimg) {
-                        this.hearticon.style.backgroundImage = "url('" + heartSelectedimg + "')";
-                        self.setState({ heart : true });
-                    }
-                }
-            })
-        }
+        traveledUserhistory( self.getguid(), 'heart' )
+        .then((res) => {
+            if(res.result === true) {
+                self.setState({ heart : true, heart_loaded : true });
+            }
+            else
+                throw new Error();
+        })
+        .catch(err => {
+            self.setState({ heart : false, heart_loaded : true})
+        })
     }
 
     // For comment function
@@ -535,7 +545,6 @@ class Reading extends Component
             increase(repost, 'view', 1)
             .then(res => {
                 console.log('success increase');
-                self.historyheart();
             })
             self.setState({ postid : repost, reDirection : 'none' });
         })

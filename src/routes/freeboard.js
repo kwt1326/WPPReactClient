@@ -38,6 +38,9 @@ class Freeboard extends Component
             return await axios({
                 method: 'get',
                 url: '/api/post/list',
+                params : {
+                    category : '오픈'
+                }
             })
             .then(function (response) {
                 return Promise.resolve({ 
@@ -73,15 +76,7 @@ class Freeboard extends Component
                 for (var i = 1; i <= length; ++i) {
                     if (!rows[ofs - i])
                         continue;
-        
-                    const result = await axios({
-                        method: 'get',
-                        url: '/api/user/search',
-                        params: {
-                            userid: rows[ofs - i].userId,
-                        }
-                    })
-                    .then(function (response) {
+                    else {
                         arr.push(
                             <tr>
                                 <td style={{ width: '10%' }}>
@@ -98,7 +93,7 @@ class Freeboard extends Component
                                 </td>
                                 <td style={{ width: '20%' }}>
                                     <div className="board-writerofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{response.data.nickname}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[ofs - i].nickname}</div>
                                     </div>
                                 </td>
                                 <td style={{ width: '10%' }}>
@@ -113,7 +108,7 @@ class Freeboard extends Component
                                 </td>
                             </tr>
                         );    
-                    })
+                    }
                 }
             }
 
