@@ -7,6 +7,10 @@
 import axios from 'axios';
 import { func } from 'prop-types';
 
+function islive() {
+    return (process.env.NODE_ENV === "production") ? true : false;
+}
+
 function checklogin ( originpath , options ) {
     async function process () {
         return await axios({
@@ -154,6 +158,7 @@ function createguid() {
 }
 
 export {
+    islive,
     checklogin,
     logout,
     removefile,
