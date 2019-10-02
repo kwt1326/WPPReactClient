@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
-import {checklogin} from '../custom/custom';
+import {checklogin, islive, api} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 
@@ -37,7 +37,7 @@ class Freeboard extends Component
         const process = async () => {
             return await axios({
                 method: 'get',
-                url: '/api/post/list',
+                url: (islive()) ? api + '/api/post/list' : '/api/post/list',
                 params : {
                     category : '오픈'
                 }

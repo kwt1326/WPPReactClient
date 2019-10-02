@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import {checklogin} from '../custom/custom';
+import {checklogin, api, islive} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
 
@@ -49,7 +49,7 @@ class User extends Component
         const userinput = document.getElementsByName('user_username')[0];
         axios({
             method: 'patch',
-            url: '/api/user/' + thisobj.state.email,
+            url: (islive()) ? api + '/api/user/' + thisobj.state.email : '/api/user/' + thisobj.state.email,
             headers: {
                 'Content-Type': 'application/json'
             },

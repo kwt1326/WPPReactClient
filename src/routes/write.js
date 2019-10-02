@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import axios from 'axios';
-import {checklogin, removefile, createguid, str_length} from '../custom/custom';
+import {checklogin, removefile, createguid, str_length, api, islive} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
@@ -91,7 +91,7 @@ class Write extends Component
         const process = async () => {
             return await axios({
                 method: 'get',
-                url: '/api/post',
+                url: (islive()) ? api + '/api/post' : '/api/post',
                 params : {
                     guid : self.state.edit_postid,
                 }
@@ -300,7 +300,7 @@ class Write extends Component
             // image upload
             axios({
                 method: 'post',
-                url: '/api/post/files',
+                url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -378,7 +378,7 @@ class Write extends Component
                 // post DB Update (Patch)
                 const updatepost = await axios({
                     method: 'patch',
-                    url: '/api/post',
+                    url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -407,7 +407,7 @@ class Write extends Component
                 // post DB Send (POST) 
                 const sendpost = await axios({
                     method: 'post',
-                    url: '/api/post',
+                    url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json'
                     },

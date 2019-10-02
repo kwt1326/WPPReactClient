@@ -7,6 +7,8 @@
 import axios from 'axios';
 import { func } from 'prop-types';
 
+const api = "https://api.aquaclub.club";
+
 function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
 }
@@ -15,7 +17,7 @@ function checklogin ( originpath , options ) {
     async function process () {
         return await axios({
             method: 'get',
-            url: '/api/user',
+            url: (islive()) ? api + '/api/user' : '/api/user',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -41,7 +43,7 @@ function logout () {
     async function process () {
         return await axios({
             method: 'get',
-            url: '/api/auth/logout',
+            url: (islive()) ? api + '/api/auth/logout' : '/api/auth/logout',
         })
         .then(function (response) {
             return Promise.resolve({
@@ -60,7 +62,7 @@ function increase ( id, target_type, num ) {
     async function process () {
         return await axios({
             method: 'patch',
-            url: '/api/post/increase',
+            url: (islive()) ? api + '/api/post/increase' : '/api/post/increase',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -86,7 +88,7 @@ function traveledUserhistory ( check_id, check_type ) {
     async function process () {
         return await axios({
             method: 'get',
-            url: '/api/user/history',
+            url: (islive()) ? api + '/api/user/history' : '/api/user/history',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -111,7 +113,7 @@ function removefile (filename) {
     async function process() {
         return await axios({
             method: 'delete',
-            url: '/api/post/files',
+            url: (islive()) ? api + '/api/post/files' : '/api/post/files',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -158,6 +160,7 @@ function createguid() {
 }
 
 export {
+    api,
     islive,
     checklogin,
     logout,

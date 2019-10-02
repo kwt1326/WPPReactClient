@@ -3,7 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
-import {checklogin, increase, traveledUserhistory, str_length, createguid} from '../custom/custom';
+import {checklogin, increase, traveledUserhistory, str_length, createguid, api, islive} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
@@ -122,7 +122,7 @@ class Reading extends Component
         const process = async () => {
             return await axios({
                 method: 'get',
-                url: '/api/post',
+                url: (islive()) ? api + '/api/post' : '/api/post',
                 params : {
                     guid : self.state.postid,
                 }
@@ -171,7 +171,7 @@ class Reading extends Component
             const process = async () => {
                 return await axios({
                     method: 'get',
-                    url: '/api/post/comment',
+                    url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                     params : {
                         guid : res.content.id,
                     }
@@ -433,7 +433,7 @@ class Reading extends Component
         async function process () {
             const rpApply = await axios({
                 method: 'post',
-                url: '/api/post/comment',
+                url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: { 'Content-Type': 'application/json' },
                 params: { 
                     postId : content.postId,
@@ -473,7 +473,7 @@ class Reading extends Component
             // post DB Delete (Delete) 
             const postdelete = await axios({
                 method: 'delete',
-                url: '/api/post',
+                url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
                     'Content-Type': 'application/json'
                 },

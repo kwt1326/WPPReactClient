@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { checklogin, islive } from '../custom/custom'
+import { checklogin, islive, api } from '../custom/custom'
 import '../css/style.css';
 
 class Login extends Component 
@@ -20,11 +20,7 @@ class Login extends Component
     }
 
     render () {
-        alert(process.env.URL + process.env.NODE_ENV);
-        const url = require('url');
-        const parsedstr = url.parse(process.env.URL);
-        alert(parsedstr);
-        const path = (islive()) ? process.env.URL + "/api/auth/login" : "/api/auth/login";
+        const path = (islive()) ? api + "/api/auth/login" : "/api/auth/login";
         return (
             <div className="Login">
                 <form className="inputform" action={path} method="post">
