@@ -20,12 +20,11 @@ class Login extends Component
     }
 
     render () {
+        alert(process.env.API_PATH + process.env.NODE_ENV);
+        const path = (islive()) ? process.env.API_PATH + "/api/auth/login" : "/api/auth/login";
         return (
             <div className="Login">
-                <form className="inputform" action={() => { 
-                    alert(process.env.API_PATH + process.env.NODE_ENV);
-                    return (islive()) ? process.env.API_PATH + "/api/auth/login" : "/api/auth/login";
-                }} method="post">
+                <form className="inputform" action={path} method="post">
                     <h2>Cafe of Study Login</h2><br/>
                     ID&nbsp;&nbsp; : <input type="email" name="email"></input><br/>
                     PW : <input type="password" name="password"></input><br/>
