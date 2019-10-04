@@ -38,8 +38,6 @@ class Reading extends Component
         this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.onLoad = this.onLoad_Main.bind(this);
-        //this.onLoadContent = this.onLoad_content.bind(this);
-        //this.onLoadReple = this.onLoad_reple.bind(this);
         this.historyheart = this.history_heart.bind(this);
         this.getguid = this.get_guid.bind(this);
         this.commentactive = this.comment_active.bind(this);
@@ -154,7 +152,7 @@ class Reading extends Component
             rightratio = '90%';
         }
         else
-            rightratio = '60%';
+            rightratio = '66%';
 
         if(self.state.heart_loaded === false) {
             return (
@@ -216,9 +214,9 @@ class Reading extends Component
                             <td style={{ paddingLeft: '0%', paddingRight: '0%' }}>
                                 <div classname="content_comment" style={{ minWidth : "360px" }}>
                                     {this.commentactive()}
-                                    <div className="comment_active btn-style selector-deep" style={{ float : 'left', width : '40%' , marginTop : '2%'}} onClick={
-                                        () => { this.setState({ comment_active : !(this.state.comment_active) }) }}>Comment Write</div>
-                                    <div className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} onClick={this.onClick_rpApply.bind(this)}>Comment Apply</div>
+                                    <button className="comment_active btn-style selector-deep" style={{ float : 'left', width : '40%' , marginTop : '2%'}} onClick={
+                                        () => { this.setState({ comment_active : !(this.state.comment_active) }) }}>Comment Write</button>
+                                    <button className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} onClick={this.onClick_rpApply.bind(this)}>Comment Apply</button>
                                 </div>
                             </td>
                         </tr>

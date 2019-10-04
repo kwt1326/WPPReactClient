@@ -119,7 +119,6 @@ class Freeboard extends Component
                     render_rows : arr
                 });
             }
-
             setRows();
         }
     }
@@ -145,7 +144,7 @@ class Freeboard extends Component
             rightratio = '90%';
         }
         else
-            rightratio = '60%';
+            rightratio = '66%';
 
         return (
             <div className="board-tablelist split-right" style={{ width : rightratio }}>
