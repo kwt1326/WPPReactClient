@@ -6,6 +6,9 @@ class Login extends Component
 {
     constructor(props) {
         super(props);
+        this.state = {
+            reDirect : false,
+        }
         this.Init = this.init.bind(this);
         this.Init();
     }
@@ -14,7 +17,10 @@ class Login extends Component
         const self = this;
         if(self.props.location.state) {
             if(self.props.location.state.from === 'header') {
-                checklogin('./');
+                checklogin('')
+                .then(res => {
+                    self.setState({ reDirect : true });
+                });
             }
         }
     }
@@ -24,7 +30,7 @@ class Login extends Component
         return (
             <div className="Login">
                 <form className="inputform" action={path} method="post">
-                    <h2>Cafe of Study Login</h2><br/>
+                    <h2>A/ Q/ U/ A_ Login</h2><br/>
                     ID&nbsp;&nbsp; : <input type="email" name="email"></input><br/>
                     PW : <input type="password" name="password"></input><br/>
                     <input type="submit" className="selector-deep" value='LOGIN'></input><br/><br/>

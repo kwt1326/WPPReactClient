@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
 
+// Common
 import Header from './components/header/index';
 import Footer from './components/footer';
 import Intro from './components/intro';
@@ -10,6 +11,7 @@ import Menulist from './components/menulist';
 
 // Route
 import Login from './routes/login';
+import Join from './routes/join';
 import User from './routes/user';
 import Write from './routes/write';
 import Reading from './routes/reading';
@@ -24,6 +26,7 @@ function App() {
         <div id="main">
           <Route exact path="/" component={Main} />
           <Route path="/login" component={Login} />
+          <Route path="/Join" component={Join} />
           <Route path="/user" component={User} />
           <Route path="/write" component={Write} />
           <Route path="/reading" component={Reading} />

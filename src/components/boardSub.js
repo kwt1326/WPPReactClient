@@ -17,9 +17,9 @@ class BoardSub extends Component
             <div className="board-subMenu">
                 <div>자유게시판</div>
                 <ul>
-                    <li>카페게시판</li>
-                    <li>카페리스트</li>
-                    <li>의견게시판</li>
+                    <li>{"<< 이전글"}</li>
+                    <li>{"다음글 >>"}</li>
+                    <li>{"실시간 베스트"}</li>
                 </ul>
             </div>
         );

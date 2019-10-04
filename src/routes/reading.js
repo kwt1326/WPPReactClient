@@ -29,7 +29,6 @@ class Reading extends Component
            heart_loaded : false,
            // comment only
            comments : [],
-           comment_loaded : false,
            comment_active : false,  // comment editor activity
            comment_text : '',       // comment contents
            comment_total : 0        // comment text limit
@@ -39,8 +38,8 @@ class Reading extends Component
         this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.onLoad = this.onLoad_Main.bind(this);
-        this.onLoadContent = this.onLoad_content.bind(this);
-        this.onLoadReple = this.onLoad_reple.bind(this);
+        //this.onLoadContent = this.onLoad_content.bind(this);
+        //this.onLoadReple = this.onLoad_reple.bind(this);
         this.historyheart = this.history_heart.bind(this);
         this.getguid = this.get_guid.bind(this);
         this.commentactive = this.comment_active.bind(this);
@@ -97,123 +96,44 @@ class Reading extends Component
     }
 
     onLoad_Main () {
-        const Load = async () => {
-            return await this.onLoadContent()
-            .then(res => {
-                const reple_contents = async () => { 
-                    return await this.onLoadReple(res); 
-                } 
-                reple_contents()
-                .then(res => {})
-                .catch(err => {console.log(err)})
-                this.historyheart();
-            })
-            .catch(err => {console.log(err)})
-        }
-        Load();
-    }
 
-    onLoad_content () 
-    {
         const self = this;
         if(self.state.loaded === true) 
-            return Promise.reject();
+            return;
 
-        const process = async () => {
-            return await axios({
+        const Load = async () => {
+            await axios({
                 method: 'get',
-                url: (islive()) ? api + '/api/post' : '/api/post',
+                url: (islive()) ? api + '/api/post/reading' : '/api/post/reading',
                 params : {
                     guid : self.state.postid,
                 }
             })
-            .then(function (response) {
-                return Promise.resolve({ 
-                    query : response.data,
-                });
-            })
-            .catch ((err) => {
-                return Promise.reject(err);
-            });
-        }
-        return process().then((res) => {
-            return Promise.resolve({
-                content : {
-                    id : res.query.id,
-                    text: res.query.content, 
-                    title: res.query.title,
-                    createAt: res.query.createdAt,
-                    updateAt: res.query.updatedAt,
-                    userid: res.query.id,
-                    category : res.query.category,
-                    writer : res.query.writer,
-                    views : res.query.views,
-                    hearts : res.query.hearts,
-                },
-                loaded : true,
-            })
-        })
-        .catch((err) => {
-            return new Promise((resolve, reject) => {
+            .then(res => {
                 self.setState({
-                    loadingText: 'Not Found Post',
-                    loaded: true
-                }, () => { return reject(err) })
+                    content : {
+                        id : res.data.post.id,
+                        text: res.data.post.content, 
+                        title: res.data.post.title,
+                        createAt: res.data.post.createdAt,
+                        updateAt: res.data.post.updatedAt,
+                        userid: res.data.post.id,
+                        category : res.data.post.category,
+                        writer : res.data.post.writer,
+                        views : res.data.post.views,
+                        hearts : res.data.post.hearts,
+                    },
+                    comments : res.data.comment,
+                    loaded : true,
+                }, () => { this.historyheart(); });
             })
-        })
-    }
+            .catch (err => {
+                console.log("Not loaded post : " + err);
+                self.setState({ loaded : true }, () => {return;});
+            })
+        }
 
-    onLoad_reple ( res ) 
-    {
-        const self = this;
-        if(self.state.comment_loaded === false)
-        {
-            const process = async () => {
-                return await axios({
-                    method: 'get',
-                    url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
-                    params : {
-                        guid : res.content.id,
-                    }
-                })
-                .then(function (response) {
-                    return Promise.resolve({ 
-                        query : response.data,
-                    });
-                })
-                .catch ((err) => {
-                    return new Promise((resolve, reject) => {
-                        self.setState({
-                            content: res.content,
-                            comments : "댓글이 없습니다. 첫 댓글을 작성해주세요!",
-                            loaded : res.loaded,
-                            comment_loaded: true
-                        }, () => { return reject() });
-                    })    
-                });
-            }
-            return process().then((response) => {
-                return new Promise((resolve, reject) => {
-                    self.setState({
-                        content: res.content,
-                        comments : response.query.data,
-                        loaded : res.loaded,
-                        comment_loaded: true
-                    }, () => { return resolve() });
-                })
-            })
-            .catch((err) => {
-                return new Promise((resolve, reject) => {
-                    self.setState({
-                        loaded : res.loaded,
-                        comment_loaded : true
-                    }, () => { return reject(err)})
-                })
-            })    
-        }
-        else {
-            return Promise.reject('Comment Already Loaded');
-        }
+        Load();
     }
 
     react_splitLeft() {
@@ -398,9 +318,11 @@ class Reading extends Component
     // For comment function
     create_Comment ()
     {
-        let arr = [];
-        const comments = this.state.comments;
+        if(this.state.comments === null)
+            return;
 
+        let arr = [];
+        const comments = this.state.comments.comments;
         if(comments) {
             for(let i = 0; i < comments.length ; ++i)
             {
