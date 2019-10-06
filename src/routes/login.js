@@ -28,13 +28,13 @@ class Login extends Component
     render () {
         const path = (islive()) ? api + "/api/auth/login" : "/api/auth/login";
         return (
-            <div className="Login">
+            <div className="Login" style={{ backgroundColor : "midnightblue", color : "white" }}>
                 <form className="inputform" action={path} method="post">
-                    <h2>A/ Q/ U/ A_ Login</h2><br/>
+                    <h2>A/ Q/ U/ A Login</h2><br/>
                     ID&nbsp;&nbsp; : <input type="email" name="email"></input><br/>
                     PW : <input type="password" name="password"></input><br/>
                     <input type="submit" className="selector-deep" value='LOGIN'></input><br/><br/>
-                    <a href="/join" className="selector-deep">You are not have been id? come here!</a>
+                    <a href="/join" className="selector-deep" style={{ color : "white" }}>You are not have been id? come here!</a>
                 </form>
             </div>
         );

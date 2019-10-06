@@ -2,7 +2,6 @@
 
 table {
     width: 100%;
-    border-top: 1px solid black;
     border-collapse: collapse;
   }
 td {
@@ -25,8 +24,6 @@ td {
     min-width: 2px;
     width : 2px;
     height : 100%;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
     background-color: gray;
 }
 

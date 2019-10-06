@@ -9,7 +9,7 @@ import BoardSub from '../components/boardSub';
 import { func } from 'prop-types';
 
 // 자유게시판 (게시글 리스트))
-class Freeboard extends Component
+class Board extends Component
 {
     constructor(props) {
         super(props); // 부모 생성자. 없으면 this 구문 사용 불가능
@@ -208,7 +208,7 @@ class Freeboard extends Component
             return (<Redirect push to={this.state.redirect}/>);
         else
         return (
-            <div className="freeboard">
+            <div className="board">
                 {this.reactsplitL()}
                 {this.reactsplitR()}
             </div>
@@ -249,4 +249,4 @@ class Freeboard extends Component
     }
 }
 
-export default Freeboard;
+export default Board;

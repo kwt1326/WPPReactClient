@@ -1,3 +1,8 @@
+:root {
+    --background-color-theme : midnightblue;
+    --color-facebook-theme : rgba(59, 89, 152, 1);
+    --color-google-theme : rgba(223, 74, 50, 1);
+}
 
 header {
     background-color: transparent;
@@ -20,18 +25,18 @@ footer {
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
-    background-color: rgba(25, 25, 112, 1);
+    background-color: transparent; /*rgba(25, 25, 112, 1);*/
     width: 100%;
     height: 70px;
-    bottom: 0;
+    /*bottom: 0;*/
     left: 0;
     right: 0;
     align-items: center;
-    position: fixed;
+    position: relative;
 }
 
 .Menubar {
-    background-color: midnightblue;
+    background-color: var(--background-color-theme);
     color: black;
     position: absolute;
     width: 100%;
@@ -40,7 +45,7 @@ footer {
 }
 
 .Menubar-mobile {
-    background-color: midnightblue;
+    background-color: var(--background-color-theme);
     position: absolute;
     left: 0px;
     top: 0px;
@@ -157,7 +162,7 @@ footer {
     display: table;
     border: 1px ridge rgba(170, 170, 170, .3);
     border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px;
-    background-color: midnightblue;
+    background-color: var(--background-color-theme);
     padding: 20px;
     margin: 20px;
 }
@@ -165,20 +170,34 @@ footer {
 .box-child-main {
     display: table;
     border: none;
-    background-color: midnightblue;
+    background-color: var(--background-color-theme);
     color : whitesmoke;
     width: 100%;
     height: 100%;
 }
 
 .selector:hover {
-    background-color: rgb(200, 200, 200);    
+    background-color: rgb(220,220,220);    
     cursor: pointer;
 }
 
 .selector-deep:hover {
     background-color: rgb(90, 90, 90);
     color : rgb(220, 220, 220);    
+    cursor: pointer;
+}
+
+.selector-facebook:hover {
+    background-color: var(--color-facebook-theme);
+    color : rgb(220, 220, 220);    
+    filter : brightness(70%);
+    cursor: pointer;
+}
+
+.selector-google:hover {
+    background-color: var(--color-google-theme);
+    color : rgb(220, 220, 220);    
+    filter : brightness(70%);
     cursor: pointer;
 }
 

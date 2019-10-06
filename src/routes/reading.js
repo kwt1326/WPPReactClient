@@ -179,16 +179,18 @@ class Reading extends Component
                         <tr>
                             <td>
                                 <div className="board-userinfo">
-                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '49%', left : '0%'}}>{self.state.content.writer}</div>
+                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '50%', left : '0%'}}>{self.state.content.writer}</div>
                                     {self.spliterV()}
-                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '39%', left : '40%'}}>{self.state.content.category}게시판</div>
+                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '40%', left : '40%'}}>{self.state.content.category}게시판</div>
                                     {self.spliterV()}
                                     <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ 
                                         display : 'table-cell', 
                                         verticalAlign : 'middle', 
-                                        width : '10%', 
-                                        left : '80%', 
-                                        backgroundImage : (this.state.heart) ? "url('" + require('../image/heartSelected-ico.png') + "')" : "url('" + require('../image/heart-ico.png') + "')"}} 
+                                        textAlign : 'center',
+                                        width : '50px', 
+                                        backgroundImage : (this.state.heart) ? "url('" + require('../image/heartSelected-ico.png') + "')" : "url('" + require('../image/heart-ico.png') + "')",
+                                        backgroundColor : 'transparent'
+                                    }}
                                         onClick={this.onClick_Heart.bind(this)}></div>
                                 </div>
                             </td>

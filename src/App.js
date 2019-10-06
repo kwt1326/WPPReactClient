@@ -15,7 +15,7 @@ import Join from './routes/join';
 import User from './routes/user';
 import Write from './routes/write';
 import Reading from './routes/reading';
-import Freeboard from './routes/freeboard';
+import Board from './routes/board';
 import { string } from 'prop-types';
 
 class App extends Component {
@@ -42,7 +42,7 @@ class App extends Component {
               <Route path="/user" component={User} />
               <Route path="/write" component={Write} />
               <Route path="/reading" component={Reading} />
-              <Route path="/board" component={Freeboard} />
+              <Route path="/board" component={Board} />
             </div>
           </section>
           <div id="cover"></div>
@@ -62,10 +62,10 @@ class App extends Component {
     //   const height = String(window.innerHeight - 160 /*header + footer*/);
     //   this.main_ref.style.height = height + "px";
     // }
-    if(this.footer_ref) {
-      //const height = String(window.innerHeight - 160 /*header + footer*/);
-      this.footer_ref.style.bottom = 0 + "px";
-    }
+    // if(this.footer_ref) {
+    //   const height = String(window.innerHeight - 160 /*header + footer*/);
+    //   this.footer_ref.style.bottom = 0 + "px";
+    // }
 
     if(window.innerWidth <= 720) {
         if(this.state.screenstate !== 'mobile') {
@@ -81,9 +81,9 @@ class App extends Component {
     } 
   }
 
-  componentDidMount () {
-    window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 10)});
-  }
+  // componentDidMount () {
+  //   window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 10)});
+  // }
 }
 export default App;
 
