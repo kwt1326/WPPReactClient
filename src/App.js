@@ -58,15 +58,6 @@ class App extends Component {
   }
 
   resize () {
-    // if(this.main_ref && this.footer_ref) {
-    //   const height = String(window.innerHeight - 160 /*header + footer*/);
-    //   this.main_ref.style.height = height + "px";
-    // }
-    // if(this.footer_ref) {
-    //   const height = String(window.innerHeight - 160 /*header + footer*/);
-    //   this.footer_ref.style.bottom = 0 + "px";
-    // }
-
     if(window.innerWidth <= 720) {
         if(this.state.screenstate !== 'mobile') {
             this.setState({ screenstate : 'mobile' });
@@ -80,10 +71,6 @@ class App extends Component {
         }
     } 
   }
-
-  // componentDidMount () {
-  //   window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 10)});
-  // }
 }
 export default App;
 
