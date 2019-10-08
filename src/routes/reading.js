@@ -329,7 +329,9 @@ class Reading extends Component
                 const cmt = comments[i];
                 arr.push(
                 <tr>
-                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(cmt.content) }} />
+                    <div>
+                        <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(cmt.content) }} />
+                    </div>
                 </tr>);
             }
             return (arr);

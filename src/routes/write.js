@@ -213,10 +213,9 @@ class Write extends Component
                             </div>
                         </td>
                     </tr>
-                    {this.spliter()}
                     <tr>
                         <td colSpan='2' style={{ paddingLeft: '0%', paddingRight: '0%' }}>
-                            <div className="main-content">
+                            <div className="main-content" style={{ backgroundColor : "white", color : "black" }}>
                                 <ReactQuill 
                                     theme='snow'
                                     id='write_editor' 
@@ -253,7 +252,6 @@ class Write extends Component
                             <div className="text-limit">글 제한 ({this.state.text_total}/1000)</div>
                         </td>
                     </tr>
-                    {this.spliter()}
                     <tr>
                         <td style={{ textAlign : 'left', paddingLeft : '0%' }}>
                             <Link to='./board'><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
@@ -262,7 +260,6 @@ class Write extends Component
                             <button className="board-apply btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}} onClick={this.clickPost}>{this.state.applystate_text}</button>
                         </td>
                     </tr>
-                    {this.spliter()}
                 </tbody>
             </table>
             <input id='onimage' type='file' accept='image/*' style={{ visibility : 'hidden'}}></input>
