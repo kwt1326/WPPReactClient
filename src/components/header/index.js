@@ -67,6 +67,7 @@ class Header extends Component
                 existsession : res.existsession
             }, () => {
                 alert("성공적으로 로그아웃 되었습니다.");
+                window.location.reload();
             });
         })
         .catch ((err) => {
