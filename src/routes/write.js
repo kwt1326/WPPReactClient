@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import axios from 'axios';
-import {checklogin, removefile, createguid, str_length, api, islive} from '../custom/custom';
+import {checklogin, removefile, createguid, str_length, api, local, islive} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
@@ -305,7 +305,7 @@ class Write extends Component
             })
             .then(function (response) {
                 const range = quill.getSelection();
-                quill.insertEmbed(range.index, 'image', "http://localhost:3500/" + response.data.url);            
+                quill.insertEmbed(range.index, 'image', local + "/" + response.data.url);            
                 self.setState({ images : [...self.state.images, response.data.url]});
             })
             .catch((err) => {

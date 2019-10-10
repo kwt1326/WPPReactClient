@@ -1,37 +1,50 @@
 import React, { Component} from 'react';
-import {checklogin, api, islive} from '../custom/custom';
+import { Redirect } from 'react-router-dom';
+import {checklogin, api, local, islive} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
+import { func } from 'prop-types';
 
 class User extends Component 
 {
     constructor(props) {
         super(props);
         this.state = {
+            screenstate : 'desktop',
             email : "E-mail",
             nickname : "Nickname",
             username : "Username",
+            profileimg : require("../image/unknown.png"),
+            loadimgname : "",
+            reDirection : 'none',
+            local : local
         }
+
+        this.profileimg = React.createRef();
+        this.file = null;
     }
 
     getuserinfo() 
     {    
-        const thisobj = this;
+        const self = this;
+        const local = this.state.local;
 
         checklogin()
         .then((res) => {
             const data = res.userdata.data;
-            thisobj.setState({
+            self.setState({
                 email : data.email,
                 nickname : data.nickname,
                 username : data.username,
-            }, () => { // setState 는 promise 반환 하지 않으므로 자체 콜백 기능 사용
+                profileimg : (data.profileimg) ? ((islive()) ? api +  "/" + data.profileimg : local + "/" + data.profileimg) : self.state.profileimg,
+                loadimgname : data.profileimg
+            }, () => { 
                 const emailinput = document.getElementsByName('user_email')[0];
                 const nickinput = document.getElementsByName('user_nickname')[0];
                 const userinput = document.getElementsByName('user_username')[0];
-                emailinput.placeholder = thisobj.state.email;
-                nickinput.placeholder = thisobj.state.nickname;
-                userinput.placeholder = thisobj.state.username;
+                emailinput.placeholder = self.state.email;
+                nickinput.placeholder = self.state.nickname;
+                userinput.placeholder = self.state.username;
             });
         })
         .catch((err) => {
@@ -43,39 +56,97 @@ class User extends Component
     // 1. update
     user_update () 
     {
-        const thisobj = this;
-        const emailinput = document.getElementsByName('user_email')[0];
+        const self = this;
         const nickinput = document.getElementsByName('user_nickname')[0];
         const userinput = document.getElementsByName('user_username')[0];
-        axios({
-            method: 'patch',
-            url: (islive()) ? api + '/api/user/' + thisobj.state.email : '/api/user/' + thisobj.state.email,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            params: {
-                email: emailinput.value,
-                nickname: nickinput.value,
-                username: userinput.value
+        const formData = new FormData();
+        formData.append('img', this.file);
+        let filename = "";
+
+        // image upload
+        async function Edit() {
+            if(self.file !== null) {
+                await axios({
+                    method: 'post',
+                    url: (islive()) ? api + '/api/post/files' : '/api/post/files',
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    data: formData,
+                })
+                .then(res => {
+                    filename = res.data.url;
+                })
+                .catch((err) => {
+                    alert(err);
+                });    
             }
-        })
+    
+            await axios({
+                method: 'patch',
+                url: (islive()) ? api + '/api/user/' : '/api/user/',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    nickname: nickinput.value,
+                    username: userinput.value,
+                    profileimg : (filename) ? filename : self.state.loadimgname,
+                }
+            })
             .then(function (response) {
                 console.log(response.data.result);
                 alert('개인정보가 수정되었습니다.');
                 return;
             })
             .catch((err) => {
-                console.log(err);
-            });            
+                alert(err);
+            });                
+        }
+
+        Edit();
     }
 
     render () {
+        if(this.state.reDirection !== 'none')
+            return (<Redirect push to={this.state.reDirection}/>);
+
+        if(this.state.screenstate === "mobile") {
+            return (
+                <div className="User" style={{ backgroundColor : 'midnightblue', color : "white" }}>
+                    <div className="inputform">
+                        <div style={{ display : 'table', width: "100%" , minHeight :"300px"}}>
+                            <img src={this.state.profileimg} style={{ 
+                                display : 'table-cell', width : "180px", textAlign : "left", left : "calc(50% - 90px)", position : "relative", marginTop : "1%", marginBottom : "1%"
+                                }} />
+                            <input className="btn-style" style={{
+                                display : 'table-cell', width : "180px", position : "relative", textAlign : "left", left : "calc(50% - 90px)", marginTop : "1%", marginBottom : "1%"
+                            }} id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
+                        </div>
+                        <div style={{ width: "100%", minHeight :"300px"}}>
+                        <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
+                        <input type="email" name="user_email" placeholder={this.state.email} readOnly></input><br/>
+                        <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Nickname</section>
+                        <input type="text" name="user_nickname" placeholder={this.state.nickname}></input><br/>
+                        <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
+                        <input type="text" name="user_username" placeholder={this.state.username}></input><br/>
+                        <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        else
         return (
-            <div className="User" style={{ backgroundColor : 'white'}}>
-                <div className="inputform">
-                    <div style={{ padding : '10%' }}>
+            <div className="User">
+                <div className="inputform" style={{backgroundColor : 'midnightblue', color : "white"}}>
+                    <div style={{ float : "left" , width: "30%" , minHeight :"300px", padding : "10%", backgroundColor : 'midnightblue', color : "white"}}>
+                        <img src={this.state.profileimg} style={{ width : "180px" }} />
+                        <input className="btn-style" id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
+                    </div>
+                    <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
-                    <input type="email" name="user_email" placeholder={this.state.email}></input><br/>
+                    <input type="email" name="user_email" placeholder={this.state.email} readOnly></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Nickname</section>
                     <input type="text" name="user_nickname" placeholder={this.state.nickname}></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
@@ -87,7 +158,46 @@ class User extends Component
         );
     }
 
-    componentDidMount() {
+    onChange_profileimg = () => {
+        const self = this;
+        const file = this.profileimg.files[0];
+
+        if(file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                self.file = file;
+                self.setState({
+                    profileimg : e.target.result,
+                })         
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    resize () {
+        if(window.innerWidth <= 720) {
+            if(this.state.screenstate !== 'mobile') {
+                this.setState({ screenstate : 'mobile' });
+                return;
+            }
+        }
+        else if(window.innerWidth > 720) {
+            if(this.state.screenstate !== 'desktop') {
+                this.setState({ screenstate : 'desktop' });
+                return;
+            }
+        } 
+    }
+
+    componentDidMount() 
+    {
+        checklogin('user')
+        .catch((err) => {
+            this.setState({ reDirection : 'login' });
+        })
+
+        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+        this.resize();
         this.getuserinfo();
     }
 };

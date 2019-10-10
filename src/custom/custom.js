@@ -8,6 +8,7 @@ import axios from 'axios';
 import { func } from 'prop-types';
 
 const api = "https://api.aquaclub.club";
+const local = "http://localhost:3500";
 
 function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
@@ -161,6 +162,7 @@ function createguid() {
 
 export {
     api,
+    local,
     islive,
     checklogin,
     logout,

@@ -59,15 +59,15 @@ class Header extends Component
     }
 
     onclick_logout () {
-        const thisobj = this;
+        const self = this;
         logout()
         .then((res) => {
-            thisobj.setState({
+            self.setState({
                 nickname : res.nickname,
                 existsession : res.existsession
             }, () => {
                 alert("성공적으로 로그아웃 되었습니다.");
-                window.location.reload();
+                window.location.replace(window.location.origin);
             });
         })
         .catch ((err) => {

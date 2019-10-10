@@ -171,7 +171,7 @@ class Board extends Component
     react_splitLeft() {
         if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
             return (
-                <div className="split-left">
+                <div className="split-left" >
                     <BoardSub/>
                 </div>
             );
@@ -185,7 +185,7 @@ class Board extends Component
             rightratio = '90%';
         }
         else
-            rightratio = '66%';
+            rightratio = '69%';
 
         return (
             <div className="board-tablelist split-right" style={{ width : rightratio }}>
@@ -287,15 +287,6 @@ class Board extends Component
         window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
         this.resize();
     }
-
-    // shouldComponentUpdate (nextProps, nextState) {
-    //     if(!nextProps.location.search) return null;
-    //     const page = parseInt(nextProps.location.search.split("?page=")[1]);
-    //     if (page !== this.state.page){
-    //         return true;
-    //     }
-    //     return null;
-    // }
 }
 
 export default Board;

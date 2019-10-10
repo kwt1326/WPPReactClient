@@ -29,6 +29,7 @@ class Reading extends Component
            heart_loaded : false,
            // comment only
            comments : [],
+           comment_active_inner : 'Comment Write',
            comment_active : false,  // comment editor activity
            comment_text : '',       // comment contents
            comment_total : 0        // comment text limit
@@ -50,9 +51,7 @@ class Reading extends Component
         this.hearticon = React.createRef();
 
         // Post Data load
-        if(!this.state.postid) {
-            this.state.postid = this.getguid();
-        }
+        this.onLoad();
     }
 
     // MAIN RENDER
@@ -69,7 +68,6 @@ class Reading extends Component
         else {
             return (
                 <div className="readpost">
-                    {this.onLoad()}
                     {this.reactsplitL()}
                     {this.reactsplitR()}
                 </div>
@@ -94,17 +92,15 @@ class Reading extends Component
     }
 
     onLoad_Main () {
-
         const self = this;
-        if(self.state.loaded === true) 
-            return;
+        const guid = this.getguid();
 
         const Load = async () => {
             await axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post/reading' : '/api/post/reading',
                 params : {
-                    guid : self.state.postid,
+                    guid : guid,
                 }
             })
             .then(res => {
@@ -123,6 +119,7 @@ class Reading extends Component
                     },
                     comments : res.data.comment,
                     loaded : true,
+                    postid : guid
                 }, () => { this.historyheart(); });
             })
             .catch (err => {
@@ -131,7 +128,9 @@ class Reading extends Component
             })
         }
 
-        Load();
+        if(guid) {
+            Load();
+        }
     }
 
     react_splitLeft() {
@@ -195,7 +194,6 @@ class Reading extends Component
                                 </div>
                             </td>
                         </tr>
-                        {/* {self.spliter()} */}
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%' }}>
                                 <div classname="content_post">
@@ -203,7 +201,6 @@ class Reading extends Component
                                 </div>
                             </td>
                         </tr>
-                        {/* {self.spliter()} */}
                         <tr>
                             <td style={{ paddingLeft : '0%', paddingRight : '0%' }}>
                                 <Link to='/board' style={{ float : 'left' }}><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
@@ -211,13 +208,15 @@ class Reading extends Component
                                 <button className="board-apply btn-style selector-deep" style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
                             </td>
                         </tr>
-                        {/* {self.spliter()} */}
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%' }}>
                                 <div classname="content_comment" style={{ minWidth : "360px" }}>
                                     {this.commentactive()}
                                     <button className="comment_active btn-style selector-deep" style={{ float : 'left', width : '40%' , marginTop : '2%'}} onClick={
-                                        () => { this.setState({ comment_active : !(this.state.comment_active) }) }}>Comment Write</button>
+                                        () => { this.setState({ 
+                                            comment_active : !(this.state.comment_active) ,
+                                            comment_active_inner : (this.state.comment_active) ? 'Comment Write' : 'Cancel',
+                                        }) }}>{this.state.comment_active_inner}</button>
                                     <button className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} onClick={this.onClick_rpApply.bind(this)}>Comment Apply</button>
                                 </div>
                             </td>
@@ -245,7 +244,7 @@ class Reading extends Component
     comment_active () {
         if(this.state.comment_active === true)
         return (
-            <div className="comment_main">
+            <div className="comment_main"  style={{ backgroundColor : "white", color : "black" }}>
                 <div className="comment_limit" style={{ float : 'left',  width : '40%', marginBottom : '2%'}}>글 제한 ({this.state.comment_total}/500)</div>
                 <div className="comment_usehide" style={{ float : 'right', width : '40%', marginBottom : '2%', textAlign : 'right'}}>
                     비밀글 : <input id="input_hidepost" type='checkbox' style={{ marginLeft : '10px', transform : 'scale(1.5)' }} />
@@ -319,7 +318,7 @@ class Reading extends Component
     create_Comment ()
     {
         if(this.state.comments === null)
-            return;
+            return null;
 
         let arr = [];
         const comments = this.state.comments.comments;
@@ -336,7 +335,6 @@ class Reading extends Component
             }
             return (arr);
         }
-        return null;
     }
 
     onClick_rpApply() 
@@ -367,9 +365,8 @@ class Reading extends Component
                 }
             })
             .then(function (response) {    
-                self.setState({ 
-                    reDirection : '/reading' + '?post=' + self.state.postid ,
-                });
+                self.props.history.push(self.props.history.location.pathname + '?post=' + String(self.state.postid));
+                self.onLoad();
             })
             .catch((err) => {
                 alert(err);
@@ -463,7 +460,7 @@ class Reading extends Component
     componentDidMount () 
     {
         const self = this;
-        const repost = self.state.postid;
+        const repost = self.getguid();
         checklogin( 'reading' , { repost : repost } )
         .then((res) => {
             increase(repost, 'view', 1)
