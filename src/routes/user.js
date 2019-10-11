@@ -21,6 +21,9 @@ class User extends Component
         }
 
         this.profileimg = React.createRef();
+        this.email = React.createRef();
+        this.username = React.createRef();
+        this.nickname = React.createRef();
         this.file = null;
     }
 
@@ -39,12 +42,12 @@ class User extends Component
                 profileimg : (data.profileimg) ? ((islive()) ? api +  "/" + data.profileimg : local + "/" + data.profileimg) : self.state.profileimg,
                 loadimgname : data.profileimg
             }, () => { 
-                const emailinput = document.getElementsByName('user_email')[0];
-                const nickinput = document.getElementsByName('user_nickname')[0];
-                const userinput = document.getElementsByName('user_username')[0];
+                const emailinput = self.email;
+                const nickinput = self.nickname;
+                const userinput = self.username;
                 emailinput.placeholder = self.state.email;
-                nickinput.placeholder = self.state.nickname;
-                userinput.placeholder = self.state.username;
+                nickinput.value = self.state.nickname;
+                userinput.value = self.state.username;
             });
         })
         .catch((err) => {
@@ -57,8 +60,8 @@ class User extends Component
     user_update () 
     {
         const self = this;
-        const nickinput = document.getElementsByName('user_nickname')[0];
-        const userinput = document.getElementsByName('user_username')[0];
+        const nickinput = self.nickname;
+        const userinput = self.username;
         const formData = new FormData();
         formData.append('img', this.file);
         let filename = "";
@@ -97,6 +100,7 @@ class User extends Component
             .then(function (response) {
                 console.log(response.data.result);
                 alert('개인정보가 수정되었습니다.');
+                window.location.reload();
                 return;
             })
             .catch((err) => {
@@ -125,11 +129,11 @@ class User extends Component
                         </div>
                         <div style={{ width: "100%", minHeight :"300px"}}>
                         <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
-                        <input type="email" name="user_email" placeholder={this.state.email} readOnly></input><br/>
+                        <input type="email" name="user_email" placeholder={this.state.email} ref={(mount) => {this.email = mount;}} readOnly></input><br/>
                         <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Nickname</section>
-                        <input type="text" name="user_nickname" placeholder={this.state.nickname}></input><br/>
+                        <input type="text" name="user_nickname" placeholder={this.state.nickname} ref={(mount) => {this.nickname = mount;}}></input><br/>
                         <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
-                        <input type="text" name="user_username" placeholder={this.state.username}></input><br/>
+                        <input type="text" name="user_username" placeholder={this.state.username} ref={(mount) => {this.username = mount;}}></input><br/>
                         <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>
                         </div>
                     </div>
@@ -146,11 +150,11 @@ class User extends Component
                     </div>
                     <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
-                    <input type="email" name="user_email" placeholder={this.state.email} readOnly></input><br/>
+                    <input type="email" name="user_email" placeholder={this.state.email}  ref={(mount) => {this.email = mount;}} readOnly></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Nickname</section>
-                    <input type="text" name="user_nickname" placeholder={this.state.nickname}></input><br/>
+                    <input type="text" name="user_nickname" placeholder={this.state.nickname}  ref={(mount) => {this.nickname = mount;}}></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
-                    <input type="text" name="user_username" placeholder={this.state.username}></input><br/>
+                    <input type="text" name="user_username" placeholder={this.state.username}  ref={(mount) => {this.username = mount;}}></input><br/>
                     <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>
                     </div>
                 </div>

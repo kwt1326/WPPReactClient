@@ -22,11 +22,13 @@ class Board extends Component
            page_div : null,
            rows : null,
            render_rows : null,
+           render_rows_mobile : null,
            renderready : false,
         };
         this.load = this.Load.bind(this);
         this.addrow = this.add_row.bind(this);
         this.addpage = this.add_page.bind(this);
+        this.addheader = this.add_header.bind(this);
         this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.clickApply = this.onClick_Apply.bind(this);
@@ -70,10 +72,55 @@ class Board extends Component
         });
     }
 
+    add_header () {
+        if(this.state.screenstate === 'phone') {
+            return (
+                <tr>
+                    <td style={{ width: '100%' }}>
+                        <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Title</div>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+        else
+        return (
+            <tr>
+                <td style={{ width: '10%' }}>
+                    <div className="board-seqofpost" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>PostNum</div>
+                    </div>
+                </td>
+                <td style={{ width: '50%' }}>
+                    <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Title</div>
+                    </div>
+                </td>
+                <td style={{ width: '20%' }}>
+                    <div className="board-writerofpost" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Writer</div>
+                    </div>
+                </td>
+                <td style={{ width: '10%' }}>
+                    <div className="board-viewsofpost" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Views</div>
+                    </div>
+                </td>
+                <td style={{ width: '10%' }}>
+                    <div className="board-viewsofpost" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Heart</div>
+                    </div>
+                </td>
+            </tr>
+        )
+    }
+
     add_row = (res) => 
     {
         const self = this;
         let arr = [];
+        let arr_mobile = [];
         let rows = res.rows;
         let length = (res.count > 10) ? 10 : res.count;
         const ofs = res.ofs;
@@ -114,6 +161,17 @@ class Board extends Component
                                     </div>
                                 </td>
                             </tr>
+                        );
+                        arr_mobile.push(
+                            <tr>
+                                <td className="selectorList" style={{ width: '50%' }}>
+                                    <Link to={'./reading' + '?post=' + rows[i].guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <div className="board-titleofpost" style={{ display: 'table' }}>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].title}</div>
+                                    </div>
+                                    </Link>
+                                </td>
+                            </tr>
                         );    
                     }
                 }
@@ -123,6 +181,7 @@ class Board extends Component
                 await ArrAsyncProcess();
                 return ({
                     render_rows : arr,
+                    render_rows_mobile : arr_mobile,
                     rows : res.rows,
                     row_count : res.count,
                     ofs : res.ofs
@@ -158,6 +217,7 @@ class Board extends Component
             self.setState({
                 renderready : true,
                 render_rows : res.render_rows,
+                render_rows_mobile : res.render_rows_mobile,
                 rows : res.rows,
                 row_count : res.row_count,
                 ofs : res.ofs,
@@ -166,6 +226,13 @@ class Board extends Component
         }
     
         process();
+    }
+
+    render_rows = () => {
+        if(this.state.screenstate === "phone")
+            return this.state.render_rows_mobile
+        else
+            return this.state.render_rows
     }
 
     react_splitLeft() {
@@ -181,7 +248,8 @@ class Board extends Component
     react_splitRight() {
 
         let rightratio;
-        if (this.state.screenstate === 'mobile') { 
+        if (this.state.screenstate === 'mobile' ||
+            this.state.screenstate === 'phone') { 
             rightratio = '90%';
         }
         else
@@ -197,36 +265,10 @@ class Board extends Component
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <td style={{ width: '10%' }}>
-                                <div className="board-seqofpost" style={{ display: 'table' }}>
-                                    <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>PostNum</div>
-                                </div>
-                            </td>
-                            <td style={{ width: '50%' }}>
-                                <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
-                                    <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Title</div>
-                                </div>
-                            </td>
-                            <td style={{ width: '20%' }}>
-                                <div className="board-writerofpost" style={{ display: 'table' }}>
-                                    <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Writer</div>
-                                </div>
-                            </td>
-                            <td style={{ width: '10%' }}>
-                                <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                    <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Views</div>
-                                </div>
-                            </td>
-                            <td style={{ width: '10%' }}>
-                                <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                    <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Heart</div>
-                                </div>
-                            </td>
-                        </tr>
+                        {this.addheader()}
                     </thead>
                     <tbody>
-                        {this.state.render_rows}
+                        {this.render_rows()}
                     </tbody>
                     <tfoot>
                         <tr>
@@ -257,6 +299,13 @@ class Board extends Component
 
     resize () {
         if(window.innerWidth <= 720) {
+            if(window.innerWidth <= 600){
+                if(this.state.screenstate !== 'phone') {
+                    this.setState({ screenstate : 'phone' });
+                    return;
+                }    
+            }
+            else
             if(this.state.screenstate !== 'mobile') {
                 this.setState({ screenstate : 'mobile' });
                 return;
