@@ -8,7 +8,7 @@ import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
 
 import BoardSub from '../components/boardSub';
-import { element } from 'prop-types';
+import { element, func } from 'prop-types';
 
 // 글쓰기
 class Write extends Component
@@ -38,8 +38,9 @@ class Write extends Component
         this.onLoad = this.onLoad_editpost.bind(this);
         this.categorySelect = this.categorySelect_edit.bind(this);
 
-        // Quill ref Object
+        // ref Object
         this.quillRef = React.createRef();
+        this.imageselect = React.createRef();
 
         // handler for React-Quill
         this.imageHandler = this.RQ_imageHandler.bind(this);
@@ -253,6 +254,15 @@ class Write extends Component
                         </td>
                     </tr>
                     <tr>
+                        <td>
+                            <div style={{ width : "auto" }}>{"대표 이미지 : "}</div>
+                        </td>
+                        <td>
+                            <select id="select_frontimage" ref={(mount) => {this.imageselect = mount}} style={{ width: '80%' }}>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td style={{ textAlign : 'left', paddingLeft : '0%' }}>
                             <Link to='./board'><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
                         </td>
@@ -265,6 +275,28 @@ class Write extends Component
             <input id='onimage' type='file' accept='image/*' style={{ visibility : 'hidden'}}></input>
         </div>
         );
+    }
+
+    options = () => 
+    {
+        const self = this;
+        const images = self.state.images;
+        self.imageselect.length = 0;
+
+        async function addoptions () {
+            for(let i = 0 ; i < images.length ; ++i) {
+                var opt = document.createElement('option');
+                opt.value = images[i];
+                opt.innerHTML = images[i];
+                self.imageselect.appendChild(opt);
+            }
+        }
+
+        async function process () {
+            await addoptions();
+        }
+
+        process();
     }
 
     // React-quill 에서 데이터를 받을 수 있음
@@ -306,7 +338,9 @@ class Write extends Component
             .then(function (response) {
                 const range = quill.getSelection();
                 quill.insertEmbed(range.index, 'image', local + "/" + response.data.url);            
-                self.setState({ images : [...self.state.images, response.data.url]});
+                self.setState({ images : [...self.state.images, response.data.url]}, () => {
+                    self.options();
+                });
             })
             .catch((err) => {
                 alert(err);

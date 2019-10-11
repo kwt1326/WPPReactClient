@@ -20,7 +20,6 @@ class Board extends Component
            ofs : null,
            row_count : null,
            page_div : null,
-           rows : null,
            render_rows : null,
            render_rows_mobile : null,
            renderready : false,
@@ -139,25 +138,25 @@ class Board extends Component
                                     </div>
                                 </td>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'./reading' + '?post=' + rows[i].guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'./reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].title}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
                                 </td>
                                 <td style={{ width: '20%' }}>
                                     <div className="board-writerofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].nickname}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].writer}</div>
                                     </div>
                                 </td>
                                 <td style={{ width: '10%' }}>
                                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].views}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.views}</div>
                                     </div>
                                 </td>
                                 <td style={{ width: '10%' }}>
                                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].hearts}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.hearts}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -165,9 +164,11 @@ class Board extends Component
                         arr_mobile.push(
                             <tr>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'./reading' + '?post=' + rows[i].guid} style={{textDecoration : 'none', color : 'white'}}>
-                                    <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].title}</div>
+                                    <Link to={'./reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                                            <img src={rows[i].profi}/>{rows[i].content.title}
+                                        </div>
                                     </div>
                                     </Link>
                                 </td>
@@ -182,7 +183,6 @@ class Board extends Component
                 return ({
                     render_rows : arr,
                     render_rows_mobile : arr_mobile,
-                    rows : res.rows,
                     row_count : res.count,
                     ofs : res.ofs
                 })
@@ -218,7 +218,6 @@ class Board extends Component
                 renderready : true,
                 render_rows : res.render_rows,
                 render_rows_mobile : res.render_rows_mobile,
-                rows : res.rows,
                 row_count : res.row_count,
                 ofs : res.ofs,
                 page_div : elems

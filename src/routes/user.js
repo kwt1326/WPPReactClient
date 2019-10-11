@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
-import {checklogin, api, local, islive} from '../custom/custom';
+import {checklogin, api, local, islive, getimgsrc} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
 import { func } from 'prop-types';
@@ -39,7 +39,7 @@ class User extends Component
                 email : data.email,
                 nickname : data.nickname,
                 username : data.username,
-                profileimg : (data.profileimg) ? ((islive()) ? api +  "/" + data.profileimg : local + "/" + data.profileimg) : self.state.profileimg,
+                profileimg : getimgsrc(data.profileimg, self.state.profileimg),
                 loadimgname : data.profileimg
             }, () => { 
                 const emailinput = self.email;

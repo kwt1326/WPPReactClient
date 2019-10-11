@@ -135,6 +135,11 @@ function removefile (filename) {
     return process();
 }
 
+function getimgsrc ( imgp, alter ) {
+    return (imgp) ? ((islive()) ? api +  "/" + imgp :
+                                  local + "/" + imgp) : alter;
+}
+
 function str_length ( compare_string ) 
 {
     var total = 0;
@@ -171,4 +176,5 @@ export {
     increase,
     traveledUserhistory,
     str_length,
+    getimgsrc,
 };

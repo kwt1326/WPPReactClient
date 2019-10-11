@@ -3,7 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
-import {checklogin, increase, traveledUserhistory, str_length, createguid, api, islive} from '../custom/custom';
+import {checklogin, increase, traveledUserhistory, 
+        str_length, createguid, api, islive, getimgsrc} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
@@ -21,6 +22,7 @@ class Reading extends Component
            screenstate : 'desktop',     // css react option
            reDirection : 'none',        // reDirection path
            loadingText : 'loading...',  // load noticeview text
+           defaultimg : require("../image/unknown.png"),
            postid : '',       
            content : {},
            images : [],
@@ -29,6 +31,7 @@ class Reading extends Component
            heart_loaded : false,
            // comment only
            comments : [],
+           comments_ex : [],
            comment_active_inner : 'Comment Write',
            comment_active : false,  // comment editor activity
            comment_text : '',       // comment contents
@@ -113,11 +116,12 @@ class Reading extends Component
                         updateAt: res.data.post.updatedAt,
                         userid: res.data.post.id,
                         category : res.data.post.category,
-                        writer : res.data.post.writer,
+                        writer : res.data.post_writer,
                         views : res.data.post.views,
                         hearts : res.data.post.hearts,
                     },
                     comments : res.data.comment,
+                    comments_ex : res.data.comment_expands,
                     loaded : true,
                     postid : guid
                 }, () => { this.historyheart(); });
@@ -317,24 +321,37 @@ class Reading extends Component
     // For comment function
     create_Comment ()
     {
-        if(this.state.comments === null)
-            return null;
+        const self = this;
 
         let arr = [];
-        const comments = this.state.comments.comments;
-        if(comments) {
+        const comments = this.state.comments;
+        const comments_ex = this.state.comments_ex;
+        arr.push( <tr>
+            <div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div>
+            </tr> )
+
+        if(comments && comments_ex) {
             for(let i = 0; i < comments.length ; ++i)
             {
-                const cmt = comments[i];
                 arr.push(
                 <tr>
-                    <div>
-                        <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(cmt.content) }} />
+                    <div style= {{ display : "table" , margin : "2%"}}>
+                        <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)} 
+                             style={{ display : "table-cell", width : "50px", height : "50px" }}/>
+                        <div style={{ display : "table-cell", verticalAlign : "middle", padding : "5%" }}>
+                            {comments_ex[i].nickname}
+                        </div>
+                        <div style={{ display : "table-cell", verticalAlign : "middle", padding : "5%" }}>
+
+                        </div>
                     </div>
+                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
                 </tr>);
             }
             return (arr);
         }
+        else
+            return (arr);
     }
 
     onClick_rpApply() 
