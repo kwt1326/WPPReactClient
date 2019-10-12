@@ -11,7 +11,7 @@ import '../css/reading.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
 
 import BoardSub from '../components/boardSub';
-import { element } from 'prop-types';
+import { element, func } from 'prop-types';
 
 // 글쓰기
 class Reading extends Component
@@ -22,7 +22,7 @@ class Reading extends Component
            screenstate : 'desktop',     // css react option
            reDirection : 'none',        // reDirection path
            loadingText : 'loading...',  // load noticeview text
-           defaultimg : require("../image/unknown.png"),
+           defaultimg : require("../image/unknown.png"),           
            postid : '',       
            content : {},
            images : [],
@@ -137,6 +137,11 @@ class Reading extends Component
         }
     }
 
+    getheartimg = ( picked ) => {
+        return (picked) ? "url('" + require('../image/heartSelected-ico.png') + "')" 
+                        : "url('" + require('../image/heart-ico.png') + "')"; 
+    }
+
     react_splitLeft() {
         if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
             return (
@@ -191,7 +196,7 @@ class Reading extends Component
                                         verticalAlign : 'middle', 
                                         textAlign : 'center',
                                         width : '50px', 
-                                        backgroundImage : (this.state.heart) ? "url('" + require('../image/heartSelected-ico.png') + "')" : "url('" + require('../image/heart-ico.png') + "')",
+                                        backgroundImage : this.getheartimg(this.state.heart),
                                         backgroundColor : 'transparent'
                                     }}
                                         onClick={this.onClick_Heart.bind(this)}></div>
@@ -199,7 +204,7 @@ class Reading extends Component
                             </td>
                         </tr>
                         <tr>
-                            <td style={{ paddingLeft: '0%', paddingRight: '0%' }}>
+                            <td style={{ paddingLeft: '0%', paddingRight: '0%'}}>
                                 <div classname="content_post">
                                     <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(self.state.content.text) }}/>
                                 </div>
@@ -318,7 +323,7 @@ class Reading extends Component
         })
     }
 
-    // For comment function
+    // For comment function //
     create_Comment ()
     {
         const self = this;
@@ -326,32 +331,50 @@ class Reading extends Component
         let arr = [];
         const comments = this.state.comments;
         const comments_ex = this.state.comments_ex;
-        arr.push( <tr>
-            <div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div>
-            </tr> )
+        arr.push(<tr><td><div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div></td></tr>);
+
+        const heartNumstyle = {display : "table-cell", textAlign : "center", verticalAlign : "middle", width : "50px"};
 
         if(comments && comments_ex) {
             for(let i = 0; i < comments.length ; ++i)
             {
                 arr.push(
                 <tr>
-                    <div style= {{ display : "table" , margin : "2%"}}>
-                        <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)} 
-                             style={{ display : "table-cell", width : "50px", height : "50px" }}/>
-                        <div style={{ display : "table-cell", verticalAlign : "middle", padding : "5%" }}>
-                            {comments_ex[i].nickname}
+                    <td>
+                        <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
+                            <div style={{ display : "table-cell" , width : "50px"}}>
+                                <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)}/>
+                            </div>
+                            <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
+                                {comments_ex[i].nickname}
+                            </div>
+                            <div id={"heart-Btn" + String(comments[i].id)} className="selector-deep" style={{display : "table-cell", textAlign : "right", verticalAlign : "middle",
+                                 backgroundImage : self.getheartimg(self.Load_commentHeart(comments[i].guid)), backgroundSize: "contain", width : "50px"}} 
+                                 onClick={() => {
+                                    this.onClick_rpHeart(comments[i].guid, comments[i].id)
+                                 }}/>
+                            <div style={heartNumstyle}>{String(comments[i].hearts)}</div>
                         </div>
-                        <div style={{ display : "table-cell", verticalAlign : "middle", padding : "5%" }}>
-
-                        </div>
-                    </div>
-                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
+                        <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
+                    </td>
                 </tr>);
             }
             return (arr);
         }
         else
             return (arr);
+    }
+
+    // 반환 값 어떻게 해야? 20191012
+    Load_commentHeart = (guid) => {
+
+        async function process () {
+            const promise = await traveledUserhistory( guid, 'heart' );
+            return promise.result;
+        }
+        process().then(res => {
+            return res;
+        })
     }
 
     onClick_rpApply() 
@@ -395,7 +418,41 @@ class Reading extends Component
         }
     }
 
-    // For post function
+    onClick_rpHeart (comment_guid, comment_id) {
+        traveledUserhistory( comment_guid, 'heart' )
+        .then((res) => {
+            if(res.result === false) {
+                increase(comment_guid, 'heart', 1, true)
+                .then(res => {
+                    const heartbtn = document.getElementById("heart-Btn" + String(comment_id));
+                    if(heartbtn) {
+                        heartbtn.style.backgroundImage = this.getheartimg(true);
+                        alert("댓글을 추천하셨습니다.");
+                    }
+                })
+                .catch(err => {
+                    alert(err);
+                })
+            }
+            else if ( res.result === true ) {
+                increase(comment_id, 'heart', -1, true)
+                .then(res => {
+                    const heartbtn = document.getElementById("heart-Btn" + String(comment_id));
+                    if(heartbtn) {
+                        heartbtn.style.backgroundImage = this.getheartimg(false);
+                        alert("댓글 추천을 취소하셨습니다.")
+                    }
+                })
+                .catch(err => {
+                    alert(err);
+                })
+            }
+        })
+    }
+
+    ///////////////////////
+
+    // For post function //
     onClick_Edit() {
         this.setState({reDirection : '/write' + '?post=' + this.state.postid});
     }

@@ -59,11 +59,13 @@ function logout () {
     return process();
 }
 
-function increase ( id, target_type, num ) {
+function increase ( id, target_type, num, bComment ) {
     async function process () {
         return await axios({
             method: 'patch',
-            url: (islive()) ? api + '/api/post/increase' : '/api/post/increase',
+            url: (bComment) ?
+            ((islive()) ? api + '/api/post/comment/increase' : '/api/post/comment/increase') :
+            ((islive()) ? api + '/api/post/increase' : '/api/post/increase'),
             headers: {
                 'Content-Type': 'application/json'
             },

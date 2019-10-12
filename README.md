@@ -1,3 +1,23 @@
+WebPortfolio - actor by Kimwontae. 
+
+Portfolio skill stack : 
+
+// Front
+
+React (CRA)
+
+Three.js
+
+// Back-end
+
+Node.js (express)
+
+multer
+
+Redis
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

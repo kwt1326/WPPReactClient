@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import { Link } from 'react-router-dom';
-import {checklogin, logout} from '../../custom/custom';
+import {checklogin, logout, getimgsrc} from '../../custom/custom';
 import '../../css/style.css';
 
 class Header extends Component
@@ -12,6 +12,7 @@ class Header extends Component
             redirect : false,
             screenstate : 'desktop',
             nickname : '',
+            profileimg : require("../../image/unknown.png"),
             existsession : false
         };
         this.reactscreen = this.react_window.bind(this);
@@ -41,13 +42,14 @@ class Header extends Component
 
     check_login () 
     {
-        const thisobj = this;
+        const self = this;
         checklogin()
         .then((res) => {
             const data = res.userdata.data;
-            if(thisobj.state.nickname !== data.nickname &&
-                thisobj.state.existsession !== true) {
-                    thisobj.setState({ 
+            if(self.state.nickname !== data.nickname &&
+                self.state.existsession !== true) {
+                    self.setState({ 
+                        profileimg : getimgsrc(data.profileimg, self.state.profileimg),
                         nickname : data.nickname,
                         existsession : true
                     })
@@ -63,6 +65,7 @@ class Header extends Component
         logout()
         .then((res) => {
             self.setState({
+                profileimg : require("../../image/unknown.png"),
                 nickname : res.nickname,
                 existsession : res.existsession
             }, () => {
@@ -107,7 +110,10 @@ class Header extends Component
                 return (
                     <div id="header-usericon-mobile" className="box-child-main squere-menu-user">
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
-                        <Link className="link-user" to="/user"><div className="usericon selectorIcon" style={{ width : '100%' }}/></Link>
+                        <Link className="link-user" to="/user">
+                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}/>
+                            <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
+                        </Link>
                     </div>
                 )
             }
@@ -116,7 +122,10 @@ class Header extends Component
                     <div id="header-usericon-desktop" className="box-child-main squere-menu-user">
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
                         <div className="nickname" >{this.state.nickname}</div>
-                        <Link className="link-user" to="/user"><div className="usericon selectorIcon" style={{ width : '100%' }}/></Link>
+                        <Link className="link-user" to="/user">
+                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}/>
+                            <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
+                        </Link>
                     </div>
                 )
             }

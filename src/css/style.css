@@ -279,6 +279,15 @@ footer {
     background-color: rgba(0, 0, 0, 0);
 }
 
+.userframe {
+    display: table-cell;
+    float: right;
+    width: 50%;
+    height: 100%;
+    background-image: url(../image/circle_frame.png);
+    background-size: contain;
+}
+
 .nickname {
     display: flex;
     justify-content: center;
