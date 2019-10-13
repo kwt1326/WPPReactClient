@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
-import {checklogin, islive, api} from '../custom/custom';
+import {checklogin, islive, api, getimgsrc} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 
@@ -16,6 +16,7 @@ class Board extends Component
         this.state = {
            screenstate : 'desktop',
            redirect : 'none',
+           defaultimg : require('../image/file_default.png'),
            page : 1,
            ofs : null,
            row_count : null,
@@ -138,9 +139,10 @@ class Board extends Component
                                     </div>
                                 </td>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'./reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.title}</div>
+                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}></img>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
                                 </td>
@@ -164,11 +166,10 @@ class Board extends Component
                         arr_mobile.push(
                             <tr>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'./reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                            <img src={rows[i].profi}/>{rows[i].content.title}
-                                        </div>
+                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}></img>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
                                 </td>
@@ -321,13 +322,13 @@ class Board extends Component
     onClick_Apply () 
     {
         const self = this;
-        checklogin( './write' )
+        checklogin( 'write' )
         .then((res) => {
-            self.setState({redirect : './write'});
+            self.setState({redirect : '/write'});
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');
-            self.setState({redirect : './login'});
+            self.setState({redirect : '/login'});
         })
     }
 

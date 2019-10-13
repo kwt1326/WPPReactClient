@@ -115,6 +115,8 @@ class Write extends Component
                 text : res.query.content,
                 edit_loaded : true,
                 applystate_text : 'Edit'
+            }, () => {
+                self.options();
             });
         })
         .catch((err) => {
@@ -280,8 +282,10 @@ class Write extends Component
     options = () => 
     {
         const self = this;
-        const images = self.state.images;
+        //const images = self.state.images;
         self.imageselect.length = 0;
+
+        const images = this.extract_img(self.state.text, true);
 
         async function addoptions () {
             for(let i = 0 ; i < images.length ; ++i) {
@@ -349,6 +353,31 @@ class Write extends Component
         }
     }
 
+    extract_img = (content, bName) => {
+        const pattern = /<img src="(\/?)(\w+)([^>]*)">/;
+        let matchArray = [];
+        let buffer = content;
+        let bufferarray = buffer.match(pattern);
+        while(bufferarray !== null) {
+            if(bName) {
+                const splited = bufferarray[0].split("/");
+                const match = splited[splited.length - 1];
+                const name = match.split('"')[0];
+                matchArray.push(name);    
+            }
+            else
+                matchArray.push(bufferarray[0]);
+            buffer = buffer.split(bufferarray[0])[1];
+            bufferarray = buffer.match(pattern);
+        }
+
+        if(bName) {
+            
+        }
+
+        return matchArray;
+    }
+
     onClick_Post() 
     {
         const self = this;
@@ -375,15 +404,7 @@ class Write extends Component
         }
 
         // img src 모두 추출
-        const pattern = /<img src="(\/?)(\w+)([^>]*)">/;
-        let matchArray = [];
-        let buffer = self.state.text;
-        let bufferarray = buffer.match(pattern);
-        while(bufferarray !== null) {
-            matchArray.push(bufferarray[0]);
-            buffer = buffer.split(bufferarray[0])[1];
-            bufferarray = buffer.match(pattern);
-        }
+        let matchArray = this.extract_img(self.state.text);
 
         async function process () {
             self.state.images.forEach((element) => {
@@ -419,7 +440,8 @@ class Write extends Component
                         category : category,
                         password: password,
                         usehide: usehide,
-                        guid : self.state.edit_postid
+                        guid : self.state.edit_postid,
+                        frontimg : self.imageselect.value
                     }
                 })
                 .then(function (response) {    
@@ -448,7 +470,8 @@ class Write extends Component
                         category : category,
                         password: password,
                         usehide: usehide,
-                        guid : createguid()
+                        guid : createguid(),
+                        frontimg : self.imageselect.value
                     }
                 })
                 .then(function (response) {    

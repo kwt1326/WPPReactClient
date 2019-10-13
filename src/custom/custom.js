@@ -9,6 +9,14 @@ import { func } from 'prop-types';
 
 const api = "https://api.aquaclub.club";
 const local = "http://localhost:3500";
+const categoryStruct = {
+    board : [
+        "board", "web", "3d"
+    ],
+    introduce : [
+        "introduce"
+    ]
+}
 
 function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
@@ -179,4 +187,5 @@ export {
     traveledUserhistory,
     str_length,
     getimgsrc,
+    categoryStruct,
 };

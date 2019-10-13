@@ -182,7 +182,8 @@ footer {
 }
 
 .selector:hover {
-    background-color: rgb(220,220,220);    
+    background-color: rgb(220,220,220); 
+    color : gray;   
     cursor: pointer;
 }
 

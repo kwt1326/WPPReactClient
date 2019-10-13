@@ -35,7 +35,8 @@ class Reading extends Component
            comment_active_inner : 'Comment Write',
            comment_active : false,  // comment editor activity
            comment_text : '',       // comment contents
-           comment_total : 0        // comment text limit
+           comment_total : 0,       // comment text limit
+           comment_renders : [],
         };
         this.spliter = this.tr_spliter.bind(this);
         this.spliterV = this.tr_spliter_vertical.bind(this);
@@ -124,7 +125,10 @@ class Reading extends Component
                     comments_ex : res.data.comment_expands,
                     loaded : true,
                     postid : guid
-                }, () => { this.historyheart(); });
+                }, () => { 
+                    this.historyheart();
+                    this.createComment();
+                });
             })
             .catch (err => {
                 console.log("Not loaded post : " + err);
@@ -230,7 +234,7 @@ class Reading extends Component
                                 </div>
                             </td>
                         </tr>
-                        {this.createComment()}
+                        {this.state.comment_renders}
                     </tbody>
                 </table>
             </div>    
@@ -335,46 +339,48 @@ class Reading extends Component
 
         const heartNumstyle = {display : "table-cell", textAlign : "center", verticalAlign : "middle", width : "50px"};
 
-        if(comments && comments_ex) {
-            for(let i = 0; i < comments.length ; ++i)
-            {
-                arr.push(
-                <tr>
-                    <td>
-                        <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
-                            <div style={{ display : "table-cell" , width : "50px"}}>
-                                <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)}/>
+        if(comments && comments_ex) 
+        {
+            async function process () {
+                for(let i = 0; i < comments.length ; ++i)
+                {
+                    let commentheart = { result : false };
+                    await self.Load_commentHeart(comments[i].guid, commentheart );
+                    arr.push(
+                    <tr>
+                        <td>
+                            <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
+                                <div style={{ display : "table-cell" , width : "50px"}}>
+                                    <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)}/>
+                                </div>
+                                <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
+                                    {comments_ex[i].nickname}
+                                </div>
+                                <div id={"heart-Btn" + String(comments[i].id)} className="selector-deep" style={{display : "table-cell", textAlign : "right", verticalAlign : "middle",
+                                     backgroundImage : self.getheartimg(commentheart.result), backgroundSize: "contain", width : "50px"}} 
+                                     onClick={() => {
+                                        self.onClick_rpHeart(comments[i].guid, comments[i].id)
+                                     }}/>
+                                <div style={heartNumstyle}>{String(comments[i].hearts)}</div>
                             </div>
-                            <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
-                                {comments_ex[i].nickname}
-                            </div>
-                            <div id={"heart-Btn" + String(comments[i].id)} className="selector-deep" style={{display : "table-cell", textAlign : "right", verticalAlign : "middle",
-                                 backgroundImage : self.getheartimg(self.Load_commentHeart(comments[i].guid)), backgroundSize: "contain", width : "50px"}} 
-                                 onClick={() => {
-                                    this.onClick_rpHeart(comments[i].guid, comments[i].id)
-                                 }}/>
-                            <div style={heartNumstyle}>{String(comments[i].hearts)}</div>
-                        </div>
-                        <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
-                    </td>
-                </tr>);
+                            <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
+                        </td>
+                    </tr>
+                    );    
+                }
             }
-            return (arr);
+            process().then(res => {
+                self.setState({ comment_renders : arr });
+            });
         }
-        else
-            return (arr);
     }
 
-    // 반환 값 어떻게 해야? 20191012
-    Load_commentHeart = (guid) => {
-
+    Load_commentHeart = (guid, ref) => {
         async function process () {
-            const promise = await traveledUserhistory( guid, 'heart' );
-            return promise.result;
+            const trace = await traveledUserhistory( guid, 'heart' );
+            ref.result = trace.result;
         }
-        process().then(res => {
-            return res;
-        })
+        return process();
     }
 
     onClick_rpApply() 
@@ -418,36 +424,36 @@ class Reading extends Component
         }
     }
 
-    onClick_rpHeart (comment_guid, comment_id) {
+    onClick_rpHeart = (comment_guid, comment_id) => 
+    {
+        const self = this;
+
         traveledUserhistory( comment_guid, 'heart' )
         .then((res) => {
             if(res.result === false) {
-                increase(comment_guid, 'heart', 1, true)
-                .then(res => {
-                    const heartbtn = document.getElementById("heart-Btn" + String(comment_id));
-                    if(heartbtn) {
-                        heartbtn.style.backgroundImage = this.getheartimg(true);
-                        alert("댓글을 추천하셨습니다.");
-                    }
-                })
-                .catch(err => {
-                    alert(err);
-                })
+                increaselocal(1);
             }
             else if ( res.result === true ) {
-                increase(comment_id, 'heart', -1, true)
-                .then(res => {
-                    const heartbtn = document.getElementById("heart-Btn" + String(comment_id));
-                    if(heartbtn) {
-                        heartbtn.style.backgroundImage = this.getheartimg(false);
-                        alert("댓글 추천을 취소하셨습니다.")
-                    }
-                })
-                .catch(err => {
-                    alert(err);
-                })
+                increaselocal(-1);
             }
         })
+
+        function increaselocal ( num ) {
+            const msg = (num > 0) ? "댓글을 추천하셨습니다." : "댓글 추천을 취소하셨습니다.";
+            increase(comment_guid, 'heart', num, true)
+            .then(res => {
+                const heartbtn = document.getElementById("heart-Btn" + String(comment_id));
+                if(heartbtn) {
+                    heartbtn.style.backgroundImage = self.getheartimg((num > 0) ? true : false);
+                    alert(msg);
+                    self.props.history.push(self.props.history.location.pathname + '?post=' + String(self.state.postid));
+                    self.onLoad();    
+                }
+            })
+            .catch(err => {
+                alert(err);
+            })
+        }
     }
 
     ///////////////////////
