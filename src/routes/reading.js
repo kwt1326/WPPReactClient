@@ -259,9 +259,6 @@ class Reading extends Component
         return (
             <div className="comment_main"  style={{ backgroundColor : "white", color : "black" }}>
                 <div className="comment_limit" style={{ float : 'left',  width : '40%', marginBottom : '2%'}}>글 제한 ({this.state.comment_total}/500)</div>
-                <div className="comment_usehide" style={{ float : 'right', width : '40%', marginBottom : '2%', textAlign : 'right'}}>
-                    비밀글 : <input id="input_hidepost" type='checkbox' style={{ marginLeft : '10px', transform : 'scale(1.5)' }} />
-                </div>
                 <ReactQuill 
                 theme='snow'
                 id='write_editor' 
@@ -350,17 +347,15 @@ class Reading extends Component
                     <tr>
                         <td>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
-                                <div style={{ display : "table-cell" , width : "50px"}}>
-                                    <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)}/>
-                                </div>
+                                <div style={{ display : "table-cell", verticalAlign : "middle",
+                                     backgroundImage : 'url(' + getimgsrc(comments_ex[i].profileimg, self.state.defaultimg) + ')' , backgroundSize: "50px", width : "50px", height : "50px"}} />
+                                    {/* <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)} style={{ backgroundSize: "contain", width : "50px", height : "50px" }}/> */}
                                 <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
                                     {comments_ex[i].nickname}
                                 </div>
                                 <div id={"heart-Btn" + String(comments[i].id)} className="selector-deep" style={{display : "table-cell", textAlign : "right", verticalAlign : "middle",
                                      backgroundImage : self.getheartimg(commentheart.result), backgroundSize: "contain", width : "50px"}} 
-                                     onClick={() => {
-                                        self.onClick_rpHeart(comments[i].guid, comments[i].id)
-                                     }}/>
+                                     onClick={() => {self.onClick_rpHeart(comments[i].guid, comments[i].id)}}/>
                                 <div style={heartNumstyle}>{String(comments[i].hearts)}</div>
                             </div>
                             <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
@@ -390,12 +385,10 @@ class Reading extends Component
             return;
         }
 
-        const usehide = document.getElementById("input_hidepost").checked;
         const content = {
             postId : self.state.content.id,
             guid : createguid(),
             text : self.state.comment_text,
-            usehide : usehide,
         }
 
         async function process () {
@@ -407,7 +400,6 @@ class Reading extends Component
                     postId : content.postId,
                     guid : content.guid,
                     content : content.text,
-                    useHide : content.usehide,
                 }
             })
             .then(function (response) {    

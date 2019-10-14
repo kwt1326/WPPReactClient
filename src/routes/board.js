@@ -141,8 +141,8 @@ class Board extends Component
                                 <td className="selectorList" style={{ width: '50%' }}>
                                     <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}></img>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%" }}>{rows[i].content.title}</div>
+                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} ></img></div> 
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
                                 </td>
@@ -169,7 +169,7 @@ class Board extends Component
                                     <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
                                         <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}></img>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.title}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
                                 </td>
@@ -203,7 +203,7 @@ class Board extends Component
             for(let i = 1 ; i <= numpage ; ++i)
             {
                 elems.push(
-                    <button className="selector-deep" onClick={() => {
+                    <button className="selector-deep btn-style" onClick={() => {
                         self.props.history.push(self.props.history.location.pathname + '?page=' + String(i));
                         self.load();
                         }}>

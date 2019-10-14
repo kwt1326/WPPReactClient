@@ -19,6 +19,7 @@ class Write extends Component
            screenstate : 'desktop',
            text : '',
            title : '',
+           tags : [],
            images : [],
            reRender : false,
            reDirection : 'none',
@@ -41,6 +42,8 @@ class Write extends Component
         // ref Object
         this.quillRef = React.createRef();
         this.imageselect = React.createRef();
+        this.inputtag = React.createRef();
+        this.tags = React.createRef();
 
         // handler for React-Quill
         this.imageHandler = this.RQ_imageHandler.bind(this);
@@ -117,6 +120,7 @@ class Write extends Component
                 applystate_text : 'Edit'
             }, () => {
                 self.options();
+                self.createtags();
             });
         })
         .catch((err) => {
@@ -190,33 +194,6 @@ class Write extends Component
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <div className="board-userinfo">
-                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>분류 : </div>
-                            </div>
-                        </td>
-                        <td>
-                            <select id="select_category" style={{ width: '98%' }}>
-                                <option value="오픈">오픈</option>
-                                <option value="질문">질문</option>
-                                <option value="기타">기타</option>
-                            </select>
-                            {this.categorySelect()}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div className="board-userinfo">
-                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>비밀글 : <input id="input_hidepost" type='checkbox' style={{ marginLeft : '10px', transform : 'scale(1.5)' }}></input></div>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="board-userinfo">
-                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>패스워드 : </div><input id="input_password" type='password' style={{ width : '95%'}}/>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
                         <td colSpan='2' style={{ paddingLeft: '0%', paddingRight: '0%' }}>
                             <div className="main-content" style={{ backgroundColor : "white", color : "black" }}>
                                 <ReactQuill 
@@ -265,6 +242,21 @@ class Write extends Component
                         </td>
                     </tr>
                     <tr>
+                        <td>
+                            <div className="board-userinfo">
+                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>태그 : </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input id="input_tag" type='text' style={{ width : '95%'}} ref={(mount) => {this.inputtag = mount}} onKeyUp={this.addtag}></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan='2' >
+                            <div id="tags" ref={(mount) => {this.tags = mount}} style={{ width: '98%' }}></div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td style={{ textAlign : 'left', paddingLeft : '0%' }}>
                             <Link to='./board'><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
                         </td>
@@ -282,7 +274,6 @@ class Write extends Component
     options = () => 
     {
         const self = this;
-        //const images = self.state.images;
         self.imageselect.length = 0;
 
         const images = this.extract_img(self.state.text, true);
@@ -301,6 +292,51 @@ class Write extends Component
         }
 
         process();
+    }
+
+    createtags = () => 
+    {
+        const self = this;
+        const arrtags = self.state.tags;
+
+        while(self.tags.firstChild) {
+            self.tags.removeChild(self.tags.firstChild);    
+        }
+
+        function tag_onclick (obj) {
+            self.setState({tags : arrtags.splice(arrtags.indexOf(obj.value), 1)});
+            self.createtags();
+        }
+
+        async function addtags () {
+            for(let i = 0 ; i < arrtags.length ; ++i) {
+                if(arrtags[i]) {
+                    let tag = document.createElement('button');
+                    tag.className = "btn_style";
+                    tag.value = arrtags[i];
+                    tag.innerHTML = arrtags[i];
+                    tag.onclick = () => {tag_onclick(tag)};
+                    self.tags.appendChild(tag);
+                }
+            }
+        }
+
+        async function process () {
+            await addtags();
+        }
+
+        process();
+    }
+
+    addtag = () => {
+        if(window.event.keyCode == 13) {
+            const newtags = this.state.tags;
+            const value = this.inputtag.value;
+            if(newtags.indexOf(value) !== -1)
+                return;
+            newtags[newtags.length] = String(value);
+            this.createtags();
+        }
     }
 
     // React-quill 에서 데이터를 받을 수 있음
@@ -347,7 +383,7 @@ class Write extends Component
                 });
             })
             .catch((err) => {
-                alert(err);
+                alert(err.response.data);
                 return;
             });
         }
@@ -384,8 +420,6 @@ class Write extends Component
         const content = self.state.text;
         const title = document.getElementById('input_title').value;
         const category = document.getElementById('select_category').value;
-        const password = document.getElementById('input_password').value;
-        const usehide = document.getElementById('input_hidepost').checked;
 
         if(!title) {
             alert('타이틀을 입력해 주세요.'); return;
@@ -395,12 +429,6 @@ class Write extends Component
         }
         else if(!category) {
             category = 'default';
-        }
-        else if(usehide) {
-            if(!password) {
-                alert('비밀글인 경우, 비밀번호를 입력해 주세요.'); 
-                return;
-            }
         }
 
         // img src 모두 추출
@@ -438,8 +466,6 @@ class Write extends Component
                         title: title,
                         content: content,
                         category : category,
-                        password: password,
-                        usehide: usehide,
                         guid : self.state.edit_postid,
                         frontimg : self.imageselect.value
                     }
@@ -468,8 +494,6 @@ class Write extends Component
                         title: title,
                         content: content,
                         category : category,
-                        password: password,
-                        usehide: usehide,
                         guid : createguid(),
                         frontimg : self.imageselect.value
                     }
@@ -517,10 +541,6 @@ class Write extends Component
 
         window.addEventListener('resize', () => {setTimeout(self.resize.bind(self), 100)});
         self.resize();
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
     }
 }
 
