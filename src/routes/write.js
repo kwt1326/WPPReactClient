@@ -8,7 +8,6 @@ import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
 
 import BoardSub from '../components/boardSub';
-import { element, func } from 'prop-types';
 
 // 글쓰기
 class Write extends Component
@@ -329,7 +328,7 @@ class Write extends Component
     }
 
     addtag = () => {
-        if(window.event.keyCode == 13) {
+        if(window.event.keyCode === 13) {
             const newtags = this.state.tags;
             const value = this.inputtag.value;
             if(newtags.indexOf(value) !== -1)
@@ -419,7 +418,6 @@ class Write extends Component
         const self = this;
         const content = self.state.text;
         const title = document.getElementById('input_title').value;
-        const category = document.getElementById('select_category').value;
 
         if(!title) {
             alert('타이틀을 입력해 주세요.'); return;
@@ -427,13 +425,36 @@ class Write extends Component
         else if(!content) {
             alert('내용을 입력해 주세요.'); return;
         }
-        else if(!category) {
-            category = 'default';
-        }
 
         // img src 모두 추출
         let matchArray = this.extract_img(self.state.text);
 
+        const tags = this.state.tags;
+        let tag_inline = "";
+
+        for(let i = 0 ; i < tags.length ; ++i) {
+            tag_inline += (tags[i] + ",");
+        }
+
+        async function sendtags ( name ) {
+            // tags DB Send (POST) 
+            await axios({
+                method: 'post',
+                url: (islive()) ? api + '/api/tag' : '/api/tag',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    name: name
+                }
+            })
+                .then(function (response) {
+                })
+                .catch((err) => {
+                    alert(err);
+                });               
+        }
+        
         async function process () {
             self.state.images.forEach((element) => {
                 let targetarr = element.split('.');
@@ -456,7 +477,7 @@ class Write extends Component
             if(self.state.edit_postid && self.state.edit_loaded === true) 
             {
                 // post DB Update (Patch)
-                const updatepost = await axios({
+                await axios({
                     method: 'patch',
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
@@ -465,15 +486,21 @@ class Write extends Component
                     params: {
                         title: title,
                         content: content,
-                        category : category,
                         guid : self.state.edit_postid,
-                        frontimg : self.imageselect.value
+                        frontimg : self.imageselect.value,
+                        hashtag : tag_inline
                     }
                 })
-                .then(function (response) {    
-                    console.log(response.data.result);
-                    alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                    self.setState({ reDirection : './board' });
+                .then((response) => {    
+                    async function resolve (){
+                        for(let i = 0 ; i < tags.length ; ++i) {
+                            await sendtags(tags[i]);   
+                        }
+                        console.log(response.data.result);
+                        alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
+                        self.setState({ reDirection : './board' });
+                    }
+                    resolve();
                 })
                 .catch((err) => {
                     console.log(err);
@@ -484,7 +511,7 @@ class Write extends Component
             else 
             {
                 // post DB Send (POST) 
-                const sendpost = await axios({
+                await axios({
                     method: 'post',
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
@@ -493,15 +520,21 @@ class Write extends Component
                     params: {
                         title: title,
                         content: content,
-                        category : category,
                         guid : createguid(),
-                        frontimg : self.imageselect.value
+                        frontimg : self.imageselect.value,
+                        hashtag : tag_inline
                     }
                 })
-                .then(function (response) {    
-                    console.log(response.data.result);
-                    alert('포스트가 성공적으로 등록되었습니다.');
-                    self.setState({ reDirection : './board' });
+                .then((response) => {    
+                    async function resolve (){
+                        for(let i = 0 ; i < tags.length ; ++i) {
+                            await sendtags(tags[i]);   
+                        }
+                        console.log(response.data.result);
+                        alert('포스트가 성공적으로 등록되었습니다.');
+                        self.setState({ reDirection : './board' });
+                    }
+                    resolve();
                 })
                 .catch((err) => {
                     console.log(err);

@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import {checklogin, api, local, islive, getimgsrc} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
-import { func } from 'prop-types';
 
 class User extends Component 
 {
@@ -30,7 +29,6 @@ class User extends Component
     getuserinfo() 
     {    
         const self = this;
-        const local = this.state.local;
 
         checklogin()
         .then((res) => {
@@ -122,7 +120,7 @@ class User extends Component
                         <div style={{ display : 'table', width: "100%" , minHeight :"300px"}}>
                             <img src={this.state.profileimg} style={{ 
                                 display : 'table-cell', width : "180px", textAlign : "left", left : "calc(50% - 90px)", position : "relative", marginTop : "1%", marginBottom : "1%"
-                                }} />
+                                }} alt="profile-img" />
                             <input className="btn-style" style={{
                                 display : 'table-cell', width : "180px", position : "relative", textAlign : "left", left : "calc(50% - 90px)", marginTop : "1%", marginBottom : "1%"
                             }} id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
@@ -145,7 +143,7 @@ class User extends Component
             <div className="User">
                 <div className="inputform" style={{backgroundColor : 'midnightblue', color : "white"}}>
                     <div style={{ float : "left" , width: "30%" , minHeight :"300px", padding : "10%", backgroundColor : 'midnightblue', color : "white"}}>
-                        <img src={this.state.profileimg} style={{ width : "180px" }} />
+                        <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img"/>
                         <input className="btn-style" id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
                     </div>
                     <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>

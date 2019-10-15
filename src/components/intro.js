@@ -1,5 +1,4 @@
 import React, { Component} from 'react';
-import {Route, Link} from 'react-router-dom';
 import '../css/style.css';
 
 class Intro extends Component

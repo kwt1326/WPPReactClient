@@ -11,7 +11,6 @@ import '../css/reading.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
 
 import BoardSub from '../components/boardSub';
-import { element, func } from 'prop-types';
 
 // 글쓰기
 class Reading extends Component
@@ -392,7 +391,7 @@ class Reading extends Component
         }
 
         async function process () {
-            const rpApply = await axios({
+            await axios({
                 method: 'post',
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: { 'Content-Type': 'application/json' },
@@ -452,7 +451,7 @@ class Reading extends Component
 
     // For post function //
     onClick_Edit() {
-        this.setState({reDirection : '/write' + '?post=' + this.state.postid});
+        this.setState({reDirection : '/write' + '?post=' + String(this.state.postid)});
     }
 
     onClick_Remove() 
@@ -464,7 +463,7 @@ class Reading extends Component
 
         async function process () {
             // post DB Delete (Delete) 
-            const postdelete = await axios({
+            await axios({
                 method: 'delete',
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {

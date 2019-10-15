@@ -5,7 +5,6 @@ import './App.css';
 // Common
 import Header from './components/header/index';
 import Footer from './components/footer';
-import Intro from './components/intro';
 import Main from './components/main';
 import Menulist from './components/menulist';
 
@@ -43,6 +42,7 @@ class App extends Component {
               <Route path="/write" component={Write} />
               <Route path="/reading" component={Reading} />
               <Route path="/board" component={Board} />
+              <Route path="/tag" component={Board} />
             </div>
           </section>
           <div id="cover"></div>

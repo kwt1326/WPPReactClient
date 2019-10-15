@@ -348,6 +348,16 @@ footer {
     border-radius: 5px; 
 }
 
+.list-style {
+    padding:10px 15px; 
+    background:transparent; 
+    color: white;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+}
+
 select {
     margin: 10px;
     padding:5px 5px; 

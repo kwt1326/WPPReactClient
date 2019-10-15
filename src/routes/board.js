@@ -139,9 +139,9 @@ class Board extends Component
                                     </div>
                                 </td>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} ></img></div> 
+                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} alt="front-img"></img></div> 
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
@@ -166,9 +166,9 @@ class Board extends Component
                         arr_mobile.push(
                             <tr>
                                 <td className="selectorList" style={{ width: '50%' }}>
-                                    <Link to={'/reading' + '?post=' + rows[i].content.guid} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
-                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}></img>
+                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>

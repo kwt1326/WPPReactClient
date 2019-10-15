@@ -120,6 +120,27 @@ function traveledUserhistory ( check_id, check_type ) {
     return process();
 }
 
+function getTags ( ) {
+    async function process () {
+        return await axios({
+            method: 'get',
+            url: (islive()) ? api + '/api/tag' : '/api/tag',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(function (response) {
+            return Promise.resolve({
+                tags : response.data.tags,
+            });
+        })
+        .catch((err) => {
+            return Promise.reject(err);
+        });
+    }
+    return process();
+}
+
 function removefile (filename) {
     async function process() {
         return await axios({
@@ -187,5 +208,6 @@ export {
     traveledUserhistory,
     str_length,
     getimgsrc,
+    getTags,
     categoryStruct,
 };

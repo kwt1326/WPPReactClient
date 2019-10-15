@@ -111,7 +111,8 @@ class Header extends Component
                     <div id="header-usericon-mobile" className="box-child-main squere-menu-user">
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
                         <Link className="link-user" to="/user">
-                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}/>
+                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}
+                                 alt="profile-img"/>
                             <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
                         </Link>
                     </div>
@@ -123,7 +124,8 @@ class Header extends Component
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
                         <div className="nickname" >{this.state.nickname}</div>
                         <Link className="link-user" to="/user">
-                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}/>
+                            <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}
+                                 alt="profile-img"/>
                             <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
                         </Link>
                     </div>
@@ -198,7 +200,6 @@ class Header extends Component
     }
 
     componentDidMount () {
-        const header = document.getElementsByClassName('header')[0];
         window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
         this.resize();
         return;
