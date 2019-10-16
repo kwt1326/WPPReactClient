@@ -48,8 +48,8 @@ class Board extends Component
                 method: 'get',
                 url: (islive()) ? api + '/api/post/list' : '/api/post/list',
                 params : {
-                    category : '오픈',
-                    page : page
+                    search : self.props.match.params.page,
+                    page : page,
                 }
             })
             .then(function (response) {
@@ -258,7 +258,7 @@ class Board extends Component
         return (
             <div className="board-tablelist split-right" style={{ width : rightratio }}>
                 <div style={{ display: 'table', width: '100%'}}>
-                    <div style={{ display: 'table-cell', width: '50%', float: 'left'}}><h3>Post</h3></div>
+                    <div style={{ display: 'table-cell', width: '50%', float: 'left'}}><h3>{this.props.match.params.page}</h3></div>
                     <div style={{ display: 'table-cell', width: '50%', float: 'right', textAlign : 'right', verticalAlign: 'middle' }}>
                         <input className="board-search" type='text' placeholder='Search : ' />
                     </div>

@@ -11,7 +11,7 @@ const api = "https://api.aquaclub.club";
 const local = "http://localhost:3500";
 const categoryStruct = {
     board : [
-        "board", "web", "3d"
+        "board"
     ],
     introduce : [
         "introduce"

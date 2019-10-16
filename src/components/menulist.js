@@ -1,6 +1,9 @@
 import React, { Component} from 'react';
+import { Route } from "react-router-dom";
 import {logout, categoryStruct, getTags} from '../custom/custom';
 import '../css/style.css';
+
+import Board from '../routes/board';
 
 class Menulist extends Component
 {
@@ -55,6 +58,7 @@ class Menulist extends Component
         const self = this;
 
         const put_row = ( category, onclick ) => {
+            //return <Route path="/board/:" component={Board} />
             return (<li className="selectorList" onClick={onclick}><h3>{category}</h3></li>);
         }
     

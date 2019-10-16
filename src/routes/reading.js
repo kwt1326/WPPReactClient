@@ -192,7 +192,9 @@ class Reading extends Component
                                 <div className="board-userinfo">
                                     <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '50%', left : '0%'}}>{self.state.content.writer}</div>
                                     {self.spliterV()}
-                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '40%', left : '40%'}}>{self.state.content.category}게시판</div>
+                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '40%', left : '40%'}}>
+                                        {(self.state.content.category === "default") ? "자유게시판" : "태그게시판"}
+                                    </div>
                                     {self.spliterV()}
                                     <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ 
                                         display : 'table-cell', 
@@ -215,9 +217,9 @@ class Reading extends Component
                         </tr>
                         <tr>
                             <td style={{ paddingLeft : '0%', paddingRight : '0%' }}>
-                                <Link to='/board' style={{ float : 'left' }}><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
-                                <button className="board-apply btn-style selector-deep" style={{ float : 'right', width : '70px' , height : '50%'}} onClick={this.onClick_Edit.bind(this)}>Edit</button>
-                                <button className="board-apply btn-style selector-deep" style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
+                                <button className="board-gomain btn-style selector-deep" style={{ float : 'left', textAlign : 'center', width : '70px' , height : '50%'}} onClick={() => {this.props.history.goBack()}}>Back</button>
+                                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%'}} onClick={this.onClick_Edit.bind(this)}>Edit</button>
+                                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
                             </td>
                         </tr>
                         <tr>
@@ -334,6 +336,7 @@ class Reading extends Component
         arr.push(<tr><td><div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div></td></tr>);
 
         const heartNumstyle = {display : "table-cell", textAlign : "center", verticalAlign : "middle", width : "50px"};
+        const commentctrl = {display:"inline-block", marginLeft:"10px", color : "rgb(180,180,180)"};
 
         if(comments && comments_ex) 
         {
@@ -342,15 +345,20 @@ class Reading extends Component
                 {
                     let commentheart = { result : false };
                     await self.Load_commentHeart(comments[i].guid, commentheart );
+                    let createdAt = comments[i].createdAt.replace("T", " ").split(".")[0];
                     arr.push(
                     <tr>
                         <td>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
                                 <div style={{ display : "table-cell", verticalAlign : "middle",
                                      backgroundImage : 'url(' + getimgsrc(comments_ex[i].profileimg, self.state.defaultimg) + ')' , backgroundSize: "50px", width : "50px", height : "50px"}} />
-                                    {/* <img src={getimgsrc(comments_ex[i].profileimg, self.state.defaultimg)} style={{ backgroundSize: "contain", width : "50px", height : "50px" }}/> */}
                                 <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
-                                    {comments_ex[i].nickname}
+                                    <div>
+                                        {comments_ex[i].nickname}
+                                        <div className="selector-deep" style={commentctrl} onClick={() => {self.comment_Edit(comments[i].guid)}}>{"수정"}</div>
+                                        <div className="selector-deep" style={commentctrl} onClick={() => {self.comment_delete(comments[i].guid)}}>{"삭제"}</div>
+                                        </div>
+                                    <div style={{ color : "rgb(180,180,180)" }}>{createdAt}</div>
                                 </div>
                                 <div id={"heart-Btn" + String(comments[i].id)} className="selector-deep" style={{display : "table-cell", textAlign : "right", verticalAlign : "middle",
                                      backgroundImage : self.getheartimg(commentheart.result), backgroundSize: "contain", width : "50px"}} 
@@ -367,6 +375,33 @@ class Reading extends Component
                 self.setState({ comment_renders : arr });
             });
         }
+    }
+
+    comment_delete = (guid) => {
+        const self = this;
+
+        async function process () {
+            // comment DB Delete (Delete) 
+            await axios({
+                method: 'delete',
+                url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    guid : guid
+                }
+            })
+            .then(function (response) {    
+                alert('댓글이 성공적으로 삭제되었습니다.');
+                window.location.reload();
+            })
+            .catch((err) => {
+                alert(err.response.data);
+            });   
+        }
+
+        process();
     }
 
     Load_commentHeart = (guid, ref) => {
@@ -402,8 +437,8 @@ class Reading extends Component
                 }
             })
             .then(function (response) {    
-                self.props.history.push(self.props.history.location.pathname + '?post=' + String(self.state.postid));
-                self.onLoad();
+                alert("댓글이 성공적으로 등록되었습니다.");
+                window.location.reload();
             })
             .catch((err) => {
                 alert(err);

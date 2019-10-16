@@ -11,6 +11,7 @@ import Menulist from './components/menulist';
 // Route
 import Login from './routes/login';
 import Join from './routes/join';
+import Auth from './routes/auth'
 import User from './routes/user';
 import Write from './routes/write';
 import Reading from './routes/reading';
@@ -37,12 +38,13 @@ class App extends Component {
             <div id="main-div" ref={(mount) => {this.main_ref = mount}}>
               <Route exact path="/" component={Main} />
               <Route path="/login" component={Login} />
+              <Route path="/auth/:method" component={Auth} />
               <Route path="/Join" component={Join} />
               <Route path="/user" component={User} />
               <Route path="/write" component={Write} />
               <Route path="/reading" component={Reading} />
-              <Route path="/board" component={Board} />
-              <Route path="/tag" component={Board} />
+              <Route path="/board/:page" component={Board} />
+              <Route path="/tag/:page" component={Board} />
             </div>
           </section>
           <div id="cover"></div>
