@@ -326,6 +326,9 @@ class Join extends Component
                 await axios({
                     method: 'post',
                     url: (islive()) ? api + '/api/join' : '/api/join',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },        
                     params : { 
                         email, password, name, nickname
                     }

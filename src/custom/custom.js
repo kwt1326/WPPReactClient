@@ -22,18 +22,16 @@ function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
 }
 
-function checklogin ( originpath , options ) {
+// TOKEN VERIFY
+function checklogin ( ) {
     async function process () {
         return await axios({
             method: 'get',
             url: (islive()) ? api + '/api/user' : '/api/user',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : window.sessionStorage.getItem('token'),
             },
-            params : {
-                redirect : originpath,
-                repost : (options) ? options.repost : null
-            }
         })
         .then(function (response) {
             return Promise.resolve({
@@ -48,24 +46,59 @@ function checklogin ( originpath , options ) {
     return process();
 }
 
+// session version
+// function checklogin ( originpath , options ) {
+//     async function process () {
+//         return await axios({
+//             method: 'get',
+//             url: (islive()) ? api + '/api/user' : '/api/user',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             params : {
+//                 redirect : originpath,
+//                 repost : (options) ? options.repost : null
+//             }
+//         })
+//         .then(function (response) {
+//             return Promise.resolve({
+//                 userdata : response,
+//                 result : true
+//             });
+//         })
+//         .catch((err) => {
+//             return Promise.reject(err);
+//         });
+//     }
+//     return process();
+// }
+
 function logout () {
-    async function process () {
-        return await axios({
-            method: 'get',
-            url: (islive()) ? api + '/api/auth/logout' : '/api/auth/logout',
-        })
-        .then(function (response) {
-            return Promise.resolve({
-                nickname : undefined,
-                existsession : false
-            })
-        })
-        .catch ((err) => {
-            return Promise.reject(err);
-        });
-    }
-    return process();
+    if(window.sessionStorage.getItem('token'))
+        window.sessionStorage.removeItem('token');
+    
+    return Promise.resolve({result : true});
 }
+
+// session logout
+// function logout () {
+//     async function process () {
+//         return await axios({
+//             method: 'get',
+//             url: (islive()) ? api + '/api/auth/logout' : '/api/auth/logout',
+//         })
+//         .then(function (response) {
+//             return Promise.resolve({
+//                 nickname : undefined,
+//                 existsession : false
+//             })
+//         })
+//         .catch ((err) => {
+//             return Promise.reject(err);
+//         });
+//     }
+//     return process();
+// }
 
 function increase ( id, target_type, num, bComment ) {
     async function process () {
@@ -75,7 +108,8 @@ function increase ( id, target_type, num, bComment ) {
             ((islive()) ? api + '/api/post/comment/increase' : '/api/post/comment/increase') :
             ((islive()) ? api + '/api/post/increase' : '/api/post/increase'),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : window.sessionStorage.getItem('token'),
             },
             params : {
                 id : id,
@@ -101,7 +135,8 @@ function traveledUserhistory ( check_id, check_type ) {
             method: 'get',
             url: (islive()) ? api + '/api/user/history' : '/api/user/history',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : window.sessionStorage.getItem('token'),
             },
             params : {
                 id : check_id,
@@ -126,7 +161,7 @@ function getTags ( ) {
             method: 'get',
             url: (islive()) ? api + '/api/tag' : '/api/tag',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
         })
         .then(function (response) {
@@ -147,7 +182,8 @@ function removefile (filename) {
             method: 'delete',
             url: (islive()) ? api + '/api/post/files' : '/api/post/files',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : window.sessionStorage.getItem('token'),
             },
             params: {
                 name: filename,

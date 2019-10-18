@@ -95,6 +95,10 @@ class Write extends Component
             return await axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post' : '/api/post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
+                },
                 params : {
                     guid : self.state.edit_postid,
                 }
@@ -370,7 +374,8 @@ class Write extends Component
                 method: 'post',
                 url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
                 },
                 data: formData,
             })
@@ -442,7 +447,8 @@ class Write extends Component
                 method: 'post',
                 url: (islive()) ? api + '/api/tag' : '/api/tag',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
                 },
                 params: {
                     name: name
@@ -481,7 +487,8 @@ class Write extends Component
                     method: 'patch',
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization' : window.sessionStorage.getItem('token')
                     },
                     params: {
                         title: title,
@@ -515,7 +522,8 @@ class Write extends Component
                     method: 'post',
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization' : window.sessionStorage.getItem('token'),
                     },
                     params: {
                         title: title,

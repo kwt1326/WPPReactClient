@@ -24,6 +24,8 @@ class User extends Component
         this.username = React.createRef();
         this.nickname = React.createRef();
         this.file = null;
+
+        this.getuserinfo();
     }
 
     getuserinfo() 
@@ -71,7 +73,8 @@ class User extends Component
                     method: 'post',
                     url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'application/json',
+                        'Authorization' : window.sessionStorage.getItem('token'),                
                     },
                     data: formData,
                 })
@@ -87,7 +90,8 @@ class User extends Component
                 method: 'patch',
                 url: (islive()) ? api + '/api/user/' : '/api/user/',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
                 },
                 params: {
                     nickname: nickinput.value,
@@ -193,14 +197,14 @@ class User extends Component
 
     componentDidMount() 
     {
-        checklogin('user')
-        .catch((err) => {
-            this.setState({ reDirection : 'login' });
-        })
+        // checklogin(window.sessionStorage.token)
+        // .catch((err) => {
+        //     this.setState({ reDirection : 'login' });
+        // })
 
         window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
         this.resize();
-        this.getuserinfo();
+        // this.getuserinfo();
     }
 };
 

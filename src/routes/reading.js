@@ -102,6 +102,9 @@ class Reading extends Component
             await axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post/reading' : '/api/post/reading',
+                headers: {
+                    'Content-Type': 'application/json'
+                },    
                 params : {
                     guid : guid,
                 }
@@ -386,7 +389,8 @@ class Reading extends Component
                 method: 'delete',
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),    
                 },
                 params: {
                     guid : guid
@@ -429,7 +433,10 @@ class Reading extends Component
             await axios({
                 method: 'post',
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
+                },
                 params: { 
                     postId : content.postId,
                     guid : content.guid,
@@ -502,7 +509,8 @@ class Reading extends Component
                 method: 'delete',
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : window.sessionStorage.getItem('token'),                
                 },
                 params: {
                     guid : self.state.postid

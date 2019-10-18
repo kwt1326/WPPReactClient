@@ -47,6 +47,9 @@ class Board extends Component
             return await axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post/list' : '/api/post/list',
+                headers: {
+                    'Content-Type': 'application/json',
+                },    
                 params : {
                     search : self.props.match.params.page,
                     page : page,
