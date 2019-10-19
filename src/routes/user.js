@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
-import {checklogin, api, local, islive, getimgsrc} from '../custom/custom';
+import {checklogin, api, local, islive, getimgsrc, getToken} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
 
@@ -74,7 +74,7 @@ class User extends Component
                     url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : window.sessionStorage.getItem('token'),                
+                        'Authorization' : getToken(),                
                     },
                     data: formData,
                 })
@@ -91,7 +91,7 @@ class User extends Component
                 url: (islive()) ? api + '/api/user/' : '/api/user/',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 params: {
                     nickname: nickinput.value,

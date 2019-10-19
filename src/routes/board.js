@@ -289,8 +289,9 @@ class Board extends Component
     }
 
     render () {
-        if(this.state.redirect !== 'none')
+        if(this.state.redirect !== 'none') {
             return (<Redirect push to={this.state.redirect}/>);
+        }
         else
         return (
             <div className="board">
@@ -325,13 +326,13 @@ class Board extends Component
     onClick_Apply () 
     {
         const self = this;
-        checklogin( 'write' )
+        checklogin()
         .then((res) => {
             self.setState({redirect : '/write'});
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');
-            self.setState({redirect : '/login'});
+            self.setState({redirect : `/login?from=${"write"}`});
         })
     }
 

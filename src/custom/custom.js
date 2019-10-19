@@ -22,15 +22,28 @@ function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
 }
 
+function getToken () {
+    const token = window.sessionStorage.getItem('token');
+    if(token !== undefined || token !== null)
+        return token;
+    else {
+        alert("로그인이 필요합니다.");
+        return null;
+    }
+}
+
 // TOKEN VERIFY
 function checklogin ( ) {
     async function process () {
+        if(!getToken())
+            return Promise.reject("Not exist Token");
+
         return await axios({
             method: 'get',
             url: (islive()) ? api + '/api/user' : '/api/user',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : window.sessionStorage.getItem('token'),
+                'Authorization' : getToken()
             },
         })
         .then(function (response) {
@@ -74,7 +87,7 @@ function checklogin ( ) {
 // }
 
 function logout () {
-    if(window.sessionStorage.getItem('token'))
+    if(getToken())
         window.sessionStorage.removeItem('token');
     
     return Promise.resolve({result : true});
@@ -102,6 +115,9 @@ function logout () {
 
 function increase ( id, target_type, num, bComment ) {
     async function process () {
+        if(!getToken())
+            return Promise.reject("Not exist Token");
+
         return await axios({
             method: 'patch',
             url: (bComment) ?
@@ -109,7 +125,7 @@ function increase ( id, target_type, num, bComment ) {
             ((islive()) ? api + '/api/post/increase' : '/api/post/increase'),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : window.sessionStorage.getItem('token'),
+                'Authorization' : getToken(),
             },
             params : {
                 id : id,
@@ -131,12 +147,15 @@ function increase ( id, target_type, num, bComment ) {
 
 function traveledUserhistory ( check_id, check_type ) {
     async function process () {
+        if(!getToken())
+            return Promise.resolve({result : false, msg : "Not exist token"});
+
         return await axios({
             method: 'get',
             url: (islive()) ? api + '/api/user/history' : '/api/user/history',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : window.sessionStorage.getItem('token'),
+                'Authorization' : getToken(),
             },
             params : {
                 id : check_id,
@@ -178,12 +197,15 @@ function getTags ( ) {
 
 function removefile (filename) {
     async function process() {
+        if(!getToken())
+            return Promise.reject("Not exist Token");
+
         return await axios({
             method: 'delete',
             url: (islive()) ? api + '/api/post/files' : '/api/post/files',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : window.sessionStorage.getItem('token'),
+                'Authorization' : getToken(),
             },
             params: {
                 name: filename,
@@ -195,8 +217,7 @@ function removefile (filename) {
                 })
             })
             .catch((err) => {
-                alert(err);
-                return;
+                return Promise.reject(err);
             });  
     }
     return process();
@@ -245,5 +266,6 @@ export {
     str_length,
     getimgsrc,
     getTags,
+    getToken,
     categoryStruct,
 };

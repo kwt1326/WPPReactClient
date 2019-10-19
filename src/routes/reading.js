@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
 import {checklogin, increase, traveledUserhistory, 
-        str_length, createguid, api, islive, getimgsrc} from '../custom/custom';
+        str_length, createguid, api, islive, getimgsrc, getToken} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
@@ -390,7 +390,7 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),    
+                    'Authorization' : getToken(),    
                 },
                 params: {
                     guid : guid
@@ -411,7 +411,7 @@ class Reading extends Component
     Load_commentHeart = (guid, ref) => {
         async function process () {
             const trace = await traveledUserhistory( guid, 'heart' );
-            ref.result = trace.result;
+            ref.result = (trace.result !== undefined || trace.result !== null) ? trace.result : false;
         }
         return process();
     }
@@ -435,7 +435,7 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 params: { 
                     postId : content.postId,
@@ -493,7 +493,7 @@ class Reading extends Component
 
     // For post function //
     onClick_Edit() {
-        this.setState({reDirection : '/write' + '?post=' + String(this.state.postid)});
+        this.setState({reDirection : `/write?post=${String(this.state.postid)}`});
     }
 
     onClick_Remove() 
@@ -510,7 +510,7 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 params: {
                     guid : self.state.postid
@@ -524,7 +524,7 @@ class Reading extends Component
             .catch((err) => {
                 console.log(err);
                 alert(err);
-                self.setState({ reDirection : '/board' });
+                //self.setState({ reDirection : '/board' });
             });   
         }
 
@@ -542,6 +542,7 @@ class Reading extends Component
                     const heartSelectedimg = require('../image/heartSelected-ico.png');
                     if(heartSelectedimg) {
                         this.hearticon.style.backgroundImage = "url('" + heartSelectedimg + "')";
+                        alert("포스트가 추천되었습니다.");
                         self.setState({ heart : true });
                     }
                 });
@@ -552,6 +553,7 @@ class Reading extends Component
                     const heartimg = require('../image/heart-ico.png');
                     if(heartimg)
                         this.hearticon.style.backgroundImage = "url('" + heartimg + "')";
+                        alert("포스트의 추천이 취소되었습니다.");
                         self.setState({ heart : false });
                 });
             }
@@ -573,22 +575,8 @@ class Reading extends Component
     
     componentDidMount () 
     {
-        const self = this;
-        const repost = self.getguid();
-        checklogin( 'reading' , { repost : repost } )
-        .then((res) => {
-            increase(repost, 'view', 1)
-            .then(res => {
-                console.log('success increase');
-            })
-            self.setState({ postid : repost, reDirection : 'none' });
-        })
-        .catch((err) => {
-            self.setState({ postid : repost, reDirection : 'login' });
-        })
-
-        window.addEventListener('resize', () => {setTimeout(self.resize.bind(self), 100)});
-        self.resize();
+        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+        this.resize();
     }
 
     shouldComponentUpdate(nextProps, nextState) {

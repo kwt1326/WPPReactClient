@@ -9,20 +9,29 @@ class Login extends Component
         super(props);
         this.state = {
             reDirect : false,
+            from : "",
         }
 
         this.resframe = null;
+        this.state.from = this.getfrom();
         this.Init();
     }
 
+    getfrom = () => {
+        const self = this;
+        let from = null;
+        if (self.props.location.search) {
+            from = self.props.location.search.split('?from=')[1];
+        }
+        return from; 
+    }
+
     Init = () => {
-        if(this.props.location.state) {
-            if(this.props.location.state.from === 'header') {
-                checklogin()
-                .then(res => {
-                    this.reDirection();
-                });
-            }
+        if(this.state.from) {
+            checklogin()
+            .then(res => {
+                this.reDirection();
+            });
         }
     }
 
@@ -36,7 +45,8 @@ class Login extends Component
     }
 
     reDirection = () => {
-        this.props.history.push('./user');
+        const from = (this.state.from) ? this.state.from : "";
+        this.props.history.push('/' + from);
     }
 
     render () {

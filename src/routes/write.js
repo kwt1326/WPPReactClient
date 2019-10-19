@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import axios from 'axios';
-import {checklogin, removefile, createguid, str_length, api, local, islive} from '../custom/custom';
+import {checklogin, removefile, createguid, str_length, api, local, islive, getToken} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
@@ -20,6 +20,7 @@ class Write extends Component
            title : '',
            tags : [],
            images : [],
+           level : '',
            reRender : false,
            reDirection : 'none',
            text_total : 0,
@@ -43,6 +44,8 @@ class Write extends Component
         this.imageselect = React.createRef();
         this.inputtag = React.createRef();
         this.tags = React.createRef();
+        this.checkBoard = React.createRef();
+        this.checkBlog = React.createRef();
 
         // handler for React-Quill
         this.imageHandler = this.RQ_imageHandler.bind(this);
@@ -59,13 +62,7 @@ class Write extends Component
     // MAIN RENDER
     render () {
         if(this.state.reDirection !== 'none') {
-            if(this.state.reDirection === './login') {
-                alert('로그인 페이지로 이동합니다.');
-                return (<Redirect push to={'./login'}/>);
-            }
-            else {
-                return (<Redirect push to={this.state.reDirection}/>);
-            }
+            return (<Redirect push to={this.state.reDirection}/>);
         }
         else {
             return (
@@ -86,6 +83,10 @@ class Write extends Component
         return guid; 
     }
 
+    parse_tag (content) {
+        return (content !== undefined && content !== null) ? content.split(',') : null;
+    }
+
     onLoad_editpost () 
     {
         const self = this;
@@ -97,7 +98,7 @@ class Write extends Component
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 params : {
                     guid : self.state.edit_postid,
@@ -118,6 +119,7 @@ class Write extends Component
                 category : res.query.category,
                 writer : res.query.writer,
             },
+                tags : self.parse_tag(res.query.hashtag),
                 text : res.query.content,
                 edit_loaded : true,
                 applystate_text : 'Edit'
@@ -194,6 +196,24 @@ class Write extends Component
                         <td>
                             <input id="input_title" type='text' style={{ width : '95%'}}></input>
                             {this.titleSet_Edit()}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style={{ width : '28%' }}>
+                            <div className="board-category">
+                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>카테고리 : </div>
+                            </div>
+                        </td>
+                        <td>
+                            {() => {
+                                if(this.state.level === 'admin')
+                                return (
+                                    <form>
+                                        <input type="radio" name="input_ck_board" ref={(mount) => {this.checkBoard = mount}} value="자유게시판" checked="checked"/> 자유게시판
+                                        <input type="radio" name="input_ck_blog"  ref={(mount) => {this.checkBlog = mount}} value="블로그" /> 블로그
+                                    </form>    
+                                )}
+                            }
                         </td>
                     </tr>
                     <tr>
@@ -307,7 +327,7 @@ class Write extends Component
         }
 
         function tag_onclick (obj) {
-            self.setState({tags : arrtags.splice(arrtags.indexOf(obj.value), 1)});
+            arrtags.splice(arrtags.indexOf(obj.value), 1);
             self.createtags();
         }
 
@@ -375,7 +395,7 @@ class Write extends Component
                 url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 data: formData,
             })
@@ -423,6 +443,12 @@ class Write extends Component
         const self = this;
         const content = self.state.text;
         const title = document.getElementById('input_title').value;
+        const checkedcategory = (self.checkBoard && self.checkBlog) ? () => {
+            if(self.checkBoard.checked) 
+                return "board";
+            else if(self.checkBlog.checked)
+                return "blog";
+        } : "board";
 
         if(!title) {
             alert('타이틀을 입력해 주세요.'); return;
@@ -448,7 +474,7 @@ class Write extends Component
                 url: (islive()) ? api + '/api/tag' : '/api/tag',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : window.sessionStorage.getItem('token'),                
+                    'Authorization' : getToken(),                
                 },
                 params: {
                     name: name
@@ -488,14 +514,15 @@ class Write extends Component
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : window.sessionStorage.getItem('token')
+                        'Authorization' : getToken()
                     },
                     params: {
                         title: title,
                         content: content,
                         guid : self.state.edit_postid,
                         frontimg : self.imageselect.value,
-                        hashtag : tag_inline
+                        hashtag : tag_inline,
+                        category : checkedcategory
                     }
                 })
                 .then((response) => {    
@@ -505,14 +532,14 @@ class Write extends Component
                         }
                         console.log(response.data.result);
                         alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                        self.setState({ reDirection : './board' });
+                        self.setState({ reDirection : './board/board' });
                     }
                     resolve();
                 })
                 .catch((err) => {
                     console.log(err);
                     alert(err);
-                    self.setState({ reDirection : './board' });
+                    self.setState({ reDirection : './board/board' });
                 });   
             }
             else 
@@ -523,14 +550,15 @@ class Write extends Component
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : window.sessionStorage.getItem('token'),
+                        'Authorization' : getToken(),
                     },
                     params: {
                         title: title,
                         content: content,
                         guid : createguid(),
                         frontimg : self.imageselect.value,
-                        hashtag : tag_inline
+                        hashtag : tag_inline,
+                        category : checkedcategory
                     }
                 })
                 .then((response) => {    
@@ -540,14 +568,14 @@ class Write extends Component
                         }
                         console.log(response.data.result);
                         alert('포스트가 성공적으로 등록되었습니다.');
-                        self.setState({ reDirection : './board' });
+                        self.setState({ reDirection : './board/board' });
                     }
                     resolve();
                 })
                 .catch((err) => {
                     console.log(err);
                     alert(err);
-                    self.setState({ reDirection : './board' });
+                    self.setState({ reDirection : './board/board' });
                 });   
             }
         }
@@ -572,12 +600,13 @@ class Write extends Component
     {
         const self = this;
 
-        checklogin( './write' )
+        checklogin()
         .then((res) => {
-            self.setState({reDirection : 'none'});
+            self.setState({ level : res.userdata.level, reDirection : 'none'});
         })
         .catch((err) => {
-            self.setState({ reDirection : './login' });
+            alert('로그인 페이지로 이동합니다.');
+            self.setState({ reDirection : `/login?from=${"write"}` });
         })
 
         window.addEventListener('resize', () => {setTimeout(self.resize.bind(self), 100)});
