@@ -44,8 +44,6 @@ class Write extends Component
         this.imageselect = React.createRef();
         this.inputtag = React.createRef();
         this.tags = React.createRef();
-        this.checkBoard = React.createRef();
-        this.checkBlog = React.createRef();
 
         // handler for React-Quill
         this.imageHandler = this.RQ_imageHandler.bind(this);
@@ -196,24 +194,6 @@ class Write extends Component
                         <td>
                             <input id="input_title" type='text' style={{ width : '95%'}}></input>
                             {this.titleSet_Edit()}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style={{ width : '28%' }}>
-                            <div className="board-category">
-                                <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>카테고리 : </div>
-                            </div>
-                        </td>
-                        <td>
-                            {() => {
-                                if(this.state.level === 'admin')
-                                return (
-                                    <form>
-                                        <input type="radio" name="input_ck_board" ref={(mount) => {this.checkBoard = mount}} value="자유게시판" checked="checked"/> 자유게시판
-                                        <input type="radio" name="input_ck_blog"  ref={(mount) => {this.checkBlog = mount}} value="블로그" /> 블로그
-                                    </form>    
-                                )}
-                            }
                         </td>
                     </tr>
                     <tr>
@@ -443,12 +423,6 @@ class Write extends Component
         const self = this;
         const content = self.state.text;
         const title = document.getElementById('input_title').value;
-        const checkedcategory = (self.checkBoard && self.checkBlog) ? () => {
-            if(self.checkBoard.checked) 
-                return "board";
-            else if(self.checkBlog.checked)
-                return "blog";
-        } : "board";
 
         if(!title) {
             alert('타이틀을 입력해 주세요.'); return;
@@ -522,7 +496,6 @@ class Write extends Component
                         guid : self.state.edit_postid,
                         frontimg : self.imageselect.value,
                         hashtag : tag_inline,
-                        category : checkedcategory
                     }
                 })
                 .then((response) => {    
@@ -558,7 +531,6 @@ class Write extends Component
                         guid : createguid(),
                         frontimg : self.imageselect.value,
                         hashtag : tag_inline,
-                        category : checkedcategory
                     }
                 })
                 .then((response) => {    
