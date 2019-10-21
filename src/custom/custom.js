@@ -9,14 +9,6 @@ import { func } from 'prop-types';
 
 const api = "https://api.aquaclub.club";
 const local = "http://localhost:3500";
-const categoryStruct = {
-    board : [
-        "board"
-    ],
-    introduce : [
-        "introduce"
-    ]
-}
 
 function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
@@ -35,7 +27,7 @@ function getToken () {
 // TOKEN VERIFY
 function checklogin ( ) {
     async function process () {
-        if(!getToken())
+        if(getToken() === null)
             return Promise.reject("Not exist Token");
 
         return await axios({
@@ -115,7 +107,7 @@ function logout () {
 
 function increase ( id, target_type, num, bComment ) {
     async function process () {
-        if(!getToken())
+        if(getToken() === null)
             return Promise.reject("Not exist Token");
 
         return await axios({
@@ -147,7 +139,7 @@ function increase ( id, target_type, num, bComment ) {
 
 function traveledUserhistory ( check_id, check_type ) {
     async function process () {
-        if(!getToken())
+        if(getToken() === null)
             return Promise.resolve({result : false, msg : "Not exist token"});
 
         return await axios({
@@ -197,7 +189,7 @@ function getTags ( ) {
 
 function removefile (filename) {
     async function process() {
-        if(!getToken())
+        if(getToken() === null)
             return Promise.reject("Not exist Token");
 
         return await axios({
@@ -243,6 +235,11 @@ function str_length ( compare_string )
     return total;
 }
 
+function timeparse( time ) {
+    const result = time.replace("T", " ").split(".")[0];   
+    return result;
+}
+
 function createguid() {
     function random4() {
       return Math.floor((1 + Math.random()) * 0x10000)
@@ -264,8 +261,8 @@ export {
     increase,
     traveledUserhistory,
     str_length,
+    timeparse,
     getimgsrc,
     getTags,
     getToken,
-    categoryStruct,
 };

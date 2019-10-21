@@ -46,7 +46,7 @@ class Login extends Component
 
     reDirection = () => {
         const from = (this.state.from) ? this.state.from : "";
-        this.props.history.push('/' + from);
+        window.location.replace('/' + from);
     }
 
     render () {

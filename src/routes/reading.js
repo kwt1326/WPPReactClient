@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
 import {checklogin, increase, traveledUserhistory, 
-        str_length, createguid, api, islive, getimgsrc, getToken} from '../custom/custom';
+        str_length, createguid, api, islive, getimgsrc, getToken, timeparse} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
@@ -22,6 +22,7 @@ class Reading extends Component
            reDirection : 'none',        // reDirection path
            loadingText : 'loading...',  // load noticeview text
            defaultimg : require("../image/unknown.png"),           
+           level : 'user',
            postid : '',       
            content : {},
            images : [],
@@ -99,6 +100,19 @@ class Reading extends Component
         const guid = this.getguid();
 
         const Load = async () => {
+
+            let level = 'user';
+
+            // get user level
+            await checklogin()
+                .then((res) => {
+                    if (res.userdata.data.level === 'admin') {
+                        level = res.userdata.data.level;
+                    }
+                })
+                .catch(err=>{})
+
+            // get reading post
             await axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post/reading' : '/api/post/reading',
@@ -118,7 +132,6 @@ class Reading extends Component
                         createAt: res.data.post.createdAt,
                         updateAt: res.data.post.updatedAt,
                         userid: res.data.post.id,
-                        category : res.data.post.category,
                         writer : res.data.post_writer,
                         views : res.data.post.views,
                         hearts : res.data.post.hearts,
@@ -126,7 +139,8 @@ class Reading extends Component
                     comments : res.data.comment,
                     comments_ex : res.data.comment_expands,
                     loaded : true,
-                    postid : guid
+                    postid : guid,
+                    level : level
                 }, () => { 
                     this.historyheart();
                     this.createComment();
@@ -196,7 +210,8 @@ class Reading extends Component
                                     <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '50%', left : '0%'}}>{self.state.content.writer}</div>
                                     {self.spliterV()}
                                     <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '40%', left : '40%'}}>
-                                        {(self.state.content.category === "default") ? "자유게시판" : "태그게시판"}
+                                        <div>{timeparse(self.state.content.createAt)}</div>
+                                        <div>{timeparse(self.state.content.updateAt) + " (수정)"}</div>
                                     </div>
                                     {self.spliterV()}
                                     <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ 
@@ -221,8 +236,7 @@ class Reading extends Component
                         <tr>
                             <td style={{ paddingLeft : '0%', paddingRight : '0%' }}>
                                 <button className="board-gomain btn-style selector-deep" style={{ float : 'left', textAlign : 'center', width : '70px' , height : '50%'}} onClick={() => {this.props.history.goBack()}}>Back</button>
-                                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%'}} onClick={this.onClick_Edit.bind(this)}>Edit</button>
-                                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
+                                {this.btn_for_admin()}
                             </td>
                         </tr>
                         <tr>
@@ -256,6 +270,17 @@ class Reading extends Component
             guid = self.state.postid;
         }
         return guid;
+    }
+
+    btn_for_admin = () => {
+        if(this.state.level === 'admin')
+        return (
+            <div>
+                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%'}} onClick={this.onClick_Edit.bind(this)}>Edit</button>
+                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
+            </div>
+        );    
+        else return null;
     }
 
     comment_active () {
@@ -320,7 +345,7 @@ class Reading extends Component
             if(res.result === true) {
                 self.setState({ heart : true, heart_loaded : true });
             }
-            else
+            else 
                 throw new Error();
         })
         .catch(err => {
@@ -348,7 +373,7 @@ class Reading extends Component
                 {
                     let commentheart = { result : false };
                     await self.Load_commentHeart(comments[i].guid, commentheart );
-                    let createdAt = comments[i].createdAt.replace("T", " ").split(".")[0];
+                    let createdAt = timeparse(comments[i].createdAt);
                     arr.push(
                     <tr>
                         <td>
@@ -519,12 +544,11 @@ class Reading extends Component
             .then(function (response) {    
                 console.log(response.data.result);
                 alert('포스트가 성공적으로 삭제되었습니다.');
-                self.setState({ reDirection : '/board' });
+                self.setState({ reDirection : '/board/All' });
             })
             .catch((err) => {
                 console.log(err);
-                alert(err);
-                //self.setState({ reDirection : '/board' });
+                alert("삭제권한이 없습니다.");
             });   
         }
 

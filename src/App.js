@@ -44,7 +44,6 @@ class App extends Component {
               <Route path="/write" component={Write} />
               <Route path="/reading" component={Reading} />
               <Route path="/board/:page" component={Board} />
-              <Route path="/tag/:page" component={Board} />
             </div>
           </section>
           <div id="cover"></div>

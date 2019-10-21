@@ -20,7 +20,7 @@ class Write extends Component
            title : '',
            tags : [],
            images : [],
-           level : '',
+           level : 'user',
            reRender : false,
            reDirection : 'none',
            text_total : 0,
@@ -261,7 +261,7 @@ class Write extends Component
                     </tr>
                     <tr>
                         <td style={{ textAlign : 'left', paddingLeft : '0%' }}>
-                            <Link to='./board'><button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}}>Back</button></Link>
+                            <button className="board-gomain btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}} onClick={() => {this.props.history.goBack()}}>Back</button>
                         </td>
                         <td style={{ textAlign : 'right', paddingRight : '0%'}}>
                             <button className="board-apply btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}} onClick={this.clickPost}>{this.state.applystate_text}</button>
@@ -505,14 +505,14 @@ class Write extends Component
                         }
                         console.log(response.data.result);
                         alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                        self.setState({ reDirection : './board/board' });
+                        self.setState({ reDirection : './board/All' });
                     }
                     resolve();
                 })
                 .catch((err) => {
                     console.log(err);
                     alert(err);
-                    self.setState({ reDirection : './board/board' });
+                    self.setState({ reDirection : './board/All' });
                 });   
             }
             else 
@@ -540,14 +540,14 @@ class Write extends Component
                         }
                         console.log(response.data.result);
                         alert('포스트가 성공적으로 등록되었습니다.');
-                        self.setState({ reDirection : './board/board' });
+                        self.setState({ reDirection : './board/All' });
                     }
                     resolve();
                 })
                 .catch((err) => {
                     console.log(err);
                     alert(err);
-                    self.setState({ reDirection : './board/board' });
+                    self.setState({ reDirection : './board/All' });
                 });   
             }
         }
@@ -574,7 +574,13 @@ class Write extends Component
 
         checklogin()
         .then((res) => {
-            self.setState({ level : res.userdata.level, reDirection : 'none'});
+            if(res.userdata.data.level === 'admin') {
+                self.setState({ level : res.userdata.data.level, reDirection : 'none'});
+            }
+            else {
+                alert('관리자만 작성할 수 있습니다.');    
+                self.setState({ reDirection : `/board/All` });
+            }
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');

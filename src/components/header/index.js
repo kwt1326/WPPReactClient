@@ -159,7 +159,7 @@ class Header extends Component
                         <Link style={{ textDecoration : 'none', color : 'black' }} to="/">
                         <div className="box-child-main squere-menu-child selector"><p className="all-middle-text">Home</p></div>
                         </Link>
-                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/board/board">
+                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/board/All">
                             <div className="box-child-main squere-menu-child selector">
                                 <p className="all-middle-text">Board</p>
                             </div>

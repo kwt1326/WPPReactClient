@@ -68,10 +68,12 @@ class Board extends Component
         }
         process()
         .then((res) => {
-            self.addrow(res)
-            .then(res => {
-                self.addpage(res);
-            });
+            if(res.rows.length > 0) {
+                self.addrow(res)
+                .then(res => {
+                    self.addpage(res);
+                });
+            }
         });
     }
 
@@ -328,7 +330,12 @@ class Board extends Component
         const self = this;
         checklogin()
         .then((res) => {
-            self.setState({redirect : '/write'});
+            if(res.userdata.data.level === 'admin') {
+                self.setState({redirect : '/write'});
+            }
+            else {
+                alert("관리자만 작성할 수 있습니다.");
+            }
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');
