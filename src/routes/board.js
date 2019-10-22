@@ -33,6 +33,8 @@ class Board extends Component
         this.reactsplitR = this.react_splitRight.bind(this);
         this.clickApply = this.onClick_Apply.bind(this);
 
+        this.searchdiv = React.createRef();
+
         this.load();
     }
 
@@ -233,6 +235,49 @@ class Board extends Component
         process();
     }
 
+    search_tag = () => {
+        if(window.event.keyCode === 13) 
+        {
+            const self = this;
+            const url = (islive()) ? 
+                api + '/api/post/search/:' + self.searchdiv.value :
+                      '/api/post/search/:' + self.searchdiv.value;
+
+            const process = async () => {
+                return await axios({
+                    method: 'get',
+                    url: url,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },    
+                    params : {
+                        page : self.state.page,
+                    }
+                })
+                .then(function (response) {
+                    return Promise.resolve({ 
+                        ofs : response.data.ofs,
+                        count : response.data.count,
+                        rows : response.data.rows
+                    });
+                })
+                .catch ((err) => {
+                    return Promise.reject(err);
+                });
+            }
+            
+            process()
+            .then((res) => {
+                if(res.rows.length > 0) {
+                    self.addrow(res)
+                    .then(res => {
+                        self.addpage(res);
+                    });
+                }
+            });
+        }
+    }
+
     render_rows = () => {
         if(this.state.screenstate === "phone")
             return this.state.render_rows_mobile
@@ -265,7 +310,7 @@ class Board extends Component
                 <div style={{ display: 'table', width: '100%'}}>
                     <div style={{ display: 'table-cell', width: '50%', float: 'left'}}><h3>{this.props.match.params.page}</h3></div>
                     <div style={{ display: 'table-cell', width: '50%', float: 'right', textAlign : 'right', verticalAlign: 'middle' }}>
-                        <input className="board-search" type='text' placeholder='Search : ' />
+                        <input className="board-search" type='text' ref={(mount) => {this.searchdiv = mount}} placeholder='Search : ' onKeyUp={this.search_tag}/>
                     </div>
                 </div>
                 <table>
