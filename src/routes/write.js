@@ -438,10 +438,14 @@ class Write extends Component
         let tag_inline = "";
 
         for(let i = 0 ; i < tags.length ; ++i) {
-            tag_inline += (tags[i] + ",");
+            tag_inline += ((i === tags.length - 1) ? tags[i] : (tags[i] + ","));
         }
 
         async function sendtags ( name ) {
+
+            if(name === undefined || name === null)
+                return Promise.reject();
+
             // tags DB Send (POST) 
             await axios({
                 method: 'post',
@@ -454,11 +458,12 @@ class Write extends Component
                     name: name
                 }
             })
-                .then(function (response) {
-                })
-                .catch((err) => {
-                    alert(err);
-                });               
+            .then(function (response) {
+                return Promise.resolve("Success add tag");
+            })
+            .catch(err => {
+                return Promise.reject();
+            })
         }
         
         async function process () {
@@ -501,7 +506,7 @@ class Write extends Component
                 .then((response) => {    
                     async function resolve (){
                         for(let i = 0 ; i < tags.length ; ++i) {
-                            await sendtags(tags[i]);   
+                            await sendtags(tags[i]).then(res=>{}).catch(err=>{});
                         }
                         console.log(response.data.result);
                         alert('포스트가 성공적으로 수정(업데이트)되었습니다.');

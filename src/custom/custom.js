@@ -16,10 +16,9 @@ function islive() {
 
 function getToken () {
     const token = window.sessionStorage.getItem('token');
-    if(token !== undefined || token !== null)
+    if(token !== undefined && token !== null)
         return token;
     else {
-        alert("로그인이 필요합니다.");
         return null;
     }
 }
@@ -140,7 +139,7 @@ function increase ( id, target_type, num, bComment ) {
 function traveledUserhistory ( check_id, check_type ) {
     async function process () {
         if(getToken() === null)
-            return Promise.resolve({result : false, msg : "Not exist token"});
+            return Promise.reject("Not exist token");
 
         return await axios({
             method: 'get',

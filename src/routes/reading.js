@@ -33,7 +33,7 @@ class Reading extends Component
            comments : [],
            comments_ex : [],
            comment_active_inner : 'Comment Write',
-           comment_active : false,  // comment editor activity
+           comment_active : -1,     // comment editor activity (comment id)
            comment_text : '',       // comment contents
            comment_total : 0,       // comment text limit
            comment_renders : [],
@@ -45,7 +45,6 @@ class Reading extends Component
         this.onLoad = this.onLoad_Main.bind(this);
         this.historyheart = this.history_heart.bind(this);
         this.getguid = this.get_guid.bind(this);
-        this.commentactive = this.comment_active.bind(this);
         this.commenthandleC = this.comment_handleChange.bind(this);
         this.createComment = this.create_Comment.bind(this);
 
@@ -53,6 +52,8 @@ class Reading extends Component
         this.quillRef = React.createRef();
         // Heart icon dynamic change
         this.hearticon = React.createRef();
+
+        this.limitrenderer = React.createRef();
 
         // Post Data load
         this.onLoad();
@@ -135,6 +136,7 @@ class Reading extends Component
                         writer : res.data.post_writer,
                         views : res.data.post.views,
                         hearts : res.data.post.hearts,
+                        hashtag : res.data.post.hashtag,
                     },
                     comments : res.data.comment,
                     comments_ex : res.data.comment_expands,
@@ -234,22 +236,29 @@ class Reading extends Component
                             </td>
                         </tr>
                         <tr>
+                            <td style={{ paddingLeft: '0%', paddingRight: '0%'}}>
+                                <div classname="content_tags">
+                                    {this.render_tags()}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td style={{ paddingLeft : '0%', paddingRight : '0%' }}>
-                                <button className="board-gomain btn-style selector-deep" style={{ float : 'left', textAlign : 'center', width : '70px' , height : '50%'}} onClick={() => {this.props.history.goBack()}}>Back</button>
+                                <button className="board-gomain btn-style selector-deep" style={{ float : 'left', textAlign : 'center', width : '70px' , height : '50%'}} onClick={() => {this.props.history.goBack()}}>{"Back"}</button>
+                                <button className="board-createcomment btn-style selector-deep" style={{ float : 'right', textAlign : 'left', width : '90px' , height : '50%', marginLeft : '2%'}} onClick={() => { 
+                                    if(document.getElementById("comment_main"))
+                                        return;
+                                    if(this.state.comment_active === 'default') 
+                                        this.setState({ comment_active : -1 }, () => {self.create_Comment()});
+                                    else
+                                        this.setState({ comment_active : 'default', comment_text : '', comment_total : 0});
+                                    }}>{"Comment"}</button>
                                 {this.btn_for_admin()}
                             </td>
                         </tr>
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%' }}>
-                                <div classname="content_comment" style={{ minWidth : "360px" }}>
-                                    {this.commentactive()}
-                                    <button className="comment_active btn-style selector-deep" style={{ float : 'left', width : '40%' , marginTop : '2%'}} onClick={
-                                        () => { this.setState({ 
-                                            comment_active : !(this.state.comment_active) ,
-                                            comment_active_inner : (this.state.comment_active) ? 'Comment Write' : 'Cancel',
-                                        }) }}>{this.state.comment_active_inner}</button>
-                                    <button className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} onClick={this.onClick_rpApply.bind(this)}>Comment Apply</button>
-                                </div>
+                                {this.comment_active('default')}
                             </td>
                         </tr>
                         {this.state.comment_renders}
@@ -272,69 +281,108 @@ class Reading extends Component
         return guid;
     }
 
+    render_tags = () => {
+        if(this.state.content.hashtag) {
+            const tags = this.state.content.hashtag.split(",");
+            let rendertag = "";
+    
+            tags.forEach(element => {
+                if(element)
+                    rendertag += "#" + element + " "
+            });
+    
+            return (<div>{rendertag}</div>);
+        }
+    }
+
     btn_for_admin = () => {
         if(this.state.level === 'admin')
         return (
             <div>
                 <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%'}} onClick={this.onClick_Edit.bind(this)}>Edit</button>
-                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '70px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
+                <button className="board-apply btn-style selector-deep"  style={{ float : 'right', width : '90px' , height : '50%', marginRight : '2%'}} onClick={this.onClick_Remove.bind(this)}>Remove</button>
             </div>
         );    
         else return null;
     }
 
-    comment_active () {
-        if(this.state.comment_active === true)
+    Quill_form_Active = (guid /* comment only */) => {
         return (
-            <div className="comment_main"  style={{ backgroundColor : "white", color : "black" }}>
-                <div className="comment_limit" style={{ float : 'left',  width : '40%', marginBottom : '2%'}}>글 제한 ({this.state.comment_total}/500)</div>
-                <ReactQuill 
-                theme='snow'
-                id='write_editor' 
-                value={this.state.comment_text} 
-                ref={this.quillRef}
-                onChange={this.commenthandleC} 
-                placeholder='내용을 입력해주세요! (최대 500자)'
-                modules={
-                    {
-                        toolbar: {
-                          container: [
-                            ["bold", "italic", "underline", "strike", "blockquote"],
-                            [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-                            [
-                              { list: "ordered" },
-                              { list: "bullet" },
-                              { indent: "-1" },
-                              { indent: "+1" },
-                              { align: [] }
-                            ],
-                            ["link"],
-                            ["clean"]
-                          ],
-                        },
-                        clipboard: { matchVisual: false }
-                    }                                       
-                }
-                style={{
-                    height : '100%',
-                    width  : '100%'
-                }}/>
+            <div classname="content_comment" style={{ minWidth : "360px" }}>
+                <div id="comment_main"  style={{ backgroundColor : "white", color : "black" }}>
+                    <div className="comment_limit" ref={(mount) => {this.limitrenderer = mount}} style={{ float : 'left',  width : '40%', marginBottom : '2%'}}>글 제한 ({this.state.comment_total}/500)</div>
+                    <ReactQuill 
+                    theme='snow'
+                    id='write_editor' 
+                    value={this.state.comment_text} 
+                    ref={this.quillRef}
+                    onChange={this.commenthandleC} 
+                    placeholder='내용을 입력해주세요! (최대 500자)'
+                    modules={
+                        {
+                            toolbar: {
+                              container: [
+                                ["bold", "italic", "underline", "strike", "blockquote"],
+                                [{ size: ["small", false, "large", "huge"] }, { color: [] }],
+                                [
+                                  { list: "ordered" },
+                                  { list: "bullet" },
+                                  { indent: "-1" },
+                                  { indent: "+1" },
+                                  { align: [] }
+                                ],
+                                ["link"],
+                                ["clean"]
+                              ],
+                            },
+                            clipboard: { matchVisual: false }
+                        }                                       
+                    }
+                    style={{
+                        height : '100%',
+                        width  : '100%'
+                    }}/>
+                </div>
+                <button className="comment_active btn-style selector-deep" style={{ float : 'left', width : '40%' , marginTop : '2%'}} onClick={() => {this.setState({ comment_active : -1 }, () => {this.create_Comment()})}}>{'Cancel'}</button>
+                <button className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} 
+                    onClick={() => {
+                        if(this.state.comment_active === 'default')
+                            this.onClick_rpApply.bind(this);
+                        else {
+                            this.onClick_rpModify(guid);
+                        }
+                    }}>{(this.state.comment_active === 'default') ? "Comment Apply" : "Modify"}
+                    </button>                                
             </div>
-        );
+        );    
+    }
+
+    comment_toggle = (id, content, guid) => {
+        if(this.state.comment_active === id) {
+            return (<div>{this.comment_active(id, guid)}</div>);
+        }
+        else {
+            return (<div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(content)}}></div>);
+        }
+    }
+
+    comment_active = (id, guid) => {
+        if(this.state.comment_active === id)
+            return (this.Quill_form_Active(guid));
         else
-        return null;
+            return null;
     }
 
     comment_handleChange (content, delta, source, editor) {
-        const self = this;
         const limit = 500;
         let checkresult = str_length(editor.getText(content));
         if(checkresult > limit) {
-            const quill = self.quillRef.current.editor;
+            const quill = this.quillRef.current.editor;
             quill.deleteText(limit, checkresult)
             checkresult = limit;
         }
-        this.setState({comment_total : checkresult, comment_text : editor.getHTML(content)});
+        this.limitrenderer.innerText = "글 제한 (" + String(checkresult) + "/500)";
+        this.state.comment_text = editor.getHTML(content);
     }
 
     history_heart () 
@@ -376,15 +424,23 @@ class Reading extends Component
                     let createdAt = timeparse(comments[i].createdAt);
                     arr.push(
                     <tr>
-                        <td>
+                        <td id={"comment_elem_" + comments[i].id}>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
                                 <div style={{ display : "table-cell", verticalAlign : "middle",
                                      backgroundImage : 'url(' + getimgsrc(comments_ex[i].profileimg, self.state.defaultimg) + ')' , backgroundSize: "50px", width : "50px", height : "50px"}} />
                                 <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
                                     <div>
                                         {comments_ex[i].nickname}
-                                        <div className="selector-deep" style={commentctrl} onClick={() => {self.comment_Edit(comments[i].guid)}}>{"수정"}</div>
-                                        <div className="selector-deep" style={commentctrl} onClick={() => {self.comment_delete(comments[i].guid)}}>{"삭제"}</div>
+                                        <div className="selector-deep" style={commentctrl} onClick={() => {
+                                            if(document.getElementById("comment_main"))
+                                                return;
+                                            if(self.state.comment_active === comments[i].id) {
+                                                self.setState({ comment_active : -1 }, () => {self.create_Comment()});
+                                            }
+                                            else
+                                                self.setState({ comment_active : comments[i].id, comment_text : comments[i].content, comment_total : 0 }, () => {self.create_Comment()});
+                                        }}>{"수정"}</div>
+                                        <div className="selector-deep" style={commentctrl} onClick={() => {self.onClick_rpDelete(comments[i].guid)}}>{"삭제"}</div>
                                         </div>
                                     <div style={{ color : "rgb(180,180,180)" }}>{createdAt}</div>
                                 </div>
@@ -393,7 +449,7 @@ class Reading extends Component
                                      onClick={() => {self.onClick_rpHeart(comments[i].guid, comments[i].id)}}/>
                                 <div style={heartNumstyle}>{String(comments[i].hearts)}</div>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(comments[i].content) }} />
+                            {self.comment_toggle(comments[i].id, comments[i].content, comments[i].guid)}
                         </td>
                     </tr>
                     );    
@@ -405,9 +461,43 @@ class Reading extends Component
         }
     }
 
-    comment_delete = (guid) => {
+    onClick_rpModify = (guid) => {
+        const token = getToken();
         const self = this;
 
+        async function process () {
+            // comment DB modify (PATCH) 
+            await axios({
+                method: 'patch',
+                url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : token,    
+                },
+                params: {
+                    guid : guid,
+                    content : self.state.comment_text,
+                }
+            })
+            .then(function (response) {    
+                alert('댓글이 성공적으로 수정되었습니다.');
+                window.location.reload();
+            })
+            .catch((err) => {
+                alert(err.response.data);
+            });   
+        }
+
+        if(token !== null && guid)
+            process();
+        else {
+            alert("로그인이 필요합니다.");
+            window.location.replace('/login');
+        }    
+    }
+
+    onClick_rpDelete = (guid) => {
+        const token = getToken();
         async function process () {
             // comment DB Delete (Delete) 
             await axios({
@@ -415,7 +505,7 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),    
+                    'Authorization' : token,    
                 },
                 params: {
                     guid : guid
@@ -430,13 +520,23 @@ class Reading extends Component
             });   
         }
 
-        process();
+        if(token !== null && guid)
+            process();
+        else {
+            alert("로그인이 필요합니다.");
+            window.location.replace('/login');
+        }    
     }
 
     Load_commentHeart = (guid, ref) => {
         async function process () {
-            const trace = await traveledUserhistory( guid, 'heart' );
-            ref.result = (trace.result !== undefined || trace.result !== null) ? trace.result : false;
+            await traveledUserhistory( guid, 'heart' )
+            .then(res => {
+                ref.result = (res.result !== undefined || res.result !== null) ? res.result : false;
+            })
+            .catch(err => {
+                ref.result = false;
+            })
         }
         return process();
     }
@@ -454,13 +554,15 @@ class Reading extends Component
             text : self.state.comment_text,
         }
 
+        const token = getToken();
+
         async function process () {
             await axios({
                 method: 'post',
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),                
+                    'Authorization' : token,                
                 },
                 params: { 
                     postId : content.postId,
@@ -477,8 +579,12 @@ class Reading extends Component
             });   
         }
 
-        if(content.guid) {
+        if(content.guid && token) {
             process();
+        }
+        else {
+            alert("로그인이 필요합니다.");
+            window.location.replace('/login');
         }
     }
 
@@ -495,6 +601,10 @@ class Reading extends Component
                 increaselocal(-1);
             }
         })
+        .catch(err => {
+            alert("로그인이 필요합니다.");
+            window.location.replace('/login');
+        })
 
         function increaselocal ( num ) {
             const msg = (num > 0) ? "댓글을 추천하셨습니다." : "댓글 추천을 취소하셨습니다.";
@@ -509,7 +619,8 @@ class Reading extends Component
                 }
             })
             .catch(err => {
-                alert(err);
+                alert("로그인이 필요합니다.");
+                window.location.replace('/login');
             })
         }
     }
@@ -581,6 +692,10 @@ class Reading extends Component
                         self.setState({ heart : false });
                 });
             }
+        })
+        .catch(err => {
+            alert("로그인이 필요합니다.");
+            window.location.replace('/login');
         })
     }
 
