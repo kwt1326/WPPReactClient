@@ -41,9 +41,14 @@ class Board extends Component
     // Posting Data load
     Load () {
         const self = this;
-        const page = (self.props.history.location.search) ? 
-            parseInt(self.props.history.location.search.split("?page=")[1]) : 
-            self.state.page;
+        const page = (this.props.history.location.search) ? 
+            parseInt(this.props.history.location.search.split("?page=")[1]) : 
+            this.state.page;
+
+        let keyword = null;
+        if(this.props.history.location.pathname.indexOf('/board/search/') !== -1) {
+            keyword = this.props.history.location.pathname.split('/board/search/')[1].split('/')[0];
+        }
 
         const process = async () => {
             return await axios({
@@ -53,8 +58,9 @@ class Board extends Component
                     'Content-Type': 'application/json',
                 },    
                 params : {
-                    search : self.props.match.params.page,
+                    search : (keyword) ? keyword : self.props.match.params.page,
                     page : page,
+                    keyword : (keyword) ? true : false,
                 }
             })
             .then(function (response) {
@@ -236,45 +242,9 @@ class Board extends Component
     }
 
     search_tag = () => {
-        if(window.event.keyCode === 13) 
-        {
-            const self = this;
-            const url = (islive()) ? 
-                api + '/api/post/search/:' + self.searchdiv.value :
-                      '/api/post/search/:' + self.searchdiv.value;
-
-            const process = async () => {
-                return await axios({
-                    method: 'get',
-                    url: url,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },    
-                    params : {
-                        page : self.state.page,
-                    }
-                })
-                .then(function (response) {
-                    return Promise.resolve({ 
-                        ofs : response.data.ofs,
-                        count : response.data.count,
-                        rows : response.data.rows
-                    });
-                })
-                .catch ((err) => {
-                    return Promise.reject(err);
-                });
-            }
-            
-            process()
-            .then((res) => {
-                if(res.rows.length > 0) {
-                    self.addrow(res)
-                    .then(res => {
-                        self.addpage(res);
-                    });
-                }
-            });
+        if(window.event.keyCode === 13) {
+            this.props.history.push(`/board/search/${this.searchdiv.value}/?page=${String(this.state.page)}`);
+            this.load();
         }
     }
 

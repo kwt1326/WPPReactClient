@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { Redirect } from 'react-router-dom';
+import axios from 'axios';
 import { checklogin, islive, api } from '../custom/custom'
 import '../css/style.css';
 
@@ -49,6 +49,22 @@ class Login extends Component
         window.location.replace('/' + from);
     }
 
+    login_strategy = ( strategy ) => {
+        axios({
+            method : 'get',
+            url : (islive()) ? api + 'api/auth/social/' + strategy : 'api/auth/social/' + strategy,
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+        })
+        .then(res => {
+            window.location.replace('/');
+        })
+        .catch(err => {
+            alert(err);
+        })
+    }
+
     render () {
         const path = (islive()) ? api + "/api/auth/login" : "/api/auth/login";
         return (
@@ -58,10 +74,15 @@ class Login extends Component
                     <h2>A/ Q/ U/ A Login</h2><br/>
                     ID&nbsp;&nbsp; : <input type="email" name="email"></input><br/>
                     PW : <input type="password" name="password"></input><br/>
-                    <input type="submit" className="selector-deep" value="LOGIN"></input><br/><br/>
+                    <input type="submit" className="selector-deep" style={{ minWidth : "220px", margin : "10px"}} value="LOGIN"></input>
+                </form>
+                <div style={{textAlign: 'center'}}>
+                    <button className="selector-facebook btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(59, 89, 152, 1)", color : "white", margin : "10px"}} onClick={() => {this.login_strategy('facebook')}}>Facebook</button><br/>
+                    <button className="selector-google btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(223, 74, 50, 1)", color : "white", margin : "10px"}} onClick={() => {this.login_strategy('google')}}>Google</button>
+                    <br/>
                     <a href="/join" className="selector-deep" style={{ color : "white" }}>You are not have been id? come here!</a><br/><br/>
                     <a href="/auth/e-mail" className="selector-deep" style={{ color : "white" }}>Forgot the password for your account?</a>
-                </form>
+                </div>
             </div>
         );
     }
