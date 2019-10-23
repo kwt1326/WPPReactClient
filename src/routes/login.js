@@ -55,7 +55,7 @@ class Login extends Component
         const facebook_href = (islive()) ? api + `api/auth/social/facebook` : `api/auth/social/facebook`;
         return (
             <div className="Login" style={{ padding: "50px", backgroundColor : "midnightblue", color : "white" }}>
-                <iframe id="responseframe" ref={(mount) => {this.resframe = mount}} name="responseframe" style={{display : "none"}} onLoad={this.onLoad}></iframe>
+                <iframe id="responseframe" ref={(mount) => {this.resframe = mount}} name="responseframe" /*style={{display : "none"}}*/ onLoad={this.onLoad}></iframe>
                 <form className="inputform" action={path} method="post" target="responseframe">
                     <h2>A/ Q/ U/ A Login</h2><br/>
                     ID&nbsp;&nbsp; : <input type="email" name="email"></input><br/>
