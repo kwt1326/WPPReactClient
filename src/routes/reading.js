@@ -347,7 +347,7 @@ class Reading extends Component
                 <button className="comment_active btn-style selector-deep" style={{ float : 'right', width : '40%' , marginTop : '2%'}} 
                     onClick={() => {
                         if(this.state.comment_active === 'default')
-                            this.onClick_rpApply.bind(this);
+                            this.onClick_rpApply();
                         else {
                             this.onClick_rpModify(guid);
                         }
@@ -541,7 +541,7 @@ class Reading extends Component
         return process();
     }
 
-    onClick_rpApply() 
+    onClick_rpApply = () =>
     {
         const self = this;
         if(!self.state.postid) {

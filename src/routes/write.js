@@ -324,20 +324,23 @@ class Write extends Component
             }
         }
 
-        async function process () {
-            await addtags();
-        }
-
-        process();
+        if(arrtags !== null)
+            addtags();
     }
 
     addtag = () => {
         if(window.event.keyCode === 13) {
-            const newtags = this.state.tags;
             const value = this.inputtag.value;
-            if(newtags.indexOf(value) !== -1)
+            if(this.state.tags === null) {
+                this.state.tags = new Array();
+                this.state.tags[0] = value;
+            }
+            else if(this.state.tags.indexOf(value) !== -1) {
                 return;
-            newtags[newtags.length] = String(value);
+            }
+            else {
+                this.state.tags[this.state.tags.length] = String(value);
+            }
             this.createtags();
         }
     }
