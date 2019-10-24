@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import axios from 'axios';
-import {checklogin, removefile, createguid, str_length, api, local, islive, getToken} from '../custom/custom';
+import {checklogin, removefile, createguid, str_length, api, local, islive} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
@@ -96,7 +96,6 @@ class Write extends Component
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),                
                 },
                 params : {
                     guid : self.state.edit_postid,
@@ -378,7 +377,6 @@ class Write extends Component
                 url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization' : getToken(),                
                 },
                 data: formData,
             })
@@ -455,7 +453,6 @@ class Write extends Component
                 url: (islive()) ? api + '/api/tag' : '/api/tag',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),                
                 },
                 params: {
                     name: name
@@ -496,7 +493,6 @@ class Write extends Component
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : getToken()
                     },
                     params: {
                         title: title,
@@ -531,7 +527,6 @@ class Write extends Component
                     url: (islive()) ? api + '/api/post' : '/api/post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : getToken(),
                     },
                     params: {
                         title: title,

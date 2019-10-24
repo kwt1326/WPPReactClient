@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
 import {checklogin, increase, traveledUserhistory, 
-        str_length, createguid, api, islive, getimgsrc, getToken, timeparse} from '../custom/custom';
+        str_length, createguid, api, islive, getimgsrc, timeparse} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
@@ -111,7 +111,9 @@ class Reading extends Component
                         level = res.userdata.data.level;
                     }
                 })
-                .catch(err=>{})
+                .catch(err=>{
+                    console.log(err);
+                })
 
             // get reading post
             await axios({
@@ -462,7 +464,6 @@ class Reading extends Component
     }
 
     onClick_rpModify = (guid) => {
-        const token = getToken();
         const self = this;
 
         async function process () {
@@ -472,7 +473,6 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : token,    
                 },
                 params: {
                     guid : guid,
@@ -484,11 +484,11 @@ class Reading extends Component
                 window.location.reload();
             })
             .catch((err) => {
-                alert(err.response.data);
+                alert("계정 혹은 권한이 없습니다.");
             });   
         }
 
-        if(token !== null && guid)
+        if(guid)
             process();
         else {
             alert("로그인이 필요합니다.");
@@ -497,7 +497,6 @@ class Reading extends Component
     }
 
     onClick_rpDelete = (guid) => {
-        const token = getToken();
         async function process () {
             // comment DB Delete (Delete) 
             await axios({
@@ -505,7 +504,6 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : token,    
                 },
                 params: {
                     guid : guid
@@ -516,11 +514,11 @@ class Reading extends Component
                 window.location.reload();
             })
             .catch((err) => {
-                alert(err.response.data);
+                alert("계정 혹은 권한이 없습니다.");
             });   
         }
 
-        if(token !== null && guid)
+        if(guid)
             process();
         else {
             alert("로그인이 필요합니다.");
@@ -554,15 +552,12 @@ class Reading extends Component
             text : self.state.comment_text,
         }
 
-        const token = getToken();
-
         async function process () {
             await axios({
                 method: 'post',
                 url: (islive()) ? api + '/api/post/comment' : '/api/post/comment',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : token,                
                 },
                 params: { 
                     postId : content.postId,
@@ -575,11 +570,11 @@ class Reading extends Component
                 window.location.reload();
             })
             .catch((err) => {
-                alert(err);
+                alert("계정 혹은 권한이 없습니다.");
             });   
         }
 
-        if(content.guid && token) {
+        if(content.guid) {
             process();
         }
         else {
@@ -646,7 +641,6 @@ class Reading extends Component
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),                
                 },
                 params: {
                     guid : self.state.postid

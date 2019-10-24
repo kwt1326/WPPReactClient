@@ -14,27 +14,14 @@ function islive() {
     return (process.env.NODE_ENV === "production") ? true : false;
 }
 
-function getToken () {
-    const token = window.sessionStorage.getItem('token');
-    if(token !== undefined && token !== null)
-        return token;
-    else {
-        return null;
-    }
-}
-
 // TOKEN VERIFY
 function checklogin ( ) {
     async function process () {
-        if(getToken() === null)
-            return Promise.reject("Not exist Token");
-
         return await axios({
             method: 'get',
             url: (islive()) ? api + '/api/user' : '/api/user',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : getToken()
             },
         })
         .then(function (response) {
@@ -50,65 +37,24 @@ function checklogin ( ) {
     return process();
 }
 
-// session version
-// function checklogin ( originpath , options ) {
-//     async function process () {
-//         return await axios({
-//             method: 'get',
-//             url: (islive()) ? api + '/api/user' : '/api/user',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             params : {
-//                 redirect : originpath,
-//                 repost : (options) ? options.repost : null
-//             }
-//         })
-//         .then(function (response) {
-//             return Promise.resolve({
-//                 userdata : response,
-//                 result : true
-//             });
-//         })
-//         .catch((err) => {
-//             return Promise.reject(err);
-//         });
-//     }
-//     return process();
-// }
-
 function logout () {
-    if(getToken())
-        window.sessionStorage.removeItem('token');
-    
-    return Promise.resolve({result : true});
+    return axios({
+        method: 'get',
+        url: (islive()) ? api + '/api/auth/logout' : '/api/auth/logout',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(res => {
+        return Promise.resolve({result : true});
+    })
+    .catch(err => {
+        return Promise.reject(err);
+    })
 }
-
-// session logout
-// function logout () {
-//     async function process () {
-//         return await axios({
-//             method: 'get',
-//             url: (islive()) ? api + '/api/auth/logout' : '/api/auth/logout',
-//         })
-//         .then(function (response) {
-//             return Promise.resolve({
-//                 nickname : undefined,
-//                 existsession : false
-//             })
-//         })
-//         .catch ((err) => {
-//             return Promise.reject(err);
-//         });
-//     }
-//     return process();
-// }
 
 function increase ( id, target_type, num, bComment ) {
     async function process () {
-        if(getToken() === null)
-            return Promise.reject("Not exist Token");
-
         return await axios({
             method: 'patch',
             url: (bComment) ?
@@ -116,7 +62,6 @@ function increase ( id, target_type, num, bComment ) {
             ((islive()) ? api + '/api/post/increase' : '/api/post/increase'),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : getToken(),
             },
             params : {
                 id : id,
@@ -138,15 +83,11 @@ function increase ( id, target_type, num, bComment ) {
 
 function traveledUserhistory ( check_id, check_type ) {
     async function process () {
-        if(getToken() === null)
-            return Promise.reject("Not exist token");
-
         return await axios({
             method: 'get',
             url: (islive()) ? api + '/api/user/history' : '/api/user/history',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : getToken(),
             },
             params : {
                 id : check_id,
@@ -188,15 +129,11 @@ function getTags ( ) {
 
 function removefile (filename) {
     async function process() {
-        if(getToken() === null)
-            return Promise.reject("Not exist Token");
-
         return await axios({
             method: 'delete',
             url: (islive()) ? api + '/api/post/files' : '/api/post/files',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : getToken(),
             },
             params: {
                 name: filename,
@@ -263,5 +200,4 @@ export {
     timeparse,
     getimgsrc,
     getTags,
-    getToken,
 };

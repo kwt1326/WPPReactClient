@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
-import {checklogin, api, local, islive, getimgsrc, getToken} from '../custom/custom';
+import {checklogin, api, local, islive, getimgsrc} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
 
@@ -74,7 +74,6 @@ class User extends Component
                     url: (islive()) ? api + '/api/post/files' : '/api/post/files',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : getToken(),                
                     },
                     data: formData,
                 })
@@ -91,7 +90,6 @@ class User extends Component
                 url: (islive()) ? api + '/api/user/' : '/api/user/',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : getToken(),                
                 },
                 params: {
                     nickname: nickinput.value,
@@ -111,6 +109,25 @@ class User extends Component
         }
 
         Edit();
+    }
+
+    // 2. delete
+    user_delete = () => {
+        axios({
+            method: 'delete',
+            url: (islive()) ? api + '/api/user/' : '/api/user/',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(function (response) {
+            alert('회원탈퇴가 완료되었습니다.');
+            window.location.replace('/');
+            return;
+        })
+        .catch((err) => {
+            alert(err);
+        });
     }
 
     render () {
@@ -157,7 +174,8 @@ class User extends Component
                     <input type="text" name="user_nickname" placeholder={this.state.nickname}  ref={(mount) => {this.nickname = mount;}}></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
                     <input type="text" name="user_username" placeholder={this.state.username}  ref={(mount) => {this.username = mount;}}></input><br/>
-                    <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>
+                    <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>{`  `}
+                    <button className="btn-style" onClick={this.user_delete.bind(this)}>회원탈퇴</button>
                     </div>
                 </div>
             </div>
