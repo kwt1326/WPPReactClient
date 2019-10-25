@@ -61,7 +61,7 @@ class Login extends Component
                 <div style={{textAlign: 'center'}}>
                     <a href={facebook_href}><button className="selector-facebook btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(59, 89, 152, 1)", color : "white", margin : "10px"}} onClick={`location.href=${facebook_href}`}>Facebook</button></a><br/>
                     <a href={google_href}><button className="selector-google btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(223, 74, 50, 1)", color : "white", margin : "10px"}} onClick={`location.href=${google_href}`}>Google</button></a><br/>
-                    <a href="/join" className="selector-deep" style={{ color : "white" }}>가입한 계정이 없으신가요? 여기에요!</a><br/><br/>
+                    <a href={(islive()) ? api + "/join" : "/join"} className="selector-deep" style={{ color : "white" }}>가입한 계정이 없으신가요? 여기에요!</a><br/><br/>
                     <a href="/auth/e-mail" className="selector-deep" style={{ color : "white" }}>이메일 계정의 비밀번호를 잊으셨나요? 여기서 도와드릴게요.</a>
                 </div>
             </div>
