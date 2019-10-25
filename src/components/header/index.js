@@ -49,7 +49,7 @@ class Header extends Component
             if(self.state.nickname !== data.nickname &&
                 self.state.existsession !== true) {
                     self.setState({ 
-                        profileimg : getimgsrc(data.profileimg, self.state.profileimg),
+                        profileimg : getimgsrc(data.provider, data.profileimg, self.state.profileimg),
                         nickname : data.nickname,
                         existsession : true
                     })

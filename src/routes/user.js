@@ -51,7 +51,8 @@ class User extends Component
             });
         })
         .catch((err) => {
-            console.log(err);
+            alert("로그인을 먼저 해주세요.");
+            self.props.history.push('/login');
         })
     }
 

@@ -87,42 +87,34 @@ class Board extends Component
 
     add_header () {
         if(this.state.screenstate === 'phone') {
-            return (
-                <tr>
-                    <td style={{ width: '100%' }}>
-                        <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Title</div>
-                        </div>
-                    </td>
-                </tr>
-            )
+            return null;
         }
         else
         return (
             <tr>
                 <td style={{ width: '10%' }}>
                     <div className="board-seqofpost" style={{ display: 'table' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>PostNum</div>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>번호</div>
                     </div>
                 </td>
                 <td style={{ width: '50%' }}>
                     <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Title</div>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>제목</div>
                     </div>
                 </td>
                 <td style={{ width: '20%' }}>
                     <div className="board-writerofpost" style={{ display: 'table' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Writer</div>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>작성자</div>
                     </div>
                 </td>
                 <td style={{ width: '10%' }}>
                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Views</div>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>조회</div>
                     </div>
                 </td>
                 <td style={{ width: '10%' }}>
                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>Heart</div>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>추천</div>
                     </div>
                 </td>
             </tr>
@@ -154,7 +146,7 @@ class Board extends Component
                                 <td className="selectorList" style={{ width: '50%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} alt="front-img"></img></div> 
+                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc('local', rows[i].content.frontimg, self.state.defaultimg)} alt="front-img"></img></div> 
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
@@ -181,7 +173,7 @@ class Board extends Component
                                 <td className="selectorList" style={{ width: '50%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
-                                        <img src={getimgsrc(rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
+                                        <img src={getimgsrc('local', rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
@@ -293,7 +285,7 @@ class Board extends Component
                     <tfoot>
                         <tr>
                             <td colSpan='5' style={{ textAlign : 'right', paddingRight : '0%'}}>
-                                <button className="board-apply btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}} onClick={this.clickApply}>Apply</button>
+                                <button className="board-apply btn-style selector-deep" style={{ textAlign : 'center', width : '70px' , height : '50%'}} onClick={this.clickApply}>글쓰기</button>
                             </td>
                         </tr>
                     </tfoot>

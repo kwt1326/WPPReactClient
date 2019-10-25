@@ -103,12 +103,14 @@ class Reading extends Component
         const Load = async () => {
 
             let level = 'user';
+            let logged = false;
 
             // get user level
             await checklogin()
                 .then((res) => {
                     if (res.userdata.data.level === 'admin') {
                         level = res.userdata.data.level;
+                        logged = true;
                     }
                 })
                 .catch(err=>{
@@ -148,6 +150,15 @@ class Reading extends Component
                 }, () => { 
                     this.historyheart();
                     this.createComment();
+
+                    // recent viewed post add for user
+                    increase(self.state.postid, 'view', 1, false)
+                    .then(res => {
+                        console.log("true");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 });
             })
             .catch (err => {
@@ -429,7 +440,7 @@ class Reading extends Component
                         <td id={"comment_elem_" + comments[i].id}>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
                                 <div style={{ display : "table-cell", verticalAlign : "middle",
-                                     backgroundImage : 'url(' + getimgsrc(comments_ex[i].profileimg, self.state.defaultimg) + ')' , backgroundSize: "50px", width : "50px", height : "50px"}} />
+                                     backgroundImage : 'url(' + getimgsrc(comments_ex[i].provider, comments_ex[i].profileimg, self.state.defaultimg) + ')', backgroundSize: "50px", width : "50px", height : "50px"}} />
                                 <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
                                     <div>
                                         {comments_ex[i].nickname}
@@ -666,7 +677,7 @@ class Reading extends Component
         traveledUserhistory( self.getguid(), 'heart' )
         .then((res) => {
             if(res.result === false) {
-                increase(self.getguid(), 'heart', 1)
+                increase(self.getguid(), 'heart', 1, false)
                 .then(res => {
                     const heartSelectedimg = require('../image/heartSelected-ico.png');
                     if(heartSelectedimg) {
@@ -677,7 +688,7 @@ class Reading extends Component
                 });
             }
             else if ( res.result === true ) {
-                increase(self.getguid(), 'heart', -1)
+                increase(self.getguid(), 'heart', -1, false)
                 .then(res => {
                     const heartimg = require('../image/heart-ico.png');
                     if(heartimg)

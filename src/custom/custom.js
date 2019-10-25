@@ -151,9 +151,13 @@ function removefile (filename) {
     return process();
 }
 
-function getimgsrc ( imgp, alter ) {
-    return (imgp) ? ((islive()) ? api +  "/" + imgp :
-                                  local + "/" + imgp) : alter;
+function getimgsrc ( provider, imgp, alter ) {
+    if(provider === 'local')
+        return (imgp) ? ((islive()) ? api +  "/" + imgp :
+                                      local + "/" + imgp) : alter;
+    else {
+        return imgp;
+    }
 }
 
 function str_length ( compare_string ) 
