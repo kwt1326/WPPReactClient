@@ -11,11 +11,12 @@ import Menulist from './components/menulist';
 // Route
 import Login from './routes/login';
 import Join from './routes/join';
-import Auth from './routes/auth'
 import User from './routes/user';
 import Write from './routes/write';
 import Reading from './routes/reading';
 import Board from './routes/board';
+import Auth from './routes/auth'
+import Auth_CPW from './routes/auth_cpw';
 import { string } from 'prop-types';
 
 class App extends Component {
@@ -38,7 +39,8 @@ class App extends Component {
             <div id="main-div" ref={(mount) => {this.main_ref = mount}}>
               <Route exact path="/" component={Main} />
               <Route path="/login" component={Login} />
-              <Route path="/auth/:method" component={Auth} />
+              <Route path="/auth/e-mail" component={Auth} />
+              <Route path="/auth/cpw" component={Auth_CPW} />
               <Route path="/Join" component={Join} />
               <Route path="/user" component={User} />
               <Route path="/write" component={Write} />

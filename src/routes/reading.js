@@ -283,13 +283,12 @@ class Reading extends Component
     }
 
     get_guid () {
-        const self = this;
         let guid = null;
-        if (self.props.location.search) {
-            guid = self.props.location.search.split('?post=')[1];
+        if (this.props.location.search) {
+            guid = this.props.location.search.split('?post=')[1];
         }
         else {
-            guid = self.state.postid;
+            guid = this.state.postid;
         }
         return guid;
     }
