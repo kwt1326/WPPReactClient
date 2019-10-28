@@ -36,19 +36,15 @@ class BoardSub extends Component
             }
         }
 
-        async function returns () {
-            await getTags()
-            .then(res => { 
-                const tags = res.tags;
-                tags.unshift({name : 'All'});
-                createrow(tags)
-                .then(res => {
-                    self.setState({ render_ready : true });
-                });
+        getTags()
+        .then(res => { 
+            const tags = res.tags;
+            tags.unshift({name : 'All'});
+            createrow(tags)
+            .then(res => {
+                self.setState({ render_ready : true });
             });
-        }
-
-        returns();
+        });
     }
 
     render () {

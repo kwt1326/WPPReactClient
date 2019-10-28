@@ -3,7 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
 
 // Common
-import Header from './components/header/index';
+import Header from './components/header';
 import Footer from './components/footer';
 import Main from './components/main';
 import Menulist from './components/menulist';

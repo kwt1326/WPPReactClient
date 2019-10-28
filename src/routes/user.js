@@ -16,7 +16,6 @@ class User extends Component
             profileimg : require("../image/unknown.png"),
             loadimgname : "",
             reDirection : 'none',
-            local : local
         }
 
         this.profileimg = React.createRef();
@@ -39,8 +38,9 @@ class User extends Component
                 email : data.email,
                 nickname : data.nickname,
                 username : data.username,
-                profileimg : getimgsrc(data.profileimg, self.state.profileimg),
-                loadimgname : data.profileimg
+                profileimg : getimgsrc(data.provider, data.profileimg, self.state.profileimg),
+                loadimgname : data.profileimg,
+                provider : data.provider
             }, () => { 
                 const emailinput = self.email;
                 const nickinput = self.nickname;
@@ -131,6 +131,16 @@ class User extends Component
         });
     }
 
+    use_changeimage = () => {
+        if(this.state.provider === 'local')
+            return (
+                <input className="btn-style" style={{
+                    display: 'table-cell', width: "180px", position: "relative", textAlign: "left", left: "calc(50% - 90px)", marginTop: "1%", marginBottom: "1%"
+                }} id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => { this.profileimg = mount; }} onChange={this.onChange_profileimg}></input>
+            )
+        else return null;
+    }
+
     render () {
         if(this.state.reDirection !== 'none')
             return (<Redirect push to={this.state.reDirection}/>);
@@ -143,9 +153,7 @@ class User extends Component
                             <img src={this.state.profileimg} style={{ 
                                 display : 'table-cell', width : "180px", textAlign : "left", left : "calc(50% - 90px)", position : "relative", marginTop : "1%", marginBottom : "1%"
                                 }} alt="profile-img" />
-                            <input className="btn-style" style={{
-                                display : 'table-cell', width : "180px", position : "relative", textAlign : "left", left : "calc(50% - 90px)", marginTop : "1%", marginBottom : "1%"
-                            }} id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
+                            {this.use_changeimage()}
                         </div>
                         <div style={{ width: "100%", minHeight :"300px"}}>
                         <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
@@ -154,7 +162,8 @@ class User extends Component
                         <input type="text" name="user_nickname" placeholder={this.state.nickname} ref={(mount) => {this.nickname = mount;}}></input><br/>
                         <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
                         <input type="text" name="user_username" placeholder={this.state.username} ref={(mount) => {this.username = mount;}}></input><br/>
-                        <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>
+                        <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>{` `}
+                        <button className="btn-style" onClick={this.user_delete.bind(this)}>회원탈퇴</button>
                         </div>
                     </div>
                 </div>
@@ -166,7 +175,7 @@ class User extends Component
                 <div className="inputform" style={{backgroundColor : 'midnightblue', color : "white"}}>
                     <div style={{ float : "left" , width: "30%" , minHeight :"300px", padding : "10%", backgroundColor : 'midnightblue', color : "white"}}>
                         <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img"/>
-                        <input className="btn-style" id="profileimg" type="file" accept=".jpg, .jpeg, .png" ref={(mount) => {this.profileimg = mount;}} onChange={this.onChange_profileimg}></input>
+                        {this.use_changeimage()}
                     </div>
                     <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>E-Mail</section>
@@ -175,7 +184,7 @@ class User extends Component
                     <input type="text" name="user_nickname" placeholder={this.state.nickname}  ref={(mount) => {this.nickname = mount;}}></input><br/>
                     <section style={{ position : 'relative', textAlign:'left', left : 'calc(50% - 90px)'}}>Username</section>
                     <input type="text" name="user_username" placeholder={this.state.username}  ref={(mount) => {this.username = mount;}}></input><br/>
-                    <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>{`  `}
+                    <button className="btn-style" onClick={this.user_update.bind(this)}>수정</button>{` `}
                     <button className="btn-style" onClick={this.user_delete.bind(this)}>회원탈퇴</button>
                     </div>
                 </div>
@@ -216,14 +225,8 @@ class User extends Component
 
     componentDidMount() 
     {
-        // checklogin(window.sessionStorage.token)
-        // .catch((err) => {
-        //     this.setState({ reDirection : 'login' });
-        // })
-
         window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
         this.resize();
-        // this.getuserinfo();
     }
 };
 

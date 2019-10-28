@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { Link } from 'react-router-dom';
-import {checklogin, logout, getimgsrc} from '../../custom/custom';
-import '../../css/style.css';
+import {checklogin, logout, getimgsrc} from '../custom/custom';
+import '../css/style.css';
 
 class Header extends Component
 {
@@ -12,7 +12,7 @@ class Header extends Component
             redirect : false,
             screenstate : 'desktop',
             nickname : '',
-            profileimg : require("../../image/unknown.png"),
+            profileimg : require("../image/unknown.png"),
             existsession : false
         };
         this.reactscreen = this.react_window.bind(this);
@@ -65,7 +65,7 @@ class Header extends Component
         logout()
         .then((res) => {
             self.setState({
-                profileimg : require("../../image/unknown.png"),
+                profileimg : require("../image/unknown.png"),
                 nickname : res.nickname,
                 existsession : res.existsession
             }, () => {
