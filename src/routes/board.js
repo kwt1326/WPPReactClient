@@ -137,7 +137,7 @@ class Board extends Component
                         continue;
                     else {
                         arr.push(
-                            <tr>
+                            <tr className="selectorList">
                                 <td style={{ width: '10%' }}>
                                     <div className="board-seqofpost" style={{ display: 'table' }}>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{(ofs - i)}</div>
@@ -169,8 +169,8 @@ class Board extends Component
                             </tr>
                         );
                         arr_mobile.push(
-                            <tr>
-                                <td className="selectorList" style={{ width: '50%' }}>
+                            <tr className="selectorList">
+                                <td style={{ width: '100%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
                                         <img src={getimgsrc('local', rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
