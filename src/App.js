@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import axios from 'axios';
 import './App.css';
 
 // Common
@@ -18,6 +19,9 @@ import Board from './routes/board';
 import Auth from './routes/auth'
 import Auth_CPW from './routes/auth_cpw';
 import { string } from 'prop-types';
+
+axios.defaults.withCredentials = true;
+axios.defaults.params = {sid : window.sessionStorage.getItem('sid')};
 
 class App extends Component {
   constructor(props) {
