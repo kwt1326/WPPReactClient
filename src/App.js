@@ -20,7 +20,6 @@ import Auth from './routes/auth'
 import Auth_CPW from './routes/auth_cpw';
 import { string } from 'prop-types';
 
-axios.defaults.withCredentials = true;
 axios.defaults.params = {sid : window.sessionStorage.getItem('sid')};
 
 class App extends Component {
