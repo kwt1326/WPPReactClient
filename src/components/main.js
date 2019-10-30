@@ -4,6 +4,20 @@ import '../css/style.css';
 
 class Main extends Component 
 {
+    constructor (props) {
+        super(props);
+        this.state = {}
+    }
+
+    catchSession = () =>
+    {
+        if(this.props.location) {
+            const search = this.props.location.search;
+            if(search !== undefined && search !== null && search !== "")
+                window.sessionStorage.setItem('sid', this.props.location.search.split('?sid=')[1]);
+        }
+    }
+
     render () {
         return (
             <ThreeComp/>
@@ -16,7 +30,7 @@ class Main extends Component
     }
 
     componentDidMount () {
-        
+        this.catchSession();
     }
 }
 
