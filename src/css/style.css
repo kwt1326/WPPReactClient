@@ -264,6 +264,7 @@ footer {
     padding-top: 10%;
     padding-bottom: calc(10% + 70px);
     min-width: 300px;
+    max-width: 2130px;
     width: 69%;
     height: 100%;
     min-height: 500px;

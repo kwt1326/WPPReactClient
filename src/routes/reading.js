@@ -207,7 +207,7 @@ class Reading extends Component
         else {
             return (
                 <div className="board-main split-right" style={{ width : rightratio }}>
-                <table style={{ width : '100%'}}>
+                <table>
                     <colgroup >
                         <col width='100%'/>
                     </colgroup>

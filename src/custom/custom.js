@@ -46,7 +46,7 @@ function logout () {
         },
     })
     .then(res => {
-        window.sessionStorage.removeItem('sid');
+        window.sessionStorage.removeItem('token');
         return Promise.resolve({result : true});
     })
     .catch(err => {

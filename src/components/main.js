@@ -13,8 +13,12 @@ class Main extends Component
     {
         if(this.props.location) {
             const search = this.props.location.search;
-            if(search !== undefined && search !== null && search !== "")
-                window.sessionStorage.setItem('sid', this.props.location.search.split('?sid=')[1]);
+            if(search !== undefined && search !== null && search !== "") {
+                if(!window.sessionStorage.getItem('token')) {
+                    window.sessionStorage.setItem('token', this.props.location.search.split('?token=')[1]);
+                    window.location.reload();
+                }
+            }
         }
     }
 
