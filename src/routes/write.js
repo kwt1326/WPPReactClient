@@ -314,7 +314,7 @@ class Write extends Component
             for(let i = 0 ; i < arrtags.length ; ++i) {
                 if(arrtags[i]) {
                     let tag = document.createElement('button');
-                    tag.className = "btn_style";
+                    tag.className = "btn-style";
                     tag.value = arrtags[i];
                     tag.innerHTML = arrtags[i];
                     tag.onclick = () => {tag_onclick(tag)};
@@ -502,16 +502,13 @@ class Write extends Component
                         hashtag : tag_inline,
                     }
                 })
-                .then((response) => {    
-                    async function resolve (){
-                        for(let i = 0 ; i < tags.length ; ++i) {
-                            await sendtags(tags[i]).then(res=>{}).catch(err=>{});
-                        }
-                        console.log(response.data.result);
-                        alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                        self.setState({ reDirection : './board/All' });
+                .then(async (response) => {    
+                    for(let i = 0 ; i < tags.length ; ++i) {
+                        await sendtags(tags[i]).then(res=>{}).catch(err=>{});
                     }
-                    resolve();
+                    console.log(response.data.result);
+                    alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
+                    self.setState({ reDirection : './board/All' });
                 })
                 .catch((err) => {
                     console.log(err);
@@ -536,16 +533,13 @@ class Write extends Component
                         hashtag : tag_inline,
                     }
                 })
-                .then((response) => {    
-                    async function resolve (){
-                        for(let i = 0 ; i < tags.length ; ++i) {
-                            await sendtags(tags[i]);   
-                        }
-                        console.log(response.data.result);
-                        alert('포스트가 성공적으로 등록되었습니다.');
-                        self.setState({ reDirection : './board/All' });
+                .then(async (response) => {    
+                    for(let i = 0 ; i < tags.length ; ++i) {
+                        await sendtags(tags[i]);   
                     }
-                    resolve();
+                    console.log(response.data.result);
+                    alert('포스트가 성공적으로 등록되었습니다.');
+                    self.setState({ reDirection : './board/All' });
                 })
                 .catch((err) => {
                     console.log(err);

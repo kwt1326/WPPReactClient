@@ -374,7 +374,7 @@ class Reading extends Component
             return (<div>{this.comment_active(id, guid)}</div>);
         }
         else {
-            return (<div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(content)}}></div>);
+            return (<div className="ql-editor" dangerouslySetInnerHTML={{__html: DomPurify.sanitize(content)}}></div>);
         }
     }
 
