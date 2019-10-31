@@ -382,7 +382,7 @@ class Write extends Component
             })
             .then(function (response) {
                 const range = quill.getSelection();
-                quill.insertEmbed(range.index, 'image', local + "/" + response.data.url);            
+                quill.insertEmbed(range.index, 'image', ((islive()) ? api : local) + "/" + response.data.url);            
                 self.setState({ images : [...self.state.images, response.data.url]}, () => {
                     self.options();
                 });
