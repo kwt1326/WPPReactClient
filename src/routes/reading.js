@@ -244,7 +244,7 @@ class Reading extends Component
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%'}}>
                                 <div classname="content_post">
-                                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(self.state.content.text) }}/>
+                                    <div className="ql-editor" dangerouslySetInnerHTML={{__html: DomPurify.sanitize(self.state.content.text) }}/>
                                 </div>
                             </td>
                         </tr>
