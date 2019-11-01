@@ -370,7 +370,7 @@ class Write extends Component
             // image upload
             axios({
                 method: 'post',
-                url: (islive()) ? api + '/api/post/files' : '/api/post/files',
+                url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -378,7 +378,7 @@ class Write extends Component
             })
             .then(function (response) {
                 const range = quill.getSelection();
-                quill.insertEmbed(range.index, 'image', ((islive()) ? api : local) + "/" + response.data.url);            
+                quill.insertEmbed(range.index, 'image', (islive()) ? response.data.url : (local + "/" + response.data.url));            
                 self.setState({ images : [...self.state.images, response.data.url]}, () => {
                     self.options();
                 });
@@ -386,7 +386,7 @@ class Write extends Component
             .catch((err) => {
                 alert(err.response.data);
                 return;
-            });
+            });    
         }
     }
 
