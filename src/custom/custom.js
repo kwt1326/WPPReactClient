@@ -30,6 +30,11 @@ function checklogin ( ) {
         });
     })
     .catch((err) => {
+        if(err.response.data.expired === true) {
+            alert("로그인 유효시간이 만료되었습니다. 다시 로그인 해주세요.");
+            window.sessionStorage.removeItem('token');
+            window.location.replace(window.location.origin + '/login');
+        }
         return Promise.reject(err);
     });
 }
@@ -145,8 +150,7 @@ function removefile (filename) {
 
 function getimgsrc ( provider, imgp, alter ) {
     if(provider === 'local')
-        return (imgp) ? ((islive()) ? api +  "/" + imgp :
-                                      local + "/" + imgp) : alter;
+        return (imgp) ? ((islive()) ? imgp : (local + "/" + imgp)) : alter;
     else {
         return imgp;
     }

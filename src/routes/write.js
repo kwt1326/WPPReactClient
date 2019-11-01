@@ -370,7 +370,7 @@ class Write extends Component
             formData.append('img', file);
             axios({
                 method: 'post',
-                url: '/api/post/files/ci', //(islive()) ? '/api/post/files/ci' : '/api/post/files',
+                url: (islive()) ? '/api/post/files/ci' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -384,7 +384,7 @@ class Write extends Component
                 });
             })
             .catch((err) => {
-                alert(err.response.data);
+                alert(err);
                 return;
             });        
         }
