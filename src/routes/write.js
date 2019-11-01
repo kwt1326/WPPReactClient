@@ -439,7 +439,7 @@ class Write extends Component
         }
 
         function sendtags ( name ) {
-            if(name === undefined || name === null)
+            if(name === undefined || name === null || name === '')
                 return;
 
             // tags DB Send (POST) 
