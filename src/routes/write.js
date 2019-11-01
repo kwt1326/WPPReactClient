@@ -360,17 +360,17 @@ class Write extends Component
         input.value = ''; // 동일한 이미지 부를시 onChange 발생하지 않음
         input.click();
 
-        input.onchange = () => {
+        input.onchange = async () => {
 
             const quill = self.quillRef.current.editor;
             const file = input.files[0];
             const formData = new FormData();
-            formData.append('img', file);
 
             // image upload
+            formData.append('img', file);
             axios({
                 method: 'post',
-                url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files',
+                url: '/api/post/files/ci', //(islive()) ? '/api/post/files/ci' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -386,7 +386,7 @@ class Write extends Component
             .catch((err) => {
                 alert(err.response.data);
                 return;
-            });    
+            });        
         }
     }
 
