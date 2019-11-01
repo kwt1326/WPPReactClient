@@ -16,25 +16,22 @@ function islive() {
 
 // TOKEN VERIFY
 function checklogin ( ) {
-    async function process () {
-        return await axios({
-            method: 'get',
-            url: (islive()) ? api + '/api/user' : '/api/user',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(function (response) {
-            return Promise.resolve({
-                userdata : response,
-                result : true
-            });
-        })
-        .catch((err) => {
-            return Promise.reject(err);
+    return axios({
+        method: 'get',
+        url: (islive()) ? api + '/api/user' : '/api/user',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(function (response) {
+        return Promise.resolve({
+            userdata : response,
+            result : true
         });
-    }
-    return process();
+    })
+    .catch((err) => {
+        return Promise.reject(err);
+    });
 }
 
 function logout () {
@@ -108,48 +105,42 @@ function traveledUserhistory ( check_id, check_type ) {
 }
 
 function getTags ( ) {
-    async function process () {
-        return await axios({
-            method: 'get',
-            url: (islive()) ? api + '/api/tag' : '/api/tag',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(function (response) {
-            return Promise.resolve({
-                tags : response.data.tags,
-            });
-        })
-        .catch((err) => {
-            return Promise.reject(err);
+    return axios({
+        method: 'get',
+        url: (islive()) ? api + '/api/tag' : '/api/tag',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(function (response) {
+        return Promise.resolve({
+            tags : response.data.tags,
         });
-    }
-    return process();
+    })
+    .catch((err) => {
+        return Promise.reject(err);
+    });
 }
 
 function removefile (filename) {
-    async function process() {
-        return await axios({
-            method: 'delete',
-            url: (islive()) ? api + '/api/post/files' : '/api/post/files',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            params: {
-                name: filename,
-            }
-        })
-            .then(function (response) {
-                return Promise.resolve({
-                    result : response.data.response.result
-                })
+    return axios({
+        method: 'delete',
+        url: (islive()) ? api + '/api/post/files' : '/api/post/files',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        params: {
+            name: filename,
+        }
+    })
+        .then(function (response) {
+            return Promise.resolve({
+                result : response.data.response.result
             })
-            .catch((err) => {
-                return Promise.reject(err);
-            });  
-    }
-    return process();
+        })
+        .catch((err) => {
+            return Promise.reject(err);
+        });  
 }
 
 function getimgsrc ( provider, imgp, alter ) {

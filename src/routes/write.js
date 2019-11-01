@@ -90,8 +90,8 @@ class Write extends Component
         const self = this;
         if(self.state.edit_loaded === true) return;
 
-        const process = async () => {
-            return await axios({
+        const process = () => {
+            return axios({
                 method: 'get',
                 url: (islive()) ? api + '/api/post' : '/api/post',
                 headers: {
@@ -280,17 +280,13 @@ class Write extends Component
 
         const images = this.extract_img(self.state.text, true);
 
-        async function addoptions () {
+        function process () {
             for(let i = 0 ; i < images.length ; ++i) {
                 var opt = document.createElement('option');
                 opt.value = images[i];
                 opt.innerHTML = images[i];
                 self.imageselect.appendChild(opt);
             }
-        }
-
-        async function process () {
-            await addoptions();
         }
 
         process();
@@ -310,7 +306,7 @@ class Write extends Component
             self.createtags();
         }
 
-        async function addtags () {
+        function addtags () {
             for(let i = 0 ; i < arrtags.length ; ++i) {
                 if(arrtags[i]) {
                     let tag = document.createElement('button');
@@ -364,7 +360,7 @@ class Write extends Component
         input.value = ''; // 동일한 이미지 부를시 onChange 발생하지 않음
         input.click();
 
-        input.onchange = async () => {
+        input.onchange = () => {
 
             const quill = self.quillRef.current.editor;
             const file = input.files[0];
@@ -442,114 +438,101 @@ class Write extends Component
             tag_inline += ((i === tags.length - 1) ? tags[i] : (tags[i] + ","));
         }
 
-        async function sendtags ( name ) {
-
+        function sendtags ( name ) {
             if(name === undefined || name === null)
-                return Promise.reject();
+                return;
 
             // tags DB Send (POST) 
-            await axios({
+            axios({
                 method: 'post',
                 url: (islive()) ? api + '/api/tag' : '/api/tag',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 params: {
-                    name: name
+                    name: tag_inline //name
                 }
             })
-            .then(function (response) {
-                return Promise.resolve("Success add tag");
-            })
-            .catch(err => {
-                return Promise.reject();
-            })
+            .then(function (response) {})
+            .catch(err => { alert(err); })
         }
         
-        async function process () {
-            self.state.images.forEach((element) => {
-                let targetarr = element.split('.');
-                let finded = false;
-                for(let i = 0 ; i < matchArray.length ; ++i) {
-                    const idx = matchArray[i].indexOf(targetarr[0]);
-                    const idx2 = matchArray[i].indexOf(targetarr[1] + '">'); 
-                    // extension + 괄호 (중간에 확장자 검색 방지, 끝부분만 검사)
-                    if((idx !== -1) && (idx2 !== -1)) {
-                        finded = true;
-                    }
+        self.state.images.forEach((element) => {
+            let targetarr = element.split('.');
+            let finded = false;
+            for(let i = 0 ; i < matchArray.length ; ++i) {
+                const idx = matchArray[i].indexOf(targetarr[0]);
+                const idx2 = matchArray[i].indexOf(targetarr[1] + '">'); 
+                // extension + 괄호 (중간에 확장자 검색 방지, 끝부분만 검사)
+                if((idx !== -1) && (idx2 !== -1)) {
+                    finded = true;
                 }
+            }
     
-                if (finded === false) {
-                    removefile(element);
+            if (finded === false) {
+                removefile(element);
+            }
+        })
+    
+        // If Edit Mode, process patch if not process post
+        if(self.state.edit_postid && self.state.edit_loaded === true) 
+        {
+            // post DB Update (Patch)
+            axios({
+                method: 'patch',
+                url: (islive()) ? api + '/api/post' : '/api/post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                params: {
+                    title: title,
+                    content: content,
+                    guid : self.state.edit_postid,
+                    frontimg : self.imageselect.value,
+                    hashtag : tag_inline,
                 }
             })
-    
-            // If Edit Mode, process patch if not process post
-            if(self.state.edit_postid && self.state.edit_loaded === true) 
-            {
-                // post DB Update (Patch)
-                await axios({
-                    method: 'patch',
-                    url: (islive()) ? api + '/api/post' : '/api/post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    params: {
-                        title: title,
-                        content: content,
-                        guid : self.state.edit_postid,
-                        frontimg : self.imageselect.value,
-                        hashtag : tag_inline,
-                    }
-                })
-                .then(async (response) => {    
-                    for(let i = 0 ; i < tags.length ; ++i) {
-                        await sendtags(tags[i]).then(res=>{}).catch(err=>{});
-                    }
-                    console.log(response.data.result);
-                    alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                    self.setState({ reDirection : './board/All' });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    alert(err);
-                    self.setState({ reDirection : './board/All' });
-                });   
-            }
-            else 
-            {
-                // post DB Send (POST) 
-                await axios({
-                    method: 'post',
-                    url: (islive()) ? api + '/api/post' : '/api/post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    params: {
-                        title: title,
-                        content: content,
-                        guid : createguid(),
-                        frontimg : self.imageselect.value,
-                        hashtag : tag_inline,
-                    }
-                })
-                .then(async (response) => {    
-                    for(let i = 0 ; i < tags.length ; ++i) {
-                        await sendtags(tags[i]);   
-                    }
-                    console.log(response.data.result);
-                    alert('포스트가 성공적으로 등록되었습니다.');
-                    self.setState({ reDirection : './board/All' });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    alert(err);
-                    self.setState({ reDirection : './board/All' });
-                });   
-            }
+            .then((response) => {    
+                sendtags(tag_inline);
+                console.log(response.data.result);
+                alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
+                self.setState({ reDirection : './board/All' });
+            })
+            .catch((err) => {
+                console.log(err);
+                alert(err);
+                self.setState({ reDirection : './board/All' });
+            });   
         }
-
-        process();
+        else 
+        {
+            // post DB Send (POST) 
+            axios({
+                method: 'post',
+                url: (islive()) ? api + '/api/post' : '/api/post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                params: {
+                    title: title,
+                    content: content,
+                    guid : createguid(),
+                    frontimg : self.imageselect.value,
+                    hashtag : tag_inline,
+                }
+            })
+            .then((response) => {    
+                sendtags(tag_inline);
+                console.log(response.data.result);
+                alert('포스트가 성공적으로 등록되었습니다.');
+                self.setState({ reDirection : './board/All' });
+            })
+            .catch((err) => {
+                console.log(err);
+                alert(err);
+                self.setState({ reDirection : './board/All' });
+            });   
+        }
     }
 
     resize () {
