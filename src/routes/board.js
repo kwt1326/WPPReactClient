@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
-import {checklogin, islive, api, getimgsrc} from '../custom/custom';
+import {checklogin, islive, api} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 
@@ -16,7 +16,6 @@ class Board extends Component
         this.state = {
            screenstate : 'desktop',
            redirect : 'none',
-           defaultimg : require('../image/file_default.png'),
            page : 1,
            ofs : null,
            row_count : null,
@@ -146,7 +145,7 @@ class Board extends Component
                                 <td className="selectorList" style={{ width: '50%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={getimgsrc('local', rows[i].content.frontimg, self.state.defaultimg)} alt="front-img"></img></div> 
+                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={rows[i].content.frontimg} alt="front-img"></img></div> 
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
@@ -173,7 +172,7 @@ class Board extends Component
                                 <td style={{ width: '100%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
-                                        <img src={getimgsrc('local', rows[i].content.frontimg, self.state.defaultimg)} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
+                                        <img src={rows[i].content.frontimg} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>

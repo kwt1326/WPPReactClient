@@ -148,14 +148,6 @@ function removefile (filename) {
         });  
 }
 
-function getimgsrc ( provider, imgp, alter ) {
-    if(provider === 'local')
-        return (imgp) ? ((islive()) ? imgp : (local + "/" + imgp)) : alter;
-    else {
-        return imgp;
-    }
-}
-
 function str_length ( compare_string ) 
 {
     var total = 0;
@@ -198,6 +190,5 @@ export {
     traveledUserhistory,
     str_length,
     timeparse,
-    getimgsrc,
     getTags,
 };

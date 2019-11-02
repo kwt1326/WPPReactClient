@@ -1,8 +1,9 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
-import {checklogin, api, local, islive, getimgsrc} from '../custom/custom';
+import {checklogin, api, local, islive} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
+import unknown from '../image/unknown.png';
 
 class User extends Component 
 {
@@ -13,7 +14,7 @@ class User extends Component
             email : "E-mail",
             nickname : "Nickname",
             username : "Username",
-            profileimg : require("../image/unknown.png"),
+            profileimg : unknown,
             loadimgname : "",
             reDirection : 'none',
         }
@@ -38,7 +39,7 @@ class User extends Component
                 email : data.email,
                 nickname : data.nickname,
                 username : data.username,
-                profileimg : getimgsrc(data.provider, data.profileimg, self.state.profileimg),
+                profileimg : data.profileimg,
                 loadimgname : data.profileimg,
                 provider : data.provider
             }, () => { 
@@ -72,7 +73,7 @@ class User extends Component
             if(self.file !== null) {
                 await axios({
                     method: 'post',
-                    url: (islive()) ? api + '/api/post/files' : '/api/post/files',
+                    url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files/ci',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -95,7 +96,7 @@ class User extends Component
                 params: {
                     nickname: nickinput.value,
                     username: userinput.value,
-                    profileimg : (filename) ? filename : self.state.loadimgname,
+                    profileimg : (filename) ? filename : unknown,
                 }
             })
             .then(function (response) {
@@ -174,7 +175,7 @@ class User extends Component
             <div className="User">
                 <div className="inputform" style={{backgroundColor : 'midnightblue', color : "white"}}>
                     <div style={{ float : "left" , width: "30%" , minHeight :"300px", padding : "10%", backgroundColor : 'midnightblue', color : "white"}}>
-                        <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img"/>
+                        <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img" />
                         {this.use_changeimage()}
                     </div>
                     <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>

@@ -4,13 +4,18 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
 import {checklogin, increase, traveledUserhistory, 
-        str_length, createguid, api, islive, getimgsrc, timeparse} from '../custom/custom';
+        str_length, createguid, api, islive, timeparse} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
 
 import BoardSub from '../components/boardSub';
+
+// default image
+import unknown from '../image/unknown.png';
+import heartSel from '../image/heartSelected-ico.png';
+import heartDef from '../image/heart-ico.png';
 
 // 글쓰기
 class Reading extends Component
@@ -20,8 +25,7 @@ class Reading extends Component
         this.state = {
            screenstate : 'desktop',     // css react option
            reDirection : 'none',        // reDirection path
-           loadingText : 'loading...',  // load noticeview text
-           defaultimg : require("../image/unknown.png"),           
+           loadingText : 'loading...',  // load noticeview text       
            level : 'user',
            postid : '',       
            content : {},
@@ -173,8 +177,8 @@ class Reading extends Component
     }
 
     getheartimg = ( picked ) => {
-        return (picked) ? "url('" + require('../image/heartSelected-ico.png') + "')" 
-                        : "url('" + require('../image/heart-ico.png') + "')"; 
+        return (picked) ? "url('" + heartSel + "')" 
+                        : "url('" + heartDef + "')"; 
     }
 
     react_splitLeft() {
@@ -439,7 +443,7 @@ class Reading extends Component
                         <td id={"comment_elem_" + comments[i].id}>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
                                 <div style={{ display : "table-cell", verticalAlign : "middle",
-                                     backgroundImage : 'url(' + getimgsrc(comments_ex[i].provider, comments_ex[i].profileimg, self.state.defaultimg) + ')', backgroundSize: "50px", width : "50px", height : "50px"}} />
+                                     backgroundImage : 'url(' + comments_ex[i].profileimg + ')', backgroundSize: "50px", width : "50px", height : "50px"}} />
                                 <div style={{ display : "table-cell", verticalAlign : "middle", textAlign : "left", paddingLeft : "2%"}}>
                                     <div>
                                         {comments_ex[i].nickname}
@@ -678,7 +682,7 @@ class Reading extends Component
             if(res.result === false) {
                 increase(self.getguid(), 'heart', 1, false)
                 .then(res => {
-                    const heartSelectedimg = require('../image/heartSelected-ico.png');
+                    const heartSelectedimg = heartSel;
                     if(heartSelectedimg) {
                         this.hearticon.style.backgroundImage = "url('" + heartSelectedimg + "')";
                         alert("포스트가 추천되었습니다.");
@@ -689,7 +693,7 @@ class Reading extends Component
             else if ( res.result === true ) {
                 increase(self.getguid(), 'heart', -1, false)
                 .then(res => {
-                    const heartimg = require('../image/heart-ico.png');
+                    const heartimg = heartDef;
                     if(heartimg)
                         this.hearticon.style.backgroundImage = "url('" + heartimg + "')";
                         alert("포스트의 추천이 취소되었습니다.");

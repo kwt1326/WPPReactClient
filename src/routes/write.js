@@ -28,6 +28,7 @@ class Write extends Component
            edit_contents : {},
            edit_loaded : false,
            applystate_text : 'Apply', 
+           frontimg : null,
         };
         this.spliter = this.tr_spliter.bind(this);
         this.reactsplitL = this.react_splitLeft.bind(this);
@@ -37,7 +38,6 @@ class Write extends Component
 
         // edit function
         this.onLoad = this.onLoad_editpost.bind(this);
-        this.categorySelect = this.categorySelect_edit.bind(this);
 
         // ref Object
         this.quillRef = React.createRef();
@@ -121,7 +121,6 @@ class Write extends Component
                 edit_loaded : true,
                 applystate_text : 'Edit'
             }, () => {
-                self.options();
                 self.createtags();
             });
         })
@@ -137,17 +136,6 @@ class Write extends Component
         if(this.state.edit_loaded === true && this.state.edit_contents.title) {
             const titleelem = document.getElementById('input_title');
             titleelem.value = this.state.edit_contents.title;
-        }
-    }
-
-    categorySelect_edit () {
-        if(this.state.edit_loaded === true && this.state.edit_contents.category) {
-            const selectdiv = document.getElementById('select_category');
-            for(let i = 0 ; i < selectdiv.options.length; ++i) {
-                if(selectdiv.options[i].text === this.state.edit_contents.category) {
-                    selectdiv.selectedIndex = i;
-                }
-            }
         }
     }
 
@@ -236,11 +224,11 @@ class Write extends Component
                     </tr>
                     <tr>
                         <td>
-                            <div style={{ width : "auto" }}>{"대표 이미지 : "}</div>
+                            <div style={{ width : "auto" }}>{"대표 이미지 URL : "}</div>
                         </td>
                         <td>
-                            <select id="select_frontimage" ref={(mount) => {this.imageselect = mount}} style={{ width: '80%' }}>
-                            </select>
+                            <input id="frontimage" type='text' ref={(mount) => {this.imageselect = mount}} style={{ width: '80%' }}>
+                            </input>
                         </td>
                     </tr>
                     <tr>
@@ -271,25 +259,6 @@ class Write extends Component
             <input id='onimage' type='file' accept='image/*' style={{ visibility : 'hidden'}}></input>
         </div>
         );
-    }
-
-    options = () => 
-    {
-        const self = this;
-        self.imageselect.length = 0;
-
-        const images = this.extract_img(self.state.text, true);
-
-        function process () {
-            for(let i = 0 ; i < images.length ; ++i) {
-                var opt = document.createElement('option');
-                opt.value = images[i];
-                opt.innerHTML = images[i];
-                self.imageselect.appendChild(opt);
-            }
-        }
-
-        process();
     }
 
     createtags = () => 
@@ -360,7 +329,7 @@ class Write extends Component
         input.value = ''; // 동일한 이미지 부를시 onChange 발생하지 않음
         input.click();
 
-        input.onchange = async () => {
+        input.onchange = () => {
 
             const quill = self.quillRef.current.editor;
             const file = input.files[0];
@@ -370,7 +339,7 @@ class Write extends Component
             formData.append('img', file);
             axios({
                 method: 'post',
-                url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files',
+                url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files/ci',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -378,41 +347,14 @@ class Write extends Component
             })
             .then(function (response) {
                 const range = quill.getSelection();
-                quill.insertEmbed(range.index, 'image', (islive()) ? response.data.url : (local + "/" + response.data.url));            
-                self.setState({ images : [...self.state.images, response.data.url]}, () => {
-                    self.options();
-                });
+                quill.insertEmbed(range.index, 'image', response.data.url);            
+                self.setState({ images : [...self.state.images, response.data.url]});
             })
             .catch((err) => {
                 alert(err);
                 return;
             });        
         }
-    }
-
-    extract_img = (content, bName) => {
-        const pattern = /<img src="(\/?)(\w+)([^>]*)">/;
-        let matchArray = [];
-        let buffer = content;
-        let bufferarray = buffer.match(pattern);
-        while(bufferarray !== null) {
-            if(bName) {
-                const splited = bufferarray[0].split("/");
-                const match = splited[splited.length - 1];
-                const name = match.split('"')[0];
-                matchArray.push(name);    
-            }
-            else
-                matchArray.push(bufferarray[0]);
-            buffer = buffer.split(bufferarray[0])[1];
-            bufferarray = buffer.match(pattern);
-        }
-
-        if(bName) {
-            
-        }
-
-        return matchArray;
     }
 
     onClick_Post() 
@@ -427,9 +369,6 @@ class Write extends Component
         else if(!content) {
             alert('내용을 입력해 주세요.'); return;
         }
-
-        // img src 모두 추출
-        let matchArray = this.extract_img(self.state.text);
 
         const tags = this.state.tags;
         let tag_inline = "";
@@ -456,24 +395,7 @@ class Write extends Component
             .then(function (response) {})
             .catch(err => { alert(err); })
         }
-        
-        self.state.images.forEach((element) => {
-            let targetarr = element.split('.');
-            let finded = false;
-            for(let i = 0 ; i < matchArray.length ; ++i) {
-                const idx = matchArray[i].indexOf(targetarr[0]);
-                const idx2 = matchArray[i].indexOf(targetarr[1] + '">'); 
-                // extension + 괄호 (중간에 확장자 검색 방지, 끝부분만 검사)
-                if((idx !== -1) && (idx2 !== -1)) {
-                    finded = true;
-                }
-            }
-    
-            if (finded === false) {
-                removefile(element);
-            }
-        })
-    
+            
         // If Edit Mode, process patch if not process post
         if(self.state.edit_postid && self.state.edit_loaded === true) 
         {

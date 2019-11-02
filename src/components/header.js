@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
 import { Link } from 'react-router-dom';
-import {checklogin, logout, getimgsrc} from '../custom/custom';
+import {checklogin, logout} from '../custom/custom';
 import '../css/style.css';
+import unknown from '../image/unknown.png';
 
 class Header extends Component
 {
@@ -12,7 +13,7 @@ class Header extends Component
             redirect : false,
             screenstate : 'desktop',
             nickname : '',
-            profileimg : require("../image/unknown.png"),
+            profileimg : unknown,
             existsession : false
         };
         this.reactscreen = this.react_window.bind(this);
@@ -49,7 +50,7 @@ class Header extends Component
             if(self.state.nickname !== data.nickname &&
                 self.state.existsession !== true) {
                     self.setState({ 
-                        profileimg : getimgsrc(data.provider, data.profileimg, self.state.profileimg),
+                        profileimg : data.profileimg,
                         nickname : data.nickname,
                         existsession : true
                     })
@@ -65,7 +66,7 @@ class Header extends Component
         logout()
         .then((res) => {
             self.setState({
-                profileimg : require("../image/unknown.png"),
+                profileimg : unknown,
                 nickname : res.nickname,
                 existsession : res.existsession
             }, () => {
