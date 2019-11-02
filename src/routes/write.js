@@ -370,7 +370,7 @@ class Write extends Component
             formData.append('img', file);
             axios({
                 method: 'post',
-                url: (islive()) ? '/api/post/files/ci' : '/api/post/files',
+                url: (islive()) ? api + '/api/post/files/ci' : '/api/post/files',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
