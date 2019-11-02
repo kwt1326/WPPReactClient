@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
+import { Quill } from "quill";
 import axios from 'axios';
 import {checklogin, removefile, createguid, str_length, api, local, islive} from '../custom/custom';
 import '../css/style.css';
@@ -224,10 +225,10 @@ class Write extends Component
                     </tr>
                     <tr>
                         <td>
-                            <div style={{ width : "auto" }}>{"대표 이미지 URL : "}</div>
+                            <div style={{ width : "auto" }}>{"미리보기 이미지 : "}</div>
                         </td>
                         <td>
-                            <input id="frontimage" type='text' ref={(mount) => {this.imageselect = mount}} style={{ width: '80%' }}>
+                            <input id="frontimage" type='text' ref={(mount) => {this.imageselect = mount}} style={{ width: '80%' }} placeholder={"이미지를 클릭하면 미리보기로 설정 됩니다."}>
                             </input>
                         </td>
                     </tr>
@@ -488,6 +489,19 @@ class Write extends Component
             alert('로그인 페이지로 이동합니다.');
             self.setState({ reDirection : `/login?from=${"write"}` });
         })
+
+        // Quill Mouse Click Event ( 썸네일 선택 )
+        const editor = this.quillRef.current.editor;
+        const ImageBlot = ReactQuill.Quill.import('formats/image');
+        const Parchment = ReactQuill.Quill.import('parchment');
+    
+        editor.root.addEventListener('click', (ev) => {
+          let image = Parchment.find(ev.target);
+    
+          if (image instanceof ImageBlot) {
+            self.imageselect.value = image.domNode.currentSrc;
+          }
+        });
 
         window.addEventListener('resize', () => {setTimeout(self.resize.bind(self), 100)});
         self.resize();
