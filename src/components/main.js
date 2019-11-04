@@ -14,9 +14,12 @@ class Main extends Component
         this.state = {
             page : 0,
             ready : false,
+            render_rows : null,
         }
 
-        this.row = null;
+        this.style_width_left = { minWidth : '100px', width : '20%' };
+        this.style_width_right = { width : '80%' };
+        this.style_title = { textAlign : "center" , fontStyle : "bold", width : "100%", color : "whitesmoke" };
         this.create_archive();
     }
 
@@ -43,66 +46,58 @@ class Main extends Component
             }
         })
         .then(res => {
-            self.create_row(res.data);
+            self.create_row(res.data)
+            .then(res => {
+                self.setState({render_rows : res});
+            });
         })
         .catch(err => {
             console.log(err);
         })
     }
 
-    create_row = async (res) => 
-    {
-        const self = this;
-        try {
-            const arr = [];
-            async function process () {
-                for(const row of res) {
-                    await arr.push(
-                        <div className="box-child">
-                            <table>
-                                <tbody>
-                                    <tr rowspan="3">
-                                        <td>
-                                            <img src={row.frontimg} alt="front-img" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}} />
-                                        </td>
-                                        <td>
-                                            <div style={{fontStyle : "bold"}}><h3>{row.title}</h3></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div>{row.createdAt + " (수정)" + (row.updatedAt) ? row.updatedAt : ""}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div className="ql-editor" dangerouslySetInnerHTML={{__html: DomPurify.sanitize(row.content)}}></div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    )
-                }    
-            }    
-            process()
-            .then (result => {
-                self.setState({ready : true}, () => {self.row = arr});
-            })
-            .catch(err => {
-                throw new Error("create row failed");
-            })
-        }
-        catch (err) {
-            alert("데이터를 가져오는데 실패하였습니다.");
-        }
+    create_row = async (res) => {
+        const arr = [];
+        for(const row of res) {
+            const img = (row.frontimg) ? row.frontimg : filedef;
+            await arr.push(
+                <div className="box-child-archive">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3" style={this.style_width_left}>
+                                    <img src={img} alt="unknown" 
+                                    onError={(e) => {
+                                        e.target.onerror = null; e.target.src=filedef;
+                                        }} />
+                                </td>
+                                <td style={this.style_width_right}>
+                                    <div style={{fontStyle : "bold"}}><h3>{row.title}</h3></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={this.style_width_right}>
+                                    <div>{row.createdAt + " (수정)" + (row.updatedAt) ? row.updatedAt : ""}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={this.style_width_right}>
+                                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(row.content)}}></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }    
+        return arr;
     }
 
     render () {
         return (
-            // <ThreeComp/>
-            <div id="archive" className="box">
-                {this.row}
+            <div id="archive" className="box-vertical">
+                <div style={this.style_title}><h2>A/ Q/ U/ A/ -Archive-</h2></div>
+                {this.state.render_rows}
             </div>
         )
     }
@@ -110,6 +105,7 @@ class Main extends Component
     componentDidMount () {
         this.catchSession();
     }
+
 }
 
 export default Main;

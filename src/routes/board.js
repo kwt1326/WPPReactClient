@@ -131,7 +131,7 @@ class Board extends Component
                     if (!rows[i])
                         continue;
                     else {
-                        const img = (rows[i].content.frontimg) ? rows[i].content.frontimg : filedef;
+                        const img = (rows[i].frontimg) ? rows[i].frontimg : filedef;
                         arr.push(
                             <tr className="selectorList">
                                 <td style={{ width: '10%' }}>
@@ -140,21 +140,21 @@ class Board extends Component
                                     </div>
                                 </td>
                                 <td className="selectorList" style={{ width: '70%' }}>
-                                    <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading?post=' + String(rows[i].guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={img} alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img></div> 
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
+                                        <div style={{ display: 'table-cell', width : "25%"}}><img src={img} alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img></div> 
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "75%" }}>{rows[i].title}</div>
                                     </div>
                                     </Link>
                                 </td>
                                 <td style={{ width: '10%' }}>
                                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.views}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].views}</div>
                                     </div>
                                 </td>
                                 <td style={{ width: '10%' }}>
                                     <div className="board-viewsofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].content.hearts}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].hearts}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -162,10 +162,10 @@ class Board extends Component
                         arr_mobile.push(
                             <tr className="selectorList">
                                 <td style={{ width: '100%' }}>
-                                    <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={'/reading?post=' + String(rows[i].guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
                                         <img src={img} style={{ width : "100px", height : "100px"}}  alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
+                                        <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].title}</div>
                                     </div>
                                     </Link>
                                 </td>
