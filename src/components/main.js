@@ -93,11 +93,20 @@ class Main extends Component
         return arr;
     }
 
+    render_row = () => {
+        if(this.state.render_rows) { 
+            return (this.state.render_rows);
+        }
+        else {
+            return (<div style={{color : "white"}}><h3>Loading...</h3></div>)
+        }
+    }
+
     render () {
         return (
             <div id="archive" className="box-vertical">
                 <div style={this.style_title}><h2>A/ Q/ U/ A/ -Archive-</h2></div>
-                {this.state.render_rows}
+                {this.render_row()}
             </div>
         )
     }
