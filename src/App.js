@@ -20,7 +20,9 @@ import Auth from './routes/auth'
 import Auth_CPW from './routes/auth_cpw';
 import { string } from 'prop-types';
 
-axios.defaults.headers = { Authorization: `Bearer ${window.sessionStorage.getItem('token')}` };
+axios.defaults.headers = { 
+  Authorization: `Bearer ${window.sessionStorage.getItem('token')}` 
+};
 
 class App extends Component {
   constructor(props) {

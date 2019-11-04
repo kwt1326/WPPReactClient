@@ -153,7 +153,7 @@ class User extends Component
                         <div style={{ display : 'table', width: "100%" , minHeight :"300px"}}>
                             <img src={this.state.profileimg} style={{ 
                                 display : 'table-cell', width : "180px", textAlign : "left", left : "calc(50% - 90px)", position : "relative", marginTop : "1%", marginBottom : "1%"
-                                }} alt="profile-img" />
+                                }} alt="profile-img" onError={(e)=>{e.target.onerror = null; e.target.src=unknown}} />
                             {this.use_changeimage()}
                         </div>
                         <div style={{ width: "100%", minHeight :"300px"}}>
@@ -175,7 +175,7 @@ class User extends Component
             <div className="User">
                 <div className="inputform" style={{backgroundColor : 'midnightblue', color : "white"}}>
                     <div style={{ float : "left" , width: "30%" , minHeight :"300px", padding : "10%", backgroundColor : 'midnightblue', color : "white"}}>
-                        <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img" />
+                        <img src={this.state.profileimg} style={{ width : "180px" }} alt="profile-img" onError={(e)=>{e.target.onerror = null; e.target.src=unknown}}/>
                         {this.use_changeimage()}
                     </div>
                     <div style={{ float : "right" , width: "30%", minHeight :"300px", padding: "10%", backgroundColor : 'midnightblue', color : "white"}}>

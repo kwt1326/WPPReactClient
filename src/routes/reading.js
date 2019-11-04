@@ -448,8 +448,9 @@ class Reading extends Component
                                     <div>
                                         {comments_ex[i].nickname}
                                         <div className="selector-deep" style={commentctrl} onClick={() => {
-                                            if(document.getElementById("comment_main"))
+                                            if(document.getElementById("comment_main")) {
                                                 return;
+                                            }
                                             if(self.state.comment_active === comments[i].id) {
                                                 self.setState({ comment_active : -1 }, () => {self.create_Comment()});
                                             }

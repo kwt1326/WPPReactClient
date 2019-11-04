@@ -113,7 +113,7 @@ class Header extends Component
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
                         <Link className="link-user" to="/user">
                             <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}
-                                 alt="profile-img"/>
+                                 alt="profile-img" onError={(e)=>{e.target.onerror = null; e.target.src=unknown}}/>
                             <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
                         </Link>
                     </div>
@@ -126,7 +126,7 @@ class Header extends Component
                         <div className="nickname" >{this.state.nickname}</div>
                         <Link className="link-user" to="/user">
                             <img className="selectorIcon" src={this.state.profileimg} style={{width : '50px', height : '50px', position : "absolute"}}
-                                 alt="profile-img"/>
+                                 alt="profile-img" onError={(e)=>{e.target.onerror = null; e.target.src=unknown}}/>
                             <div className="userframe selectorIcon" style={{ width : '50px', height : '50px', position : "absolute"}}></div>
                         </Link>
                     </div>

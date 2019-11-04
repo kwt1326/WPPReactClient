@@ -6,6 +6,7 @@ import '../css/style.css';
 import '../css/board.css';
 
 import BoardSub from '../components/boardSub';
+import filedef from '../image/file_default.png';
 import { func } from 'prop-types';
 
 // 자유게시판 (게시글 리스트))
@@ -96,14 +97,9 @@ class Board extends Component
                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>번호</div>
                     </div>
                 </td>
-                <td style={{ width: '50%' }}>
+                <td style={{ width: '70%' }}>
                     <div className="board-titleofpost" style={{ display: 'table', width: '100%', textAlign: 'center' }}>
                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>제목</div>
-                    </div>
-                </td>
-                <td style={{ width: '20%' }}>
-                    <div className="board-writerofpost" style={{ display: 'table' }}>
-                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>작성자</div>
                     </div>
                 </td>
                 <td style={{ width: '10%' }}>
@@ -135,6 +131,7 @@ class Board extends Component
                     if (!rows[i])
                         continue;
                     else {
+                        const img = (rows[i].content.frontimg) ? rows[i].content.frontimg : filedef;
                         arr.push(
                             <tr className="selectorList">
                                 <td style={{ width: '10%' }}>
@@ -142,18 +139,13 @@ class Board extends Component
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{(ofs - i)}</div>
                                     </div>
                                 </td>
-                                <td className="selectorList" style={{ width: '50%' }}>
+                                <td className="selectorList" style={{ width: '70%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={rows[i].content.frontimg} alt="front-img"></img></div> 
+                                        <div style={{ display: 'table-cell', width : "30%"}}><img src={img} alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img></div> 
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
-                                </td>
-                                <td style={{ width: '20%' }}>
-                                    <div className="board-writerofpost" style={{ display: 'table' }}>
-                                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{rows[i].writer}</div>
-                                    </div>
                                 </td>
                                 <td style={{ width: '10%' }}>
                                     <div className="board-viewsofpost" style={{ display: 'table' }}>
@@ -172,7 +164,7 @@ class Board extends Component
                                 <td style={{ width: '100%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].content.guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
-                                        <img src={rows[i].content.frontimg} style={{ width : "100px", height : "100px"}}  alt="front-img"></img>
+                                        <img src={img} style={{ width : "100px", height : "100px"}}  alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].content.title}</div>
                                     </div>
                                     </Link>
