@@ -8,6 +8,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Main from './components/main';
 import Menulist from './components/menulist';
+import Introduce from './components/introduce';
 
 // Route
 import Login from './routes/login';
@@ -24,61 +25,35 @@ axios.defaults.headers = {
   Authorization: `Bearer ${window.sessionStorage.getItem('token')}` 
 };
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        screenstate : 'desktop',
-    };
-    this.main_ref = React.createRef();
-    this.footer_ref = React.createRef();
-  }
-
-  render () {
-    return (
-      <BrowserRouter>
-        <div className="App">
-          <header id="header"><Header /></header>
-          <div id="intro">{/*<Intro />*/}</div>
-          <section id="main">
-            <div id="main-div" ref={(mount) => {this.main_ref = mount}}>
-              <Route exact path="/" component={Main} />
-              <Route path="/login" component={Login} />
-              <Route path="/auth/e-mail" component={Auth} />
-              <Route path="/auth/cpw" component={Auth_CPW} />
-              <Route path="/Join" component={Join} />
-              <Route path="/user" component={User} />
-              <Route path="/write" component={Write} />
-              <Route path="/reading" component={Reading} />
-              <Route path="/board/:page" component={Board} />
-            </div>
-          </section>
-          <div id="cover"></div>
-          <div id="virtual-cover">
-            <Menulist />
+function App () {
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <header id="header"><Header /></header>
+        <section id="main">
+          <div id="main-div">
+            <Route exact path="/" component={Main} />
+            <Route path="/login" component={Login} />
+            <Route path="/auth/e-mail" component={Auth} />
+            <Route path="/auth/cpw" component={Auth_CPW} />
+            <Route path="/Join" component={Join} />
+            <Route path="/user" component={User} />
+            <Route path="/write" component={Write} />
+            <Route path="/reading" component={Reading} />
+            <Route path="/board/:page" component={Board} />
+            <Route exact path="/Introduce" component={Introduce} />
           </div>
-          <footer id="footer">
-            <div ref={(mount) => {this.footer_ref = mount}}><Footer /></div>
-          </footer>
+        </section>
+        <div id="cover"></div>
+        <div id="virtual-cover">
+          <Menulist />
         </div>
-      </BrowserRouter>
-    );
-  }
-
-  resize () {
-    if(window.innerWidth <= 720) {
-        if(this.state.screenstate !== 'mobile') {
-            this.setState({ screenstate : 'mobile' });
-            return;
-        }
-    }
-    else if(window.innerWidth > 720) {
-        if(this.state.screenstate !== 'desktop') {
-            this.setState({ screenstate : 'desktop' });
-            return;
-        }
-    } 
-  }
+        <footer id="footer">
+          <div><Footer /></div>
+        </footer>
+      </div>
+    </BrowserRouter>
+  );
 }
 export default App;
 
