@@ -185,7 +185,7 @@ class Reading extends Component
         if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
             return (
                 <div className="split-left">
-                    <BoardSub/>
+                    <BoardSub parentWidth={window.innerWidth}/>
                 </div>
             );
         }
