@@ -1,7 +1,6 @@
 import React, { Component} from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import DomPurify from 'dompurify'; // HTML XSS Security
-//import ThreeComp from './threeCreator';
 import '../css/style.css';
 import { islive , api } from '../custom/custom';
 import filedef from '../image/file_default.png';
@@ -14,11 +13,14 @@ class Main extends Component
         this.state = {
             page : 0,
             ready : false,
-            render_rows : null,
+            isEnd : false,
+            isActive : false,
+            render_rows : [],
         }
 
-        this.style_width_left = { minWidth : '100px', width : '20%' };
-        this.style_width_right = { width : '80%' };
+        this.maindiv = React.createRef();
+        this.style_width_left = { minWidth : '100px', width : '20%', border : 'none' };
+        this.style_width_right = { width : '80%', border : 'none' };
         this.style_title = { textAlign : "center" , fontStyle : "bold", width : "100%", color : "whitesmoke" };
         this.create_archive();
     }
@@ -48,7 +50,11 @@ class Main extends Component
         .then(res => {
             self.create_row(res.data)
             .then(res => {
-                self.setState({render_rows : res});
+                self.setState({
+                    render_rows : self.state.render_rows.concat(res),
+                    isEnd : (res.length < 10) ? true : false,
+                    isActive : true,
+                });
             });
         })
         .catch(err => {
@@ -60,16 +66,15 @@ class Main extends Component
         const arr = [];
         for(const row of res) {
             const img = (row.frontimg) ? row.frontimg : filedef;
+            const onlytext = row.content.replace(/(<([^>]+)>)/ig,"");
             await arr.push(
-                <div className="box-child-archive">
-                    <table>
+                <div key={"archive-row-" + row.title} className="box-child-archive">
+                    <Link to={'/reading?post=' + String(row.guid)} style={{textDecoration : 'none', color : 'whitesmoke'}}>
+                    <table style={{ borderCollapse: 'collapse' }} className="selector-main" >
                         <tbody>
                             <tr>
-                                <td rowspan="3" style={this.style_width_left}>
-                                    <img src={img} alt="unknown" 
-                                    onError={(e) => {
-                                        e.target.onerror = null; e.target.src=filedef;
-                                        }} />
+                                <td rowSpan="4" style={this.style_width_left}>
+                                    <img src={img} alt="unknown" onError={(e) => { e.target.onerror = null; e.target.src=filedef; }} />
                                 </td>
                                 <td style={this.style_width_right}>
                                     <div style={{fontStyle : "bold"}}><h3>{row.title}</h3></div>
@@ -77,20 +82,39 @@ class Main extends Component
                             </tr>
                             <tr>
                                 <td style={this.style_width_right}>
-                                    <div>{row.createdAt + " (수정)" + (row.updatedAt) ? row.updatedAt : ""}</div>
+                                    <div>{row.createdAt.split("T")[0] + " / 조회 : " + String(row.views) + " / 추천 : " + String(row.hearts)}</div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style={this.style_width_right}>
-                                    <div dangerouslySetInnerHTML={{__html: DomPurify.sanitize(row.content)}}></div>
+                                    <div className="ellipsis-text">{onlytext}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={this.style_width_right}>
+                                    <div className="ellipsis-text">{this.pretty_hashtag(row.hashtag)}</div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    </Link>
                 </div>
             )
         }    
         return arr;
+    }
+
+    pretty_hashtag = (tagContents) => {
+        if(tagContents) {
+            const tags = tagContents.split(",");
+            let rendertag = "";
+    
+            tags.forEach(element => {
+                if(element) rendertag += "#" + element + " ";
+            });
+    
+            return rendertag;
+        }
     }
 
     render_row = () => {
@@ -111,8 +135,22 @@ class Main extends Component
         )
     }
 
+    scroll = () => {
+        if(this.state.isActive) {
+            const doc_scH = document.scrollingElement.scrollHeight;  // 스크롤 창 전체 높이 (vertical)
+            const doc_scT = document.scrollingElement.scrollTop;     // 스크롤 창 현재 위치 (vertical)
+            const scroll_H = document.scrollingElement.clientHeight; // 스크롤바 크기 (vertical)
+            const scroll_scope = doc_scH - scroll_H;
+            const percent = doc_scT / scroll_scope;
+            if(percent > 0.8 && !this.state.isEnd) {
+                this.setState({page : this.state.page + 1, isActive : false}, () => {this.create_archive()});
+            }
+        }
+    }
+
     componentDidMount () {
         this.catchSession();
+        window.addEventListener('scroll', () => {setTimeout(this.scroll.bind(this), 100)});
     }
 
 }

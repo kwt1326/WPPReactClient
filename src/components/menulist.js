@@ -56,7 +56,7 @@ class Menulist extends Component
         const self = this;
 
         const put_row = ( category, onclick ) => {
-            return (<li className="selectorList" onClick={onclick}><h3>{category}</h3></li>);
+            return (<li key={category} className="selectorList" onClick={onclick}><h3>{category}</h3></li>);
         }
             
         async function createrow(params) {
@@ -93,10 +93,10 @@ class Menulist extends Component
             <div id="MenulistPane" onAnimationEnd={this.aniendEvent_Menulist.bind(this)}>
                 <div style={{ float : "left", width : "50%" }}>
                     <ul className="NoMargin">
-                        <li id="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Home</h3></li>
-                        <li id="sidemenu_board" className="selectorList" onClick={() => {this.visibie_subwnd('board')}}><h3>Board</h3></li>
-                        <li id="sidemenu_user" className="selectorList" onClick={() => {this.onClick_route('/user')}}><h3>User</h3></li>
-                        <li id="sidemenu_logout" className="selectorList" onClick={this.onClick_logout}><h3>Logout</h3></li>
+                        <li key="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Home</h3></li>
+                        <li key="sidemenu_board" className="selectorList" onClick={() => {this.visibie_subwnd('board')}}><h3>Board</h3></li>
+                        <li key="sidemenu_user" className="selectorList" onClick={() => {this.onClick_route('/user')}}><h3>User</h3></li>
+                        <li key="sidemenu_logout" className="selectorList" onClick={this.onClick_logout}><h3>Logout</h3></li>
                         <li className="selectorList"><h3>Contact</h3></li>
                     </ul>
                 </div>

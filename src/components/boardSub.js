@@ -17,7 +17,8 @@ class BoardSub extends Component
         this.render_sub = [];
         this.create_subwnd.bind(this);
 
-        this.create_subwnd();   
+        if(props.parentWidth > 720) // 메모리 leak 방지 (unmount)
+            this.create_subwnd();    
     }
 
     create_subwnd = () => {
@@ -25,7 +26,7 @@ class BoardSub extends Component
         const marginNone = { marginBlockStart : "0", marginBlockEnd : "0" };
 
         const put_row = ( category, onclick ) => {
-            return (<li className="btn-style selector-deep" style={ this.li_style } onClick={onclick}><h5 style={ marginNone }>{category}</h5></li>);
+            return (<li key={`boardsub-${category}`} className="btn-style selector-deep" style={ this.li_style } onClick={onclick}><h5 style={ marginNone }>{category}</h5></li>);
         }
             
         async function createrow(params) {

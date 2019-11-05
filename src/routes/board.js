@@ -133,7 +133,7 @@ class Board extends Component
                     else {
                         const img = (rows[i].frontimg) ? rows[i].frontimg : filedef;
                         arr.push(
-                            <tr className="selectorList">
+                            <tr key={`post_row_${rows[i].id}`} className="selectorList">
                                 <td style={{ width: '10%' }}>
                                     <div className="board-seqofpost" style={{ display: 'table' }}>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>{(ofs - i)}</div>
@@ -160,7 +160,7 @@ class Board extends Component
                             </tr>
                         );
                         arr_mobile.push(
-                            <tr className="selectorList">
+                            <tr key={`post_row_${rows[i].id}`} className="selectorList">
                                 <td style={{ width: '100%' }}>
                                     <Link to={'/reading?post=' + String(rows[i].guid)} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
@@ -199,7 +199,7 @@ class Board extends Component
             for(let i = 1 ; i <= numpage ; ++i)
             {
                 elems.push(
-                    <button className="selector-deep btn-style" onClick={() => {
+                    <button key={`btn-page-${String(i)}`} className="selector-deep btn-style" onClick={() => {
                         self.props.history.push(self.props.history.location.pathname + '?page=' + String(i));
                         self.load();
                         }}>
@@ -242,10 +242,12 @@ class Board extends Component
         if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
             return (
                 <div className="split-left" >
-                    <BoardSub/>
+                    <BoardSub parentWidth={window.innerWidth}/>
                 </div>
             );
         }
+        else
+            return null;
     }
 
     react_splitRight() {

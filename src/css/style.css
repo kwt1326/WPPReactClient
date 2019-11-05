@@ -210,6 +210,21 @@ footer {
     height: 100%;
 }
 
+.ellipsis-text {
+    width: 400px; 
+    overflow : hidden; 
+    text-overflow : ellipsis; 
+    white-space : nowrap;
+}
+
+.limit-text {
+    -webkit-line-clamp: 3; /* 텍스트 라인 수 */ 
+    -webkit-box-orient: vertical; 
+    word-wrap:break-word; 
+    line-height: 1.2em; 
+    height: 3.6em;
+}
+
 .selector:hover {
     background-color: rgb(220,220,220); 
     color : gray;   
@@ -219,6 +234,11 @@ footer {
 .selector-deep:hover {
     background-color: rgb(90, 90, 90);
     color : rgb(220, 220, 220);    
+    cursor: pointer;
+}
+
+.selector-main:hover {
+    background-color: rgb(28, 50, 122);  
     cursor: pointer;
 }
 
@@ -474,10 +494,20 @@ input[type=submit] {
     }
 }
 
-@media screen and (max-width: 720px)
+@media screen and (min-width: 350px) and (max-width: 500px)
+{
+    .ellipsis-text {
+        Width: 100px;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 720px)
 {
     .box {
         flex-flow: row wrap;
+    }
+    .ellipsis-text {
+        Width: 160px;
     }
 }
 
@@ -485,6 +515,9 @@ input[type=submit] {
 {
     .box {
         flex-flow: row wrap;
+    }
+    .ellipsis-text {
+        Width: 400px;
     }
     #virtual-cover {
         display: none;

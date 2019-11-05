@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
@@ -13,7 +13,7 @@ import '../../node_modules/react-quill/dist/quill.snow.css';
 import BoardSub from '../components/boardSub';
 
 // default image
-import unknown from '../image/unknown.png';
+//import unknown from '../image/unknown.png';
 import heartSel from '../image/heartSelected-ico.png';
 import heartDef from '../image/heart-ico.png';
 
