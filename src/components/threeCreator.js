@@ -3,8 +3,12 @@ import * as THREE from 'three';
 import { TWEEN } from '../../node_modules/three/examples/jsm/libs/tween.module.min.js';
 import { CSS3DRenderer, CSS3DObject } from '../../node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 import '../css/style.css';
-import data from './threeData';
+import { tableData, skybox } from './threeData';
 import { func } from 'prop-types';
+import { Vector3 } from 'three';
+
+import arrowL from '../image/arrow_left.png';
+import arrowR from '../image/arrow_right.png';
 
 class ThreeComp extends Component
 {
@@ -12,13 +16,10 @@ class ThreeComp extends Component
         super(props); // 부모 생성자. 없으면 this 구문 사용 불가능
         this.state = {
             screenstate : 'desktop',
+            curTarget : 0,
         }
 
-        this.table = [
-            "Board",
-            "Portfolio",
-            "Introduce"
-        ]
+        this.table = tableData;
 
         this.targets = [];
         this.objects = [];
@@ -53,44 +54,41 @@ class ThreeComp extends Component
 
         for ( let i = 0; i < objects.length; i ++ ) {
             const object = objects[ i ];
-            //const target = targets[ i ];
+            
             new TWEEN.Tween( object.position )
                 .to( { x: object.position.x, y: object.position.y, z: object.position.z }, duration)
                 .easing( TWEEN.Easing.Exponential.InOut )
+                .onComplete(function () {
+                    
+                })
                 .start();
             new TWEEN.Tween( object.rotation )
-                .to( { x: object.rotation.x, y: object.rotation.y, z: object.rotation.z }, duration )
+                .to( { x: object.rotation.x + 0.5, y: object.rotation.y + 0.5, z: object.rotation.z }, duration )
                 .easing( TWEEN.Easing.Exponential.InOut )
+                .onComplete(function () {
+                    object.rotation.set(new Vector3(object.rotation.x + 0.5, object.rotation.y + 0.5, object.rotation.z));
+                })
                 .start();
         }
-        new TWEEN.Tween( this )
-            .to( {}, duration * 2 )
-            .onUpdate( this.render )
-            .start();
     }
 
     create_CSS3DObject = () => {
 
         for ( let i = 0; i < this.table.length; ++i ) {
             const element = document.createElement( 'div' );
-            element.className = 'element';
+            element.className = 'btn-style';
             element.textContent = this.table[i];
-            element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+            element.style.backgroundColor = 'rgba(160,0,220,' + ( Math.random() * 0.5 + 0.25 ) + ')';
 
             const object = new CSS3DObject( element );
-            object.position.x = i * 10;
-            object.position.y = i * 10;
-            object.position.z = i * 10;
+            object.position.x = i * (Math.random() * 1000);
+            object.position.y = i * (Math.random() * 1000);
+            object.position.z = i * (Math.random() * 1000);
             this.scene.add( object );
             this.objects.push( object );
-
-            // var object = new THREE.Object3D();
-            // object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
-            // object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
-            // targets.push( object );
         }
 
-        //this.transform( this.objects, 2000 );
+        this.transform( this.objects, 2000 );
     }
 
     skybox = () => {
@@ -99,7 +97,7 @@ class ThreeComp extends Component
         const cubeMaterials = [];
         const promises = [];
 
-        data.map(url => {
+        skybox.map(url => {
             const loader = new THREE.TextureLoader();
             promises.push(loader.load(
                 // resource URL
@@ -150,6 +148,45 @@ class ThreeComp extends Component
         this.mount.removeChild (this.renderer.domElement);  // 메모리 해제
     }
 
+    moveCamera = (targetNum) => 
+    {
+        TWEEN.removeAll();
+        
+        const self = this;
+        const target = this.objects[targetNum];
+
+        // 카메라를 맞출 기준점
+        const targetW = target.element.clientWidth;
+        const targetH = target.element.clientHeight;
+        const center = targetW + targetH / 2;
+
+        const windowW = this.mount.clientWidth;
+        const windowH = this.mount.clientHeight;
+        const windowC = windowW + windowH / 2;
+
+        const newPos = new Vector3(target.position.x, target.position.y, target.position.z + center + (windowC / 100 * 10));
+        new TWEEN.Tween( self.camera.position )
+        .to( { x: newPos.x, y: newPos.y, z: newPos.z }, 1000)
+        .easing( TWEEN.Easing.Exponential.InOut )
+        .onComplete(function () {
+            self.camera.position.set(newPos.x, newPos.y, newPos.z);
+            self.camera.updateProjectionMatrix();
+            self.setState({ curTarget : targetNum });
+        })
+        .start();
+    }
+
+    onClick_move = (bleft) => 
+    {
+        if ((bleft && this.state.curTarget === 0) || 
+            (!bleft && this.state.curTarget === this.objects.length - 1)) {
+            return;
+        }
+
+        const targetNum = (bleft) ? this.state.curTarget - 1 : this.state.curTarget + 1;
+        this.moveCamera(targetNum);
+    }
+
     resize = () => {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -159,6 +196,16 @@ class ThreeComp extends Component
     render () {
         return (
             <div id="three-renderer" ref={(mount) => { this.mount = mount }} >
+                <img src={arrowL} className="selector-deep" style={{ 
+                    position : 'absolute', transform: 'translateY(-50%)', 
+                    width : '100px', height : '100px',
+                    top : '50%', left : '0%', 
+                    margin : '20px', zIndex : '1' }} onClick={() => {this.onClick_move(true)}} />
+                <img src={arrowR} className="selector-deep" style={{ 
+                    position : 'absolute', transform: 'translateY(-50%)', 
+                    width : '100px', height : '100px',
+                    top : '50%', left : 'calc(100% - 140px)', 
+                    margin : '20px', zIndex : '1' }} onClick={() => {this.onClick_move(false)}} />
             </div>
         );
     }
@@ -167,6 +214,7 @@ class ThreeComp extends Component
         window.addEventListener('resize', () => {setTimeout(this.resize, 100)});
         this.resize();
         this.init();
+        this.moveCamera(0);
     }
 
     componentWillUnmount () {

@@ -2,6 +2,11 @@ html, body {
   background-color: #3837371f;
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar { 
+  display: none; 
 }
 
 .App {
