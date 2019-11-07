@@ -1,0 +1,53 @@
+.css3d {
+    line-height: 250%;
+}
+
+.css3d-flex {
+    display: flex;
+}
+
+.css3d-flex-child {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.css3d-flex-child:hover {
+    background-color: midnightblue;
+    color : white;
+}
+
+[data-level]:hover {
+    position: relative;
+}
+
+[data-level]:hover:after {
+	content: attr(data-level);
+
+    position: absolute;
+	bottom: 110%;
+	left: 20%;
+    
+    font-size: 12px;
+
+    padding:5px 15px; 
+    background:yellow; 
+    color: black;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+
+	z-index: 9999;
+}
+
+.tooltip {
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; 
+}
+
+.btn-hover:hover {
+    cursor: pointer;
+}

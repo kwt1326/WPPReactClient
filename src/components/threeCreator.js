@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { TWEEN } from '../../node_modules/three/examples/jsm/libs/tween.module.min.js';
 import { CSS3DRenderer, CSS3DObject } from '../../node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
 import '../css/style.css';
+import './threeCSS.css';
 import { tableData, skybox } from './threeData';
 import { func } from 'prop-types';
 import { Vector3 } from 'three';
@@ -21,12 +22,14 @@ class ThreeComp extends Component
 
         this.table = tableData;
 
-        this.targets = [];
         this.objects = [];
+        this.traceUi = null;
 
         this.renderer = new CSS3DRenderer();
         this.camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
         this.scene = new THREE.Scene();
+        this.rayCast = new THREE.Raycaster();
+        this.mousevec = new THREE.Vector3();
         
         this.frameId = null;
         this.mount = null;
@@ -35,6 +38,8 @@ class ThreeComp extends Component
 
     init = () => 
     {
+        this.rayCast.setFromCamera(this.mousevec, this.camera);
+
         this.mount.appendChild(this.renderer.domElement);
 
         this.scene.add( this.mesh );
@@ -72,23 +77,34 @@ class ThreeComp extends Component
         }
     }
 
+    new_CSS3DObject = ( element, vec ) => {
+        const object = new CSS3DObject( element );
+        object.position.x = vec.x;
+        object.position.y = vec.y;
+        object.position.z = vec.z;
+        this.scene.add( object );
+        this.objects.push( object );
+        return object;
+    }
+
     create_CSS3DObject = () => {
 
         for ( let i = 0; i < this.table.length; ++i ) {
             const element = document.createElement( 'div' );
-            element.className = 'btn-style';
-            element.textContent = this.table[i];
-            element.style.backgroundColor = 'rgba(160,0,220,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+            switch (i) {
+                case 0 : {
+                    element.className = 'btn-style css3d';
+                    break;
+                }
+            }
 
-            const object = new CSS3DObject( element );
-            object.position.x = i * (Math.random() * 1000);
-            object.position.y = i * (Math.random() * 1000);
-            object.position.z = i * (Math.random() * 1000);
-            this.scene.add( object );
-            this.objects.push( object );
+            element.innerHTML = this.table[i];
+            element.style.backgroundColor = 'smokewhite';
+            this.new_CSS3DObject( element, new Vector3(
+                i * (Math.random() * 5000), 
+                i * (Math.random() * 5000), 
+                i * (Math.random() * 3000)));
         }
-
-        this.transform( this.objects, 2000 );
     }
 
     skybox = () => {
@@ -148,6 +164,16 @@ class ThreeComp extends Component
         this.mount.removeChild (this.renderer.domElement);  // 메모리 해제
     }
 
+    // Control
+
+    getIntersects = ( x, y ) => {
+        x = ( x / window.innerWidth ) * 2 - 1;
+        y = - ( y / window.innerHeight ) * 2 + 1;
+        this.mousevec.set( x, y, 0.5 );
+        this.rayCast.setFromCamera( this.mousevec, this.camera );
+        return this.rayCast.intersectObjects( this.objects, true );
+    }
+
     moveCamera = (targetNum) => 
     {
         TWEEN.removeAll();
@@ -164,13 +190,15 @@ class ThreeComp extends Component
         const windowH = this.mount.clientHeight;
         const windowC = windowW + windowH / 2;
 
-        const newPos = new Vector3(target.position.x, target.position.y, target.position.z + center + (windowC / 100 * 10));
+        //const rad_fov = this.camera.fov * ( Math.PI / 180 );  // * (PI / 180) = to radian (atan param)
+        //const distance = Math.abs( windowC /* size */ / Math.sin( rad_fov / 2 ) );
+
+        const newPos = new Vector3(target.position.x, target.position.y, target.position.z + (3500 - windowC));
         new TWEEN.Tween( self.camera.position )
-        .to( { x: newPos.x, y: newPos.y, z: newPos.z }, 1000)
+        .to( { x: newPos.x, y: newPos.y, z: newPos.z }, 600)
         .easing( TWEEN.Easing.Exponential.InOut )
         .onComplete(function () {
             self.camera.position.set(newPos.x, newPos.y, newPos.z);
-            self.camera.updateProjectionMatrix();
             self.setState({ curTarget : targetNum });
         })
         .start();
@@ -187,6 +215,16 @@ class ThreeComp extends Component
         this.moveCamera(targetNum);
     }
 
+    onMouseMove = (event) => 
+    {
+        event.preventDefault();
+        var intersects = this.getIntersects( event.layerX, event.layerY );
+        if ( intersects.length > 0 ) {
+            intersects.forEach(obj => {
+            })
+        }
+    }
+
     resize = () => {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -196,12 +234,12 @@ class ThreeComp extends Component
     render () {
         return (
             <div id="three-renderer" ref={(mount) => { this.mount = mount }} >
-                <img src={arrowL} className="selector-deep" style={{ 
+                <img src={arrowL} className="btn-hover" style={{ 
                     position : 'absolute', transform: 'translateY(-50%)', 
                     width : '100px', height : '100px',
                     top : '50%', left : '0%', 
                     margin : '20px', zIndex : '1' }} onClick={() => {this.onClick_move(true)}} />
-                <img src={arrowR} className="selector-deep" style={{ 
+                <img src={arrowR} className="btn-hover" style={{ 
                     position : 'absolute', transform: 'translateY(-50%)', 
                     width : '100px', height : '100px',
                     top : '50%', left : 'calc(100% - 140px)', 
@@ -212,6 +250,7 @@ class ThreeComp extends Component
 
     componentDidMount () {
         window.addEventListener('resize', () => {setTimeout(this.resize, 100)});
+        this.renderer.domElement.addEventListener('mousemove', this.onMouseMove, false);
         this.resize();
         this.init();
         this.moveCamera(0);
