@@ -2,20 +2,36 @@ WebPortfolio - actor by Kimwontae.
 
 Portfolio skill stack : 
 
-// Front
+// Front-end
 
 React (CRA)
 
 Three.js
 
+Axios
+
+Quill (react-quill) - Text Editor
+
 // Back-end
 
 Node.js (express)
 
-multer
+Sequelize ORM
 
-Redis
+multer (multipart/form-data processer)
 
+passport (jwt)
+
+// Depoly version Service
+
+Front : Netlify, Back : Heroku
+
+clearDB (at Heroku add-on service) - Database cloud service
+
+cloudinary (at Heroku add-on service) - media(image, video) cloud service
+
+(current ignored)
+Redis (at Heroku add-on service) - only session storage service
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
