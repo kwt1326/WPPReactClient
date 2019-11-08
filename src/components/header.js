@@ -183,7 +183,7 @@ class Header extends Component
         else return;
     }
 
-    resize () {
+    resize = () => {
         if(window.innerWidth <= 720) {
             if(this.state.screenstate !== 'mobile') {
                 this.setState({ screenstate : 'mobile' });
@@ -198,6 +198,10 @@ class Header extends Component
         } 
     }
 
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
     render () {
         return (
             // DIV 부모 컨테이너는 반드시 하나만 존재해야 한다. (리액트 규칙)
@@ -210,9 +214,12 @@ class Header extends Component
     }
 
     componentDidMount () {
-        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+        window.addEventListener('resize', this.handle_resize);
         this.resize();
-        return;
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
     }
 }
 

@@ -471,6 +471,10 @@ class Write extends Component
         } 
     }
     
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
     componentDidMount () 
     {
         const self = this;
@@ -503,8 +507,12 @@ class Write extends Component
           }
         });
 
-        window.addEventListener('resize', () => {setTimeout(self.resize.bind(self), 100)});
-        self.resize();
+        window.addEventListener('resize', this.handle_resize);
+        this.resize();
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
     }
 }
 

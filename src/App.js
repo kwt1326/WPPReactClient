@@ -6,9 +6,7 @@ import './App.css';
 // Common
 import Header from './components/header';
 import Footer from './components/footer';
-import Main from './routes/main';
 import Menulist from './components/menulist';
-import Introduce from './routes/introduce';
 
 // Route
 import Login from './routes/login';
@@ -20,6 +18,8 @@ import Board from './routes/board';
 import Auth from './routes/auth'
 import Auth_CPW from './routes/auth_cpw';
 import Contact from './routes/contact';
+import Main from './routes/main';
+import Introduce from './routes/introduce';
 import { string } from 'prop-types';
 
 axios.defaults.headers = { 
