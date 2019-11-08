@@ -1,5 +1,5 @@
 import React from 'react';
-import ThreeComp from './threeCreator';
+import ThreeComp from '../components/three/threeCreator';
 import '../css/style.css';
 import { func } from 'prop-types';
 

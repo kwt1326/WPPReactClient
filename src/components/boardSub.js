@@ -30,9 +30,11 @@ class BoardSub extends Component
         }
             
         async function createrow(params) {
-            if(params !== undefined && params !== null) {
+            if(params !== undefined && params !== null && params !== "") {
                 for(let i = 0 ; i < params.length ; ++i) {
-                    self.render_sub[i] = put_row(params[i].name, () => { window.location.replace(window.location.origin + '/board/' + params[i].name); });
+                    self.render_sub[i] = put_row(params[i].name, () => { 
+                        window.location.replace(window.location.origin + '/board/' + params[i].name); 
+                    });
                 }
             }
         }

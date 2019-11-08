@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, Route } from 'react-router-dom';
 import axios from 'axios';
 import {checklogin, islive, api} from '../custom/custom';
 import '../css/style.css';
@@ -45,9 +45,10 @@ class Board extends Component
             parseInt(this.props.history.location.search.split("?page=")[1]) : 
             this.state.page;
 
-        let keyword = null;
+        let keyword = "", isSearch = false;
         if(this.props.history.location.pathname.indexOf('/board/search/') !== -1) {
             keyword = this.props.history.location.pathname.split('/board/search/')[1].split('/')[0];
+            isSearch = true;
         }
 
         const process = async () => {
@@ -58,9 +59,9 @@ class Board extends Component
                     'Content-Type': 'application/json',
                 },    
                 params : {
-                    search : (keyword) ? keyword : self.props.match.params.page,
+                    search : (isSearch) ? keyword : self.props.match.params.page,
                     page : page,
-                    keyword : (keyword) ? true : false,
+                    keyword : (isSearch) ? true : false,
                 }
             })
             .then(function (response) {
@@ -81,6 +82,16 @@ class Board extends Component
                 .then(res => {
                     self.addpage(res);
                 });
+            }
+            else {
+                self.setState({
+                    renderready : true,
+                    render_rows : null,
+                    render_rows_mobile : null,
+                    row_count : 0,
+                    ofs : 0,
+                    page_div : null
+                })
             }
         });
     }

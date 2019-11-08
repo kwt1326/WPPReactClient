@@ -507,7 +507,7 @@ class Reading extends Component
             process();
         else {
             alert("로그인이 필요합니다.");
-            window.location.replace('/login');
+            this.props.history.push('/login');
         }    
     }
 
@@ -537,7 +537,7 @@ class Reading extends Component
             process();
         else {
             alert("로그인이 필요합니다.");
-            window.location.replace('/login');
+            this.props.history.push('/login');
         }    
     }
 
@@ -594,7 +594,7 @@ class Reading extends Component
         }
         else {
             alert("로그인이 필요합니다.");
-            window.location.replace('/login');
+            this.props.history.push('/login');
         }
     }
 
@@ -613,7 +613,7 @@ class Reading extends Component
         })
         .catch(err => {
             alert("로그인이 필요합니다.");
-            window.location.replace('/login');
+            self.props.history.push('/login');
         })
 
         function increaselocal ( num ) {
@@ -630,7 +630,7 @@ class Reading extends Component
             })
             .catch(err => {
                 alert("로그인이 필요합니다.");
-                window.location.replace('/login');
+                self.props.history.push('/login');
             })
         }
     }
@@ -704,7 +704,7 @@ class Reading extends Component
         })
         .catch(err => {
             alert("로그인이 필요합니다.");
-            window.location.replace('/login');
+            self.props.history.push('/login');
         })
     }
 

@@ -1,15 +1,16 @@
 import React, { Component} from 'react';
 import * as THREE from 'three';
-import { TWEEN } from '../../node_modules/three/examples/jsm/libs/tween.module.min.js';
-import { CSS3DRenderer, CSS3DObject } from '../../node_modules/three/examples/jsm/renderers/CSS3DRenderer.js';
-import '../css/style.css';
-import './threeCSS.css';
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min';
+import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer';
 import { tableData, skybox } from './threeData';
-import { func } from 'prop-types';
 import { Vector3 } from 'three';
+import { func } from 'prop-types';
 
-import arrowL from '../image/arrow_left.png';
-import arrowR from '../image/arrow_right.png';
+import '../../css/style.css';
+import '../../css/threeCSS.css';
+
+import arrowL from '../../image/arrow_left.png';
+import arrowR from '../../image/arrow_right.png';
 
 class ThreeComp extends Component
 {
@@ -77,11 +78,10 @@ class ThreeComp extends Component
         }
     }
 
-    new_CSS3DObject = ( element, vec ) => {
+    new_CSS3DObject = ( element, vec, rot ) => {
         const object = new CSS3DObject( element );
-        object.position.x = vec.x;
-        object.position.y = vec.y;
-        object.position.z = vec.z;
+        object.position.set(vec.x, vec.y, vec.z);
+        object.rotation.set(rot.x, rot.y, rot.z);
         this.scene.add( object );
         this.objects.push( object );
         return object;
@@ -91,19 +91,17 @@ class ThreeComp extends Component
 
         for ( let i = 0; i < this.table.length; ++i ) {
             const element = document.createElement( 'div' );
-            switch (i) {
-                case 0 : {
-                    element.className = 'btn-style css3d';
-                    break;
-                }
-            }
+            if(i !== 3) { element.className = 'btn-style css3d css3d-font-size'; }
 
             element.innerHTML = this.table[i];
+            element.style.textAlign = 'center';
             element.style.backgroundColor = 'smokewhite';
-            this.new_CSS3DObject( element, new Vector3(
-                i * (Math.random() * 5000), 
-                i * (Math.random() * 5000), 
-                i * (Math.random() * 3000)));
+            this.new_CSS3DObject( element, 
+                new Vector3(
+                i * ((i%2 === 0) ? (-1)*5000 : 5000), 
+                i * (5000), 
+                i * (Math.random() * 3000)),
+                new Vector3( 0, (i%2 === 0) ? 0.5 : -0.5, 0 ));
         }
     }
 
@@ -244,6 +242,11 @@ class ThreeComp extends Component
                     width : '100px', height : '100px',
                     top : '50%', left : 'calc(100% - 140px)', 
                     margin : '20px', zIndex : '1' }} onClick={() => {this.onClick_move(false)}} />
+                <div style={{ position : 'absolute', textAlign : 'center',
+                    top : 'calc(100% - 30px)', left : 'calc(50% - 30px)',
+                    width : '60px', height : '30px',
+                    color : 'yellow', zIndex : '1'
+                    }}>{`< ${String(this.state.curTarget + 1)}/${String(this.table.length)} >`}</div>
             </div>
         );
     }

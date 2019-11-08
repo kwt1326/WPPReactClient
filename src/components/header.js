@@ -71,7 +71,7 @@ class Header extends Component
                 existsession : res.existsession
             }, () => {
                 alert("성공적으로 로그아웃 되었습니다.");
-                window.location.replace(window.location.origin);
+                window.location.replace('/');
             });
         })
         .catch ((err) => {
@@ -158,14 +158,23 @@ class Header extends Component
                         <div className="box-child-main squere-menu-title"><h3><p className="all-middle-text"> A/ Q/ U/ A</p></h3></div>
                         </Link>
                         <Link style={{ textDecoration : 'none', color : 'black' }} to="/">
-                        <div className="box-child-main squere-menu-child selector"><p className="all-middle-text">Home</p></div>
+                        <div className="box-child-main squere-menu-child selector"><p className="all-middle-text">Archive</p></div>
                         </Link>
                         <Link style={{ textDecoration : 'none', color : 'black' }} to="/board/All">
                             <div className="box-child-main squere-menu-child selector">
                                 <p className="all-middle-text">Board</p>
                             </div>
                         </Link>
-                        <div className="box-child-main squere-menu-child selector"><p className="all-middle-text">Contact</p></div>
+                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/Introduce">
+                            <div className="box-child-main squere-menu-child selector">
+                                <p className="all-middle-text">Introduce</p>
+                            </div>
+                        </Link>
+                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/contact">
+                            <div className="box-child-main squere-menu-child selector">
+                                <p className="all-middle-text">Contact</p>
+                            </div>
+                        </Link>
                         {this.routeui()}
                     </div>
                 </div>

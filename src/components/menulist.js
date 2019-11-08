@@ -32,14 +32,14 @@ class Menulist extends Component
     }
 
     onClick_route = (path) => {
-        window.location.replace(window.location.origin + path);
+        this.props.history.push(path);
     }
 
     onClick_logout = () => {
         logout()
         .then((res) => {
             alert("성공적으로 로그아웃 되었습니다.");
-            window.location.replace(window.location.origin);
+            this.props.history.push('/');
         })
         .catch ((err) => {
             console.log(err);
@@ -62,7 +62,7 @@ class Menulist extends Component
         async function createrow(params) {
             if(params !== undefined && params !== null) {
                 for(let i = 0 ; i < params.length ; ++i) {
-                    self.render_sub[i] = put_row(params[i].name, () => { self.onClick_route('/board/' + params[i].name) });
+                    self.render_sub[i] = put_row(params[i].name, () => { window.location.replace('/board/' + params[i].name); });
                 }
             }
         }
@@ -93,11 +93,12 @@ class Menulist extends Component
             <div id="MenulistPane" onAnimationEnd={this.aniendEvent_Menulist.bind(this)}>
                 <div style={{ float : "left", width : "50%" }}>
                     <ul className="NoMargin">
-                        <li key="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Home</h3></li>
+                        <li key="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Archive</h3></li>
                         <li key="sidemenu_board" className="selectorList" onClick={() => {this.visibie_subwnd('board')}}><h3>Board</h3></li>
+                        <li key="sidemenu_Introduce" className="selectorList" onClick={() => {this.onClick_route('/Introduce')}}><h3>Introduce</h3></li>
                         <li key="sidemenu_user" className="selectorList" onClick={() => {this.onClick_route('/user')}}><h3>User</h3></li>
                         <li key="sidemenu_logout" className="selectorList" onClick={this.onClick_logout}><h3>Logout</h3></li>
-                        <li className="selectorList"><h3>Contact</h3></li>
+                        <li key="sidemenu_contact" className="selectorList" onClick={() => {this.onClick_route('/contact')}}><h3>Contact</h3></li>
                     </ul>
                 </div>
                 <div className="sub_category" ref={(mount) => { this.subCategory = mount;}} style={{

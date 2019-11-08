@@ -12,6 +12,7 @@ class Auth_CPW extends Component
         }
         this.Init();
 
+        this.pw_alert = "* 중요 ! 6-14 자의 영문 + 숫자 + 특수문자 (가능: '!@#$%^&*()')가 1개 이상 조합되어야 합니다.";
         this.pw = React.createRef();
         this.pwCheck = React.createRef();
     }
@@ -31,6 +32,7 @@ class Auth_CPW extends Component
     }
 
     change_password = () => {
+        const self = this;
         axios({
             method : 'patch',
             url : (islive()) ? api + "/api/auth/cpw" : "/api/auth/cpw",
@@ -42,6 +44,7 @@ class Auth_CPW extends Component
         })
         .then(res => {
             alert("비밀번호 변경에 성공하였습니다.")
+            self.props.history.push('/login');
         })
         .catch(err => {
             alert("비밀번호를 변경할 수 없습니다.");
@@ -54,8 +57,8 @@ class Auth_CPW extends Component
             <div className="Auth" style={{ padding: "50px", backgroundColor : "midnightblue", color : "white", textAlign : "center" }}>
                 <form className="inputform" action={path} method="post">
                     <h2>A/ Q/ U/ A - 비밀번호 변경</h2><br/>
-                    PW&nbsp;&nbsp; : <input type="password" name="password" ref={(mount) => {this.pw = mount}}></input><br/>
-                    PW - ReCheck&nbsp;&nbsp; : <input type="password" name="pwcheck" ref={(mount) => {this.pwCheck = mount}}></input><br/>
+                    <div data-tooltip={this.pw_alert}>PW&nbsp;&nbsp; : <input type="password" name="password" ref={(mount) => {this.pw = mount}}></input></div><br/>
+                    <div>PW - ReCheck&nbsp;&nbsp; : <input type="password" name="pwcheck" ref={(mount) => {this.pwCheck = mount}}></input></div><br/>
                 </form><br/>
                 <button className="selector-deep btn-style" onClick={this.change_password}>Submit</button><br/>
             </div>

@@ -6,9 +6,9 @@ import './App.css';
 // Common
 import Header from './components/header';
 import Footer from './components/footer';
-import Main from './components/main';
+import Main from './routes/main';
 import Menulist from './components/menulist';
-import Introduce from './components/introduce';
+import Introduce from './routes/introduce';
 
 // Route
 import Login from './routes/login';
@@ -19,6 +19,7 @@ import Reading from './routes/reading';
 import Board from './routes/board';
 import Auth from './routes/auth'
 import Auth_CPW from './routes/auth_cpw';
+import Contact from './routes/contact';
 import { string } from 'prop-types';
 
 axios.defaults.headers = { 
@@ -29,7 +30,9 @@ function App () {
   return (
     <BrowserRouter>
       <div className="App">
-        <header id="header"><Header /></header>
+        <header id="header">
+          <Route path="/*" component={Header} />
+        </header>
         <section id="main">
           <div id="main-div">
             <Route exact path="/" component={Main} />
@@ -42,11 +45,12 @@ function App () {
             <Route path="/reading" component={Reading} />
             <Route path="/board/:page" component={Board} />
             <Route exact path="/Introduce" component={Introduce} />
+            <Route exact path="/contact" component={Contact} />
           </div>
         </section>
         <div id="cover"></div>
         <div id="virtual-cover">
-          <Menulist />
+          <Route path="/*" component={Menulist } />
         </div>
         <footer id="footer">
           <div><Footer /></div>

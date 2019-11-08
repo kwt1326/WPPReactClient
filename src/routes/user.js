@@ -124,7 +124,7 @@ class User extends Component
         })
         .then(function (response) {
             alert('회원탈퇴가 완료되었습니다.');
-            window.location.replace('/');
+            this.props.history.push('/');
             return;
         })
         .catch((err) => {

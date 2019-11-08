@@ -18,15 +18,15 @@ class Login extends Component
     }
 
     getfrom = () => {
-        const self = this;
         let from = null;
-        if (self.props.location.search) {
-            from = self.props.location.search.split('?from=')[1];
+        if (this.props.location.search) {
+            from = this.props.location.search.split('?from=')[1];
         }
         return from; 
     }
 
     Init = () => {
+        const self = this;
         if(this.state.from) {
             checklogin()
             .then(res => {
@@ -36,14 +36,14 @@ class Login extends Component
         else {
             checklogin()
             .then(res => {
-                window.location.replace('/');
+                self.props.history.push('/');
             });
         }
     }
 
     reDirection = () => {
         const from = (this.state.from) ? this.state.from : "";
-        window.location.replace('/' + from);
+        this.props.history.push('/' + from);
     }
 
     render () {

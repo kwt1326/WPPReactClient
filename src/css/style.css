@@ -184,6 +184,18 @@ footer {
     margin : 20px;
 }
 
+.box-child-contact {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: 200px;
+    display: table;
+    border: 1px ridge rgba(170, 170, 170, .3);
+    border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px;
+    background-color: whitesmoke;
+    margin : 20px;
+    padding: 20px;
+}
+
 .box-child-archive {
     flex-grow: 0;
     flex-shrink: 1;
@@ -279,7 +291,7 @@ footer {
 }
 
 .squere-menu-child {
-    width: 70px;
+    width: 90px;
     height: 50px;
 }
 
@@ -401,6 +413,27 @@ footer {
     cursor:pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px; 
+}
+
+[data-tooltip]:hover {
+    position: relative;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+
+    position: absolute;
+	bottom: 110%;
+	left: 20%;
+    font-size: 15px;
+    padding:5px 15px; 
+    background:purple; 
+    color: yellow;
+    border:0 none;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+
+	z-index: 99;
 }
 
 select {

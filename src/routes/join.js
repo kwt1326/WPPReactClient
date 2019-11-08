@@ -80,8 +80,11 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-password" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-password" style={{ width : '90%'}} type='password' ref={(mount) => { this.password_form = mount;} } placeholder="Password : " /><br/>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.pw_alert}>
+                                <input id="join-password"
+                                    style={{ width : '90%'}} type='password' 
+                                    ref={(mount) => { this.password_form = mount;} } 
+                                    placeholder="Password : " /><br/>
                                 {() => {
                                     if(this.state.alertpass)
                                         return this.pw_alert;
@@ -112,8 +115,10 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-name" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-name" style={{ width : '90%'}} type='text' ref={(mount) => { this.name_form = mount;} } placeholder="Your Name : "/>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.name_alert}>
+                                <input id="join-name" style={{ width : '90%'}} type='text' 
+                                        ref={(mount) => { this.name_form = mount;} } 
+                                        placeholder="Your Name : "/>
                                 {() => {
                                     if(this.state.alertname)
                                         return this.name_alert;
@@ -126,8 +131,10 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-nickname" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName">
-                                <input id="join-nickname" style={{ width : '90%'}} type='text' ref={(mount) => { this.nickname_form = mount;} } placeholder="NickName : "/>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName" data-tooltip={this.nickname_alert}>
+                                <input id="join-nickname" style={{ width : '90%'}} type='text' 
+                                        ref={(mount) => { this.nickname_form = mount;} } 
+                                        placeholder="NickName : "/>
                                 {() => {
                                     if(this.state.alertnick)
                                         return this.nickname_alert;
@@ -188,7 +195,7 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-password" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.pw_alert}>
                                 <input id="join-password" style={{  width : '90%' }} type='password' ref={(mount) => { this.password_form = mount;} } placeholder="Password : " /><br/>
                                 {() => {
                                     if(this.state.alertpass)
@@ -211,7 +218,7 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-name" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.name_alert}>
                                 <input id="join-name" style={{  width : '90%' }} type='text' ref={(mount) => { this.name_form = mount;} } placeholder="Your Name : "/>
                                 {() => {
                                     if(this.state.alertname)
@@ -225,7 +232,7 @@ class Join extends Component
                 <tr>
                     <td>
                         <div className="join-nickname" style={{ display: 'table', width : '100%'  }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName">
+                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName" data-tooltip={this.nickname_alert}>
                                 <input id="join-nickname" style={{  width : '90%' }} type='text' ref={(mount) => { this.nickname_form = mount;} } placeholder="NickName : "/>
                                 {() => {
                                     if(this.state.alertnick)
