@@ -52,11 +52,7 @@ const tableData = [
       </div>
       <div class="css3d-flex">
       <div class="btn-style css3d-flex-child" data-level="Intermediate">C++</div>                 <div class="btn-style css3d-flex-child" data-level="begginer to Intermediate">C#</div>                  
-      <div class="btn-style css3d-flex-child" data-level="Intermediate">Netlify Platform</div>    <div class="btn-style css3d-flex-child" data-level="begginer to Intermediate">Sequelize ORM</div> <br/>
-      <div class="btn-style css3d-flex-child" data-level="begginer">Ubuntu Linux</div>
-      </div>
-      <div class="css3d-flex">
-      <div class="btn-style css3d-flex-child" data-level="Intermediate">Ogre 3D</div>
+      <div class="btn-style css3d-flex-child" data-level="begginer">Ubuntu Linux</div>            <div class="btn-style css3d-flex-child" data-level="Intermediate">Ogre 3D</div>
       </div>
       `,
     // career (1/2)
