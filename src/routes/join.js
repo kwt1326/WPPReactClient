@@ -353,14 +353,6 @@ class Join extends Component
         }
     }
 
-    join_facebook () {
-        
-    }
-
-    join_google () {
-        
-    }
-
     resize = () => {
         if(window.innerWidth <= 720) {
             if(this.state.screenstate !== 'mobile') {
@@ -374,10 +366,17 @@ class Join extends Component
         } 
     }
 
-    componentDidMount () 
-    {
-        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
+    componentDidMount () {
+        window.addEventListener('resize', this.handle_resize);
         this.resize();
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
     }
 };
 

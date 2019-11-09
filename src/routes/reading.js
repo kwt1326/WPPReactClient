@@ -708,7 +708,7 @@ class Reading extends Component
         })
     }
 
-    resize () {
+    resize = () => {
         if(window.innerWidth <= 720) {
             if(this.state.screenstate !== 'mobile') {
                 this.setState({ screenstate : 'mobile' });
@@ -721,14 +721,17 @@ class Reading extends Component
         } 
     }
     
-    componentDidMount () 
-    {
-        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
+    componentDidMount () {
+        window.addEventListener('resize', this.handle_resize);
         this.resize();
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
+    componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
     }
 }
 

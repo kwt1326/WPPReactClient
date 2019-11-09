@@ -314,7 +314,7 @@ class Board extends Component
         );
     }
 
-    resize () {
+    resize = () => {
         if(window.innerWidth <= 720) {
             if(window.innerWidth <= 600){
                 if(this.state.screenstate !== 'phone') {
@@ -336,6 +336,10 @@ class Board extends Component
         } 
     }
 
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
     onClick_Apply () 
     {
         const self = this;
@@ -355,8 +359,12 @@ class Board extends Component
     }
 
     componentDidMount () {
-        window.addEventListener('resize', () => {setTimeout(this.resize.bind(this), 100)});
+        window.addEventListener('resize', this.handle_resize);
         this.resize();
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
     }
 }
 

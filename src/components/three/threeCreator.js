@@ -229,6 +229,10 @@ class ThreeComp extends Component
         this.camera.updateProjectionMatrix();
     }
 
+    handle_resize = () => {
+        setTimeout(this.resize, 100);
+    }
+
     render () {
         return (
             <div id="three-renderer" ref={(mount) => { this.mount = mount }} >
@@ -252,7 +256,7 @@ class ThreeComp extends Component
     }
 
     componentDidMount () {
-        window.addEventListener('resize', () => {setTimeout(this.resize, 100)});
+        window.addEventListener('resize', this.handle_resize);
         this.renderer.domElement.addEventListener('mousemove', this.onMouseMove, false);
         this.resize();
         this.init();
@@ -260,6 +264,7 @@ class ThreeComp extends Component
     }
 
     componentWillUnmount () {
+        window.removeEventListener('resize', this.handle_resize);
         this.stop();
     }
 }

@@ -68,7 +68,7 @@ class Main extends Component
             const img = (row.frontimg) ? row.frontimg : filedef;
             const onlytext = row.content.replace(/(<([^>]+)>)/ig,"");
             await arr.push(
-                <div key={"archive-row-" + row.title} className="box-child-archive">
+                <div key={"archive-row-" + row.title + String(row.guid)} className="box-child-archive">
                     <Link to={'/reading?post=' + String(row.guid)} style={{textDecoration : 'none', color : 'whitesmoke'}}>
                     <table style={{ borderCollapse: 'collapse' }} className="selector-main" >
                         <tbody>
@@ -128,7 +128,7 @@ class Main extends Component
 
     render () {
         return (
-            <div id="archive" className="box-vertical">
+            <div id="archive" className="box-vertical" ref={(mount) => {this.maindiv = mount}}>
                 <div style={this.style_title}><h2>A/ Q/ U/ A/ -Archive-</h2></div>
                 {this.render_row()}
             </div>
@@ -148,11 +148,18 @@ class Main extends Component
         }
     }
 
-    componentDidMount () {
-        this.catchSession();
-        window.addEventListener('scroll', () => {setTimeout(this.scroll.bind(this), 100)});
+    handle_scroll = () => {
+        setTimeout(this.scroll, 100);
     }
 
+    componentDidMount () {
+        this.catchSession();
+        window.addEventListener('scroll', this.handle_scroll, false);
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('scroll', this.handle_scroll, false);
+    }
 }
 
 export default Main;
