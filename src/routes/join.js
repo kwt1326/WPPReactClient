@@ -40,259 +40,105 @@ class Join extends Component
     }
 
     render_table = () => {
-        if(this.state.screenstate === "desktop") { // desktop
-            return (
-            <table style={{ backgroundColor : "midnightblue", color : "white", borderTop: "0px", borderBottom: "0px"}}>
-            <thead>
-                <tr>
-                    <td colSpan="2">
-                        <div className="join-title" style={{ display: 'table' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}><h2>A/ Q/ U/ A Join Page</h2></div>
+        return (
+        <table style={{ backgroundColor : "midnightblue", color : "white", borderTop: "0px", borderBottom: "0px", textAlign : "center"}}>
+        <thead>
+            <tr>
+                <td>
+                    <div className="join-title" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}><h2>A/ Q/ U/ A Join Page</h2></div>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div style={{ textAlign : "left"}}>E-mail Join Form is here.</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-email" style={{ display: 'table', width : '100%' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                            <input id="join-email" style={{  width : '90%' }} type='email' ref={(mount) => { this.email_form = mount;} } placeholder="E-mail : " />
                         </div>
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colSpan="2">
-                        <div style={{float : "left", width : "50%", textAlign : "left"}}>E-mail Join Form is here.</div>
-                        <div style={{float : "right", width : "50%", textAlign : "right"}}>Your SNS Account Join is here.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style={{ width: '50%' }}>
-                        <div className="join-email" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-email" style={{ width : '90%'}} type='email' ref={(mount) => { this.email_form = mount;} } placeholder="E-mail : " />
-                            </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-password" style={{ display: 'table' , width : '100%'}}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.pw_alert}>
+                            <input id="join-password" style={{  width : '90%' }} type='password' ref={(mount) => { this.password_form = mount;} } placeholder="Password : " /><br/>
+                            {() => {
+                                if(this.state.alertpass)
+                                    return this.pw_alert;
+                                else return null;
+                            }}
                         </div>
-                    </td>
-                    <td rowSpan="2">
-                        <div className="join-facebook" style={{ display: 'table' , width : '100%', height : "50px"}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' , textAlign : 'center'}}>
-                                <button className="join-btn-facebook btn-style selector-facebook" 
-                                style={{ backgroundColor : "rgb(59, 89, 152)", color : "white", width : "80%", height : "100%" }} 
-                                onClick={this.join_facebook.bind(this)}>facebook Sign up</button>
-                            </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-rePassword" style={{ display: 'table', width : '100%' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                            <input id="join-rePassword" style={{  width : '90%' }} type='password' ref={(mount) => { this.rePassword_form = mount;} } placeholder="Re-Password : " />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-password" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.pw_alert}>
-                                <input id="join-password"
-                                    style={{ width : '90%'}} type='password' 
-                                    ref={(mount) => { this.password_form = mount;} } 
-                                    placeholder="Password : " /><br/>
-                                {() => {
-                                    if(this.state.alertpass)
-                                        return this.pw_alert;
-                                    else return null;
-                                }}
-                            </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-name" style={{ display: 'table', width : '100%' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.name_alert}>
+                            <input id="join-name" style={{  width : '90%' }} type='text' ref={(mount) => { this.name_form = mount;} } placeholder="Your Name : "/>
+                            {() => {
+                                if(this.state.alertname)
+                                    return this.name_alert;
+                                else return null;
+                            }}
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-rePassword" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-rePassword" style={{ width : '90%'}} type='password' ref={(mount) => { this.rePassword_form = mount;} } placeholder="Re-Password : " />
-                            </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-nickname" style={{ display: 'table', width : '100%'  }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName" data-tooltip={this.nickname_alert}>
+                            <input id="join-nickname" style={{  width : '90%' }} type='text' ref={(mount) => { this.nickname_form = mount;} } placeholder="NickName : "/>
+                            {() => {
+                                if(this.state.alertnick)
+                                    return this.nickname_alert;
+                                else return null;
+                            }}
                         </div>
-                    </td>
-                    <td rowSpan="2">
-                        <div className="join-google" style={{ display: 'table' , width : '100%', height : "50px"}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign : 'center' }}>
-                                <button className="join-btn-google btn-style selector-google" 
-                                style={{ backgroundColor : "rgb(223, 74, 50)", color : "white", width : "80%", height : "100%" }}
-                                onClick={this.join_google.bind(this)}>google Sign up</button>
-                            </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="join-emailform" style={{ display: 'table', width : "100%" }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+                            <button className="join-btn-email btn-style selector-deep" style={{ width : "90%" }}
+                            onClick={this.join_email}>E-mail Join</button>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-name" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.name_alert}>
-                                <input id="join-name" style={{ width : '90%'}} type='text' 
-                                        ref={(mount) => { this.name_form = mount;} } 
-                                        placeholder="Your Name : "/>
-                                {() => {
-                                    if(this.state.alertname)
-                                        return this.name_alert;
-                                    else return null;
-                                }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-nickname" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName" data-tooltip={this.nickname_alert}>
-                                <input id="join-nickname" style={{ width : '90%'}} type='text' 
-                                        ref={(mount) => { this.nickname_form = mount;} } 
-                                        placeholder="NickName : "/>
-                                {() => {
-                                    if(this.state.alertnick)
-                                        return this.nickname_alert;
-                                    else return null;
-                                }}
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div className="join-emailform" style={{ display: 'table', width : "100%" }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <button className="join-btn-email btn-style selector-deep" style={{ width : "100%" }}
-                                onClick={this.join_email}>E-mail Join</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colSpan='2' style={{ textAlign : 'right', paddingRight : '0%'}}>
-                        <div className="join-footer" style={{ display: 'table' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>If you have any questions, please send them to my u1326@hotmail.com.</div>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-            </table>    
-            );
-        }
-        else { // mobile
-            return (
-            <table style={{ backgroundColor : "midnightblue", color : "white", borderTop: "0px", borderBottom: "0px", textAlign : "center"}}>
-            <thead>
-                <tr>
-                    <td>
-                        <div className="join-title" style={{ display: 'table' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}><h2>A/ Q/ U/ A Join Page</h2></div>
-                        </div>
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div style={{ textAlign : "left"}}>E-mail Join Form is here.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-email" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-email" style={{  width : '90%' }} type='email' ref={(mount) => { this.email_form = mount;} } placeholder="E-mail : " />
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-password" style={{ display: 'table' , width : '100%'}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.pw_alert}>
-                                <input id="join-password" style={{  width : '90%' }} type='password' ref={(mount) => { this.password_form = mount;} } placeholder="Password : " /><br/>
-                                {() => {
-                                    if(this.state.alertpass)
-                                        return this.pw_alert;
-                                    else return null;
-                                }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-rePassword" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <input id="join-rePassword" style={{  width : '90%' }} type='password' ref={(mount) => { this.rePassword_form = mount;} } placeholder="Re-Password : " />
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-name" style={{ display: 'table', width : '100%' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} data-tooltip={this.name_alert}>
-                                <input id="join-name" style={{  width : '90%' }} type='text' ref={(mount) => { this.name_form = mount;} } placeholder="Your Name : "/>
-                                {() => {
-                                    if(this.state.alertname)
-                                        return this.name_alert;
-                                    else return null;
-                                }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-nickname" style={{ display: 'table', width : '100%'  }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }} placeholder="NickName" data-tooltip={this.nickname_alert}>
-                                <input id="join-nickname" style={{  width : '90%' }} type='text' ref={(mount) => { this.nickname_form = mount;} } placeholder="NickName : "/>
-                                {() => {
-                                    if(this.state.alertnick)
-                                        return this.nickname_alert;
-                                    else return null;
-                                }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-emailform" style={{ display: 'table', width : "100%" }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                                <button className="join-btn-email btn-style selector-deep" style={{ width : "90%" }}
-                                onClick={this.join_email}>E-mail Join</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div style={{ textAlign : "right"}}>Your SNS Account Join is here.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-facebook" style={{ display: 'table' , width : '100%', height : "50px"}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' , textAlign : 'center'}}>
-                                <button className="join-btn-facebook btn-style selector-facebook" 
-                                style={{ backgroundColor : "rgb(59, 89, 152)", color : "white", width : "90%", height : "100%" }} 
-                                onClick={this.join_facebook.bind(this)}>facebook Sign up</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div className="join-google" style={{ display: 'table' , width : '100%', height : "50px"}}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle', textAlign : 'center' }}>
-                                <button className="join-btn-google btn-style selector-google" 
-                                style={{ backgroundColor : "rgb(223, 74, 50)", color : "white", width : "90%", height : "100%" }}
-                                onClick={this.join_google.bind(this)}>google Sign up</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colSpan='2' style={{ textAlign : 'right', paddingRight : '0%'}}>
-                        <div className="join-footer" style={{ display: 'table' }}>
-                            <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>If you have any questions, please send them to my u1326@hotmail.com.</div>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-            </table>
-            );    
-        }
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colSpan='2' style={{ textAlign : 'right', paddingRight : '0%'}}>
+                    <div className="join-footer" style={{ display: 'table' }}>
+                        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>If you have any questions, please send them to my u1326@hotmail.com.</div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+        </table>
+        );    
     }
 
     join_email = () => 
