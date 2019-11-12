@@ -6,6 +6,8 @@ WebPortfolio - actor by Kimwontae.
 
 회원은 댓글 글쓰기, 추천/추천취소 기능, 회원가입(우측상단 아이콘), 소셜 로그인
 
+모든 글쓰기, 댓글 : 위지윅에디터 Quill 을 활용한 텍스트 편집기 기능
+
 반응형 웹 구현 (Redux 활용)
 
 Portfolio skill stack : 
