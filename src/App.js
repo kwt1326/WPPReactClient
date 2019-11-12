@@ -64,12 +64,10 @@ class App extends Component {
   }
 }
 
-// props 로 넣어줄 스토어 상태값
 const mapStateToProps = state => ({
   screenstate: state.screen.screenstate,
 });
   
-// props 로 넣어줄 액션 생성함수
 const mapDispatchToProps = dispatch => ({
   changescreenstate: screenstate => dispatch(changescreenstate(screenstate)),
 });  
