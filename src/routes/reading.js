@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
 import DomPurify from 'dompurify'; // HTML XSS Security
@@ -9,8 +10,6 @@ import '../css/style.css';
 import '../css/board.css';
 import '../css/reading.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
-
-import BoardSub from '../components/boardSub';
 
 // default image
 //import unknown from '../image/unknown.png';
@@ -23,7 +22,6 @@ class Reading extends Component
     constructor(props) {
         super(props); // 부모 생성자. 없으면 this 구문 사용 불가능
         this.state = {
-           screenstate : 'desktop',     // css react option
            reDirection : 'none',        // reDirection path
            loadingText : 'loading...',  // load noticeview text       
            level : 'user',
@@ -44,7 +42,6 @@ class Reading extends Component
         };
         this.spliter = this.tr_spliter.bind(this);
         this.spliterV = this.tr_spliter_vertical.bind(this);
-        this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.onLoad = this.onLoad_Main.bind(this);
         this.historyheart = this.history_heart.bind(this);
@@ -77,7 +74,6 @@ class Reading extends Component
         else {
             return (
                 <div className="readpost">
-                    {this.reactsplitL()}
                     {this.reactsplitR()}
                 </div>
             );
@@ -181,30 +177,19 @@ class Reading extends Component
                         : "url('" + heartDef + "')"; 
     }
 
-    react_splitLeft() {
-        if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
-            return (
-                <div className="split-left">
-                    <BoardSub parentWidth={window.innerWidth}/>
-                </div>
-            );
-        }
-    }
-
-    react_splitRight() {
-
-        const self = this;
+    react_splitRight() 
+    {
         let rightratio;
-        if (self.state.screenstate === 'mobile') { 
+        if (this.props.screenstate === 'mobile' || this.props.screenstate === 'phone') { 
             rightratio = '90%';
         }
         else
             rightratio = '66%';
 
-        if(self.state.heart_loaded === false) {
+        if(this.state.heart_loaded === false) {
             return (
                 <div className="board-main split-right" style={{ width : rightratio }}>
-                    <h1>{self.state.loadingText}</h1>
+                    <h1>{this.state.loadingText}</h1>
                 </div>
             )
         }
@@ -219,20 +204,20 @@ class Reading extends Component
                         <tr>
                             <td style={{ width : '100%' }}>
                                 <div className="board-title">
-                                    <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>{self.state.content.title}</div>
+                                    <div style={{ display : 'table-cell', verticalAlign : 'middle' }}>{this.state.content.title}</div>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <div className="board-userinfo">
-                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '50%', left : '0%'}}>{self.state.content.writer}</div>
-                                    {self.spliterV()}
+                                    <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '50%', left : '0%'}}>{this.state.content.writer}</div>
+                                    {this.spliterV()}
                                     <div style={{ display : 'table-cell', verticalAlign : 'middle', width : '40%', left : '40%'}}>
-                                        <div>{timeparse(self.state.content.createAt)}</div>
-                                        <div>{timeparse(self.state.content.updateAt) + " (수정)"}</div>
+                                        <div>{timeparse(this.state.content.createAt)}</div>
+                                        <div>{timeparse(this.state.content.updateAt) + " (수정)"}</div>
                                     </div>
-                                    {self.spliterV()}
+                                    {this.spliterV()}
                                     <div className="btn-heart selectorList" ref={(mount) => {this.hearticon = mount}} style={{ 
                                         display : 'table-cell', 
                                         verticalAlign : 'middle', 
@@ -247,14 +232,14 @@ class Reading extends Component
                         </tr>
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%'}}>
-                                <div classname="content_post">
-                                    <div className="ql-editor" dangerouslySetInnerHTML={{__html: DomPurify.sanitize(self.state.content.text) }}/>
+                                <div className="content_post">
+                                    <div className="ql-editor" dangerouslySetInnerHTML={{__html: DomPurify.sanitize(this.state.content.text) }}/>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td style={{ paddingLeft: '0%', paddingRight: '0%'}}>
-                                <div classname="content_tags">
+                                <div className="content_tags">
                                     {this.render_tags()}
                                 </div>
                             </td>
@@ -266,7 +251,7 @@ class Reading extends Component
                                     if(document.getElementById("comment_main"))
                                         return;
                                     if(this.state.comment_active === 'default') 
-                                        this.setState({ comment_active : -1 }, () => {self.create_Comment()});
+                                        this.setState({ comment_active : -1 }, () => {this.create_Comment()});
                                     else
                                         this.setState({ comment_active : 'default', comment_text : '', comment_total : 0});
                                     }}>{"Comment"}</button>
@@ -288,8 +273,8 @@ class Reading extends Component
 
     get_guid () {
         let guid = null;
-        if (this.props.location.search) {
-            guid = this.props.location.search.split('?post=')[1];
+        if (this.props.match.params.post !== undefined) {
+            guid = this.props.match.params.post;
         }
         else {
             guid = this.state.postid;
@@ -425,7 +410,7 @@ class Reading extends Component
         let arr = [];
         const comments = this.state.comments;
         const comments_ex = this.state.comments_ex;
-        arr.push(<tr><td><div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div></td></tr>);
+        arr.push(<tr key="comment_count"><td><div style={{ margin : "2%" }}>{"댓글 : " + String((comments) ? comments.length : 0)}</div></td></tr>);
 
         const heartNumstyle = {display : "table-cell", textAlign : "center", verticalAlign : "middle", width : "50px"};
         const commentctrl = {display:"inline-block", marginLeft:"10px", color : "rgb(180,180,180)"};
@@ -439,7 +424,7 @@ class Reading extends Component
                     await self.Load_commentHeart(comments[i].guid, commentheart );
                     let createdAt = timeparse(comments[i].createdAt);
                     arr.push(
-                    <tr>
+                    <tr key={"comment_elem_key_" + comments[i].id}>
                         <td id={"comment_elem_" + comments[i].id}>
                             <div style= {{ display : "table" , margin : "1%", width : "98%", position : "relative"}}>
                                 <div style={{ display : "table-cell", verticalAlign : "middle",
@@ -639,7 +624,7 @@ class Reading extends Component
 
     // For post function //
     onClick_Edit() {
-        this.setState({reDirection : `/write?post=${String(this.state.postid)}`});
+        this.setState({reDirection : `/board/write/${String(this.state.postid)}`});
     }
 
     onClick_Remove() 
@@ -664,7 +649,7 @@ class Reading extends Component
             .then(function (response) {    
                 console.log(response.data.result);
                 alert('포스트가 성공적으로 삭제되었습니다.');
-                self.setState({ reDirection : '/board/All' });
+                self.setState({ reDirection : '/board/mainboard' });
             })
             .catch((err) => {
                 console.log(err);
@@ -707,32 +692,10 @@ class Reading extends Component
             self.props.history.push('/login');
         })
     }
-
-    resize = () => {
-        if(window.innerWidth <= 720) {
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-            }
-        } 
-    }
-    
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
-    }
-
-    componentDidMount () {
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
-    }
 }
 
-export default Reading;
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+});
+
+export default connect(mapStateToProps)(Reading);

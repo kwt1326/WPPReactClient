@@ -101,7 +101,7 @@ class ThreeComp extends Component
                 i * ((i%2 === 0) ? (-1)*5000 : 5000), 
                 i * (5000), 
                 i * (Math.random() * 3000)),
-                new Vector3( 0, (i%2 === 0) ? 0.5 : -0.5, 0 ));
+                new Vector3(0,0,0));
         }
     }
 

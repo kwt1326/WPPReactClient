@@ -7,9 +7,7 @@ class Login extends Component
     constructor(props) {
         super(props);
         this.state = {
-            reDirect : false,
             from : "",
-            login : 'local'
         }
 
         this.resframe = null;
@@ -41,6 +39,14 @@ class Login extends Component
         }
     }
 
+    onClick_facebook = () => {
+        window.location.href = (islive()) ? api + `/api/auth/social/facebook` : `/api/auth/social/facebook`;
+    }
+
+    onClick_google = () => {
+        window.location.href = (islive()) ? api + `/api/auth/social/google` : `/api/auth/social/google`;
+    }
+
     reDirection = () => {
         const from = (this.state.from) ? this.state.from : "";
         this.props.history.push('/' + from);
@@ -59,8 +65,8 @@ class Login extends Component
                     <input type="submit" className="selector-deep" style={{ minWidth : "220px", margin : "10px"}} value="LOGIN"></input>
                 </form>
                 <div style={{textAlign: 'center'}}>
-                    <a href={facebook_href}><button className="selector-facebook btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(59, 89, 152, 1)", color : "white", margin : "10px"}} onClick={`location.href=${facebook_href}`}>Facebook</button></a><br/>
-                    <a href={google_href}><button className="selector-google btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(223, 74, 50, 1)", color : "white", margin : "10px"}} onClick={`location.href=${google_href}`}>Google</button></a><br/>
+                    <a href={facebook_href}><button className="selector-facebook btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(59, 89, 152, 1)", color : "white", margin : "10px"}} >Facebook</button></a><br/>
+                    <a href={google_href}><button className="selector-google btn-style" style={{ minWidth : "220px", backgroundColor : "rgba(223, 74, 50, 1)", color : "white", margin : "10px"}} >Google</button></a><br/>
                     <a href="/join" className="selector-deep" style={{ color : "white" }}>가입한 계정이 없으신가요? 여기에요!</a><br/><br/>
                     <a href="/auth/e-mail" className="selector-deep" style={{ color : "white" }}>이메일 계정의 비밀번호를 잊으셨나요? 여기서 도와드릴게요.</a>
                 </div>

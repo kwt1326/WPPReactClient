@@ -1,13 +1,13 @@
 import React, { Component} from 'react';
 import { Link, Redirect, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { changeboardstate } from '../reducer/board';
 import axios from 'axios';
 import {checklogin, islive, api} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 
-import BoardSub from '../components/boardSub';
 import filedef from '../image/file_default.png';
-import { func } from 'prop-types';
 
 // 자유게시판 (게시글 리스트))
 class Board extends Component
@@ -15,7 +15,6 @@ class Board extends Component
     constructor(props) {
         super(props); // 부모 생성자. 없으면 this 구문 사용 불가능
         this.state = {
-           screenstate : 'desktop',
            redirect : 'none',
            page : 1,
            ofs : null,
@@ -29,11 +28,11 @@ class Board extends Component
         this.addrow = this.add_row.bind(this);
         this.addpage = this.add_page.bind(this);
         this.addheader = this.add_header.bind(this);
-        this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.clickApply = this.onClick_Apply.bind(this);
 
         this.searchdiv = React.createRef();
+        this.props.changeboardstate('All');
 
         this.load();
     }
@@ -41,14 +40,16 @@ class Board extends Component
     // Posting Data load
     Load () {
         const self = this;
-        const page = (this.props.history.location.search) ? 
-            parseInt(this.props.history.location.search.split("?page=")[1]) : 
-            this.state.page;
+        const page = this.state.page;
 
         let keyword = "", isSearch = false;
-        if(this.props.history.location.pathname.indexOf('/board/search/') !== -1) {
-            keyword = this.props.history.location.pathname.split('/board/search/')[1].split('/')[0];
-            isSearch = true;
+        if(this.props.boardstate !== undefined && this.props.boardstate !== null) {
+            if(this.props.boardstate.indexOf('search.') !== -1) {
+                keyword = this.props.boardstate.split('search.')[1];
+                isSearch = true;
+            }
+            else
+                keyword = this.props.boardstate;
         }
 
         const process = async () => {
@@ -59,7 +60,7 @@ class Board extends Component
                     'Content-Type': 'application/json',
                 },    
                 params : {
-                    search : (isSearch) ? keyword : self.props.match.params.page,
+                    search : keyword,
                     page : page,
                     keyword : (isSearch) ? true : false,
                 }
@@ -97,7 +98,7 @@ class Board extends Component
     }
 
     add_header () {
-        if(this.state.screenstate === 'phone') {
+        if(this.props.screenstate === 'phone') {
             return null;
         }
         else
@@ -151,7 +152,7 @@ class Board extends Component
                                     </div>
                                 </td>
                                 <td className="selectorList" style={{ width: '70%' }}>
-                                    <Link to={'/reading?post=' + String(rows[i].guid)} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={`/board/reading/${String(rows[i].guid)}`} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table' }}>
                                         <div style={{ display: 'table-cell', width : "25%"}}><img src={img} alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img></div> 
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "75%" }}>{rows[i].title}</div>
@@ -173,7 +174,7 @@ class Board extends Component
                         arr_mobile.push(
                             <tr key={`post_row_${rows[i].id}`} className="selectorList">
                                 <td style={{ width: '100%' }}>
-                                    <Link to={'/reading?post=' + String(rows[i].guid)} style={{textDecoration : 'none', color : 'white'}}>
+                                    <Link to={`/board/reading/${String(rows[i].guid)}`} style={{textDecoration : 'none', color : 'white'}}>
                                     <div className="board-titleofpost" style={{ display: 'table', padding : "1%" }}>
                                         <img src={img} style={{ width : "100px", height : "100px"}}  alt="unknown" onError={(e)=>{e.target.onerror = null; e.target.src=filedef}}></img>
                                         <div style={{ display: 'table-cell', verticalAlign: 'middle', paddingLeft : "2%", width : "70%" }}>{rows[i].title}</div>
@@ -237,35 +238,22 @@ class Board extends Component
 
     search_tag = () => {
         if(window.event.keyCode === 13) {
-            this.props.history.push(`/board/search/${this.searchdiv.value}/?page=${String(this.state.page)}`);
-            this.load();
+            this.props.changeboardstate('search.' + this.searchdiv.value);
         }
     }
 
     render_rows = () => {
-        if(this.state.screenstate === "phone")
+        if(this.props.screenstate === "phone")
             return this.state.render_rows_mobile
         else
             return this.state.render_rows
     }
 
-    react_splitLeft() {
-        if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
-            return (
-                <div className="split-left" >
-                    <BoardSub parentWidth={window.innerWidth}/>
-                </div>
-            );
-        }
-        else
-            return null;
-    }
-
-    react_splitRight() {
-
+    react_splitRight() 
+    {
         let rightratio;
-        if (this.state.screenstate === 'mobile' ||
-            this.state.screenstate === 'phone') { 
+        if (this.props.screenstate === 'mobile' ||
+            this.props.screenstate === 'phone') { 
             rightratio = '90%';
         }
         else
@@ -274,7 +262,7 @@ class Board extends Component
         return (
             <div className="board-tablelist split-right" style={{ width : rightratio }}>
                 <div style={{ display: 'table', width: '100%'}}>
-                    <div style={{ display: 'table-cell', width: '50%', float: 'left'}}><h3>{this.props.match.params.page}</h3></div>
+                    <div style={{ display: 'table-cell', width: '50%', float: 'left'}}><h3>{this.props.boardstate}</h3></div>
                     <div style={{ display: 'table-cell', width: '50%', float: 'right', textAlign : 'right', verticalAlign: 'middle' }}>
                         <input className="board-search" type='text' ref={(mount) => {this.searchdiv = mount}} placeholder='Search : ' onKeyUp={this.search_tag}/>
                     </div>
@@ -308,36 +296,9 @@ class Board extends Component
         else
         return (
             <div className="board">
-                {this.reactsplitL()}
                 {this.reactsplitR()}
             </div>
         );
-    }
-
-    resize = () => {
-        if(window.innerWidth <= 720) {
-            if(window.innerWidth <= 600){
-                if(this.state.screenstate !== 'phone') {
-                    this.setState({ screenstate : 'phone' });
-                    return;
-                }    
-            }
-            else
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-                return;
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-                return;
-            }
-        } 
-    }
-
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
     }
 
     onClick_Apply () 
@@ -346,7 +307,7 @@ class Board extends Component
         checklogin()
         .then((res) => {
             if(res.userdata.data.level === 'admin') {
-                self.setState({redirect : '/write'});
+                self.setState({redirect : '/board/write'});
             }
             else {
                 alert("관리자만 작성할 수 있습니다.");
@@ -354,18 +315,24 @@ class Board extends Component
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');
-            self.setState({redirect : `/login?from=${"write"}`});
+            self.setState({redirect : `/login?from=${"board/write"}`});
         })
     }
 
-    componentDidMount () {
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.boardstate !== this.props.boardstate) {
+            this.load();
+        }
     }
 }
 
-export default Board;
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+    boardstate: state.board.boardstate,
+});
+
+const mapDispatchToProps = dispatch => ({
+    changeboardstate: boardstate => dispatch(changeboardstate(boardstate)),
+});  
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

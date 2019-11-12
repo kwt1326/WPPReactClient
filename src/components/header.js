@@ -1,4 +1,6 @@
 import React, { Component} from 'react';
+import { connect } from 'react-redux';
+import { changeboardstate } from '../reducer/board';
 import { Link } from 'react-router-dom';
 import {checklogin, logout} from '../custom/custom';
 import '../css/style.css';
@@ -11,7 +13,6 @@ class Header extends Component
         this.state = {
             isopenedMenulist : false,
             redirect : false,
-            screenstate : 'desktop',
             nickname : '',
             profileimg : unknown,
             existsession : false
@@ -41,7 +42,7 @@ class Header extends Component
         }
     }
 
-    check_login () 
+    check_login = () =>
     {
         const self = this;
         checklogin()
@@ -85,7 +86,7 @@ class Header extends Component
         this.check_login();
         const session = this.state.existsession;
         if(session === false) {
-            if (this.state.screenstate === 'mobile') { // mobile - login
+            if (this.props.screenstate === 'mobile' || this.props.screenstate === 'phone') { // mobile - login
                 return (
                     <div id="header-usericon-mobile" className="box-child-main squere-menu-user">
                         <Link className="link-login" to={{
@@ -95,7 +96,7 @@ class Header extends Component
                     </div>
                 )    
             }
-            else if (this.state.screenstate === 'desktop') { // desktop - login
+            else if (this.props.screenstate === 'desktop') { // desktop - login
                 return (
                     <div id="header-usericon-desktop" className="box-child-main squere-menu-user">
                         <Link className="link-login" to={{
@@ -107,7 +108,7 @@ class Header extends Component
             }
         }
         else if(session === true){
-            if (this.state.screenstate === 'mobile') { // mobile - user
+            if (this.props.screenstate === 'mobile' || this.props.screenstate === 'phone') { // mobile - user
                 return (
                     <div id="header-usericon-mobile" className="box-child-main squere-menu-user">
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
@@ -119,7 +120,7 @@ class Header extends Component
                     </div>
                 )
             }
-            else if (this.state.screenstate === 'desktop') { // desktop - user
+            else if (this.props.screenstate === 'desktop') { // desktop - user
                 return (
                     <div id="header-usericon-desktop" className="box-child-main squere-menu-user">
                         <div className="btn-logout selectorIcon" onClick={this.onclick_logout.bind(this)}></div>
@@ -137,7 +138,7 @@ class Header extends Component
     }
 
     react_window() {
-        if (this.state.screenstate === 'mobile') { // mobile
+        if (this.props.screenstate === 'mobile' || this.props.screenstate === 'phone') { // mobile
             return (
                 <div className="Menubar-mobile">
                     <div className="box-main">
@@ -150,7 +151,7 @@ class Header extends Component
                 </div>
             )
         }
-        else if (this.state.screenstate === 'desktop') { // desktop
+        else if (this.props.screenstate === 'desktop') { // desktop
             return (
                 <div className="Menubar">
                     <div className="box-main">
@@ -160,7 +161,7 @@ class Header extends Component
                         <Link style={{ textDecoration : 'none', color : 'black' }} to="/">
                         <div className="box-child-main squere-menu-child selector"><p className="all-middle-text">Archive</p></div>
                         </Link>
-                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/board/All">
+                        <Link style={{ textDecoration : 'none', color : 'black' }} to="/board/mainboard">
                             <div className="box-child-main squere-menu-child selector">
                                 <p className="all-middle-text">Board</p>
                             </div>
@@ -183,45 +184,23 @@ class Header extends Component
         else return;
     }
 
-    resize = () => {
-        if(window.innerWidth <= 720) {
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-                return;
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-                return;
-            }
-        } 
-    }
-
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
-    }
-
     render () {
         return (
             // DIV 부모 컨테이너는 반드시 하나만 존재해야 한다. (리액트 규칙)
-            <div className="header">
-                {/* // Desktop, tablet Size MenuBar */}
-                {/* // Mobile Size MenuIcon */}
+            <header>
                 {this.reactscreen()}
-            </div>
+            </header>
         );
-    }
-
-    componentDidMount () {
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
     }
 }
 
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+    boardstate: state.board.boardstate,
+});
 
-export default Header;
+const mapDispatchToProps = dispatch => ({
+    changeboardstate: boardstate => dispatch(changeboardstate(boardstate)),
+});  
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

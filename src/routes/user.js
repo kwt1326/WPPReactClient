@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {checklogin, api, local, islive} from '../custom/custom';
 import axios from 'axios';
 import '../css/style.css';
@@ -10,7 +11,6 @@ class User extends Component
     constructor(props) {
         super(props);
         this.state = {
-            screenstate : 'desktop',
             email : "E-mail",
             nickname : "Nickname",
             username : "Username",
@@ -115,6 +115,7 @@ class User extends Component
 
     // 2. delete
     user_delete = () => {
+        const self = this;
         axios({
             method: 'delete',
             url: (islive()) ? api + '/api/user/' : '/api/user/',
@@ -124,7 +125,8 @@ class User extends Component
         })
         .then(function (response) {
             alert('회원탈퇴가 완료되었습니다.');
-            this.props.history.push('/');
+            window.sessionStorage.clear();
+            self.props.history.push('/');
             return;
         })
         .catch((err) => {
@@ -146,7 +148,7 @@ class User extends Component
         if(this.state.reDirection !== 'none')
             return (<Redirect push to={this.state.reDirection}/>);
 
-        if(this.state.screenstate === "mobile") {
+        if(this.props.screenstate === "mobile" || this.props.screenstate === 'phone') {
             return (
                 <div className="User" style={{ backgroundColor : 'midnightblue', color : "white" }}>
                     <div className="inputform">
@@ -208,35 +210,10 @@ class User extends Component
             reader.readAsDataURL(file);
         }
     }
-
-    resize = () => {
-        if(window.innerWidth <= 720) {
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-                return;
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-                return;
-            }
-        } 
-    }
-
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
-    }
-
-    componentDidMount () {
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
-    }
-
 };
 
-export default User;
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+});
+
+export default connect(mapStateToProps)(User);

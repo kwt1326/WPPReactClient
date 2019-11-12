@@ -1,14 +1,12 @@
 import React, { Component} from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ReactQuill from 'react-quill';    // EDITOR - react-quill
-import { Quill } from "quill";
 import axios from 'axios';
-import {checklogin, removefile, createguid, str_length, api, local, islive} from '../custom/custom';
+import {checklogin, createguid, str_length, api, islive} from '../custom/custom';
 import '../css/style.css';
 import '../css/board.css';
 import '../../node_modules/react-quill/dist/quill.snow.css';
-
-import BoardSub from '../components/boardSub';
 
 // 글쓰기
 class Write extends Component
@@ -16,7 +14,6 @@ class Write extends Component
     constructor(props) {
         super(props); // 부모 생성자. 없으면 this 구문 사용 불가능
         this.state = {
-           screenstate : 'desktop',
            text : '',
            title : '',
            tags : [],
@@ -32,7 +29,6 @@ class Write extends Component
            frontimg : null,
         };
         this.spliter = this.tr_spliter.bind(this);
-        this.reactsplitL = this.react_splitLeft.bind(this);
         this.reactsplitR = this.react_splitRight.bind(this);
         this.handleChange = this.onChange.bind(this);
         this.clickPost = this.onClick_Post.bind(this);
@@ -66,7 +62,6 @@ class Write extends Component
         else {
             return (
                 <div className="board">
-                    {this.reactsplitL()}
                     {this.reactsplitR()}
                 </div>
             );
@@ -74,12 +69,14 @@ class Write extends Component
     }
 
     geteditguid () {
-        const self = this;
         let guid = null;
-        if (self.props.location.search) {
-            guid = self.props.location.search.split('?post=')[1];
+        if (this.props.match.params.post !== undefined) {
+            guid = this.props.match.params.post;
         }
-        return guid; 
+        else {
+            guid = this.state.postid;
+        }
+        return guid;
     }
 
     parse_tag (content) {
@@ -150,20 +147,10 @@ class Write extends Component
         )
     }
 
-    react_splitLeft() {
-        if (this.state.screenstate === 'desktop') { // desktop - mobile 에서 표시 안함
-            return (
-                <div className="split-left">
-                    <BoardSub parentWidth={window.innerWidth}/>
-                </div>
-            );
-        }
-    }
-
     react_splitRight() {
 
         let rightratio;
-        if (this.state.screenstate === 'mobile') { 
+        if (this.props.screenstate === 'mobile' || this.props.screenstate === 'phone') { 
             rightratio = '90%';
         }
         else
@@ -419,12 +406,12 @@ class Write extends Component
                 sendtags(tag_inline);
                 console.log(response.data.result);
                 alert('포스트가 성공적으로 수정(업데이트)되었습니다.');
-                self.setState({ reDirection : './board/All' });
+                self.setState({ reDirection : '/board/mainboard' });
             })
             .catch((err) => {
                 console.log(err);
                 alert(err);
-                self.setState({ reDirection : './board/All' });
+                self.setState({ reDirection : '/board/mainboard' });
             });   
         }
         else 
@@ -448,31 +435,14 @@ class Write extends Component
                 sendtags(tag_inline);
                 console.log(response.data.result);
                 alert('포스트가 성공적으로 등록되었습니다.');
-                self.setState({ reDirection : './board/All' });
+                self.setState({ reDirection : '/board/mainboard' });
             })
             .catch((err) => {
                 console.log(err);
                 alert(err);
-                self.setState({ reDirection : './board/All' });
+                self.setState({ reDirection : '/board/mainboard' });
             });   
         }
-    }
-
-    resize () {
-        if(window.innerWidth <= 720) {
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-            }
-        } 
-    }
-    
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
     }
 
     componentDidMount () 
@@ -486,12 +456,12 @@ class Write extends Component
             }
             else {
                 alert('관리자만 작성할 수 있습니다.');    
-                self.setState({ reDirection : `/board/All` });
+                self.setState({ reDirection : `/board/mainboard` });
             }
         })
         .catch((err) => {
             alert('로그인 페이지로 이동합니다.');
-            self.setState({ reDirection : `/login?from=${"write"}` });
+            self.setState({ reDirection : `/login?from=${"board/write"}` });
         })
 
         // Quill Mouse Click Event ( 썸네일 선택 )
@@ -506,14 +476,11 @@ class Write extends Component
             self.imageselect.value = image.domNode.currentSrc;
           }
         });
-
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
     }
 }
 
-export default Write;
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+});
+
+export default connect(mapStateToProps)(Write);

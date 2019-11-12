@@ -69,7 +69,7 @@ class Main extends Component
             const onlytext = row.content.replace(/(<([^>]+)>)/ig,"");
             await arr.push(
                 <div key={"archive-row-" + row.title + String(row.guid)} className="box-child-archive">
-                    <Link to={'/reading?post=' + String(row.guid)} style={{textDecoration : 'none', color : 'whitesmoke'}}>
+                    <Link to={`/board/reading/${String(row.guid)}`} style={{textDecoration : 'none', color : 'whitesmoke'}}>
                     <table style={{ borderCollapse: 'collapse' }} className="selector-main" >
                         <tbody>
                             <tr>
@@ -128,7 +128,7 @@ class Main extends Component
 
     render () {
         return (
-            <div id="archive" className="box-vertical" ref={(mount) => {this.maindiv = mount}}>
+            <div className="box-vertical" ref={(mount) => {this.maindiv = mount}}>
                 <div style={this.style_title}><h2>A/ Q/ U/ A/ -Archive-</h2></div>
                 {this.render_row()}
             </div>

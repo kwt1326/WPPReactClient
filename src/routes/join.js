@@ -198,32 +198,6 @@ class Join extends Component
             join();
         }
     }
-
-    resize = () => {
-        if(window.innerWidth <= 720) {
-            if(this.state.screenstate !== 'mobile') {
-                this.setState({ screenstate : 'mobile' });
-            }
-        }
-        else if(window.innerWidth > 720) {
-            if(this.state.screenstate !== 'desktop') {
-                this.setState({ screenstate : 'desktop' });
-            }
-        } 
-    }
-
-    handle_resize = () => {
-        setTimeout(this.resize, 100);
-    }
-
-    componentDidMount () {
-        window.addEventListener('resize', this.handle_resize);
-        this.resize();
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.handle_resize);
-    }
 };
 
 export default Join;

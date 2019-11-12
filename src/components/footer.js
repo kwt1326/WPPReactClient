@@ -5,13 +5,13 @@ class Footer extends Component
 {
     render() {
         return (
-            <div className="footer">
+            <footer className="footer">
                 <div className="all-middle-text" style={{ marginTop : '20px', }}>- Contact -<br/>
                     E-mail ▶ u1326@hotmail.com<br/>
                     github ▶ https://github.com/kwt1326<br/>
                     Actor ▶ Kimwontae<br/>
                 </div>
-            </div>
+            </footer>
         )
     }
 }

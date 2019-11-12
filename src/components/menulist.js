@@ -1,8 +1,8 @@
 import React, { Component} from 'react';
+import { connect } from 'react-redux';
+import { changeboardstate } from '../reducer/board';
 import {logout, getTags} from '../custom/custom';
 import '../css/style.css';
-
-import Board from '../routes/board';
 
 class Menulist extends Component
 {
@@ -62,7 +62,10 @@ class Menulist extends Component
         async function createrow(params) {
             if(params !== undefined && params !== null) {
                 for(let i = 0 ; i < params.length ; ++i) {
-                    self.render_sub[i] = put_row(params[i].name, () => { window.location.replace('/board/' + params[i].name); });
+                    self.render_sub[i] = put_row(params[i].name, () => { 
+                        self.props.history.push('/board/mainboard');
+                        self.props.changeboardstate(params[i].name);
+                    });
                 }
             }
         }
@@ -90,25 +93,27 @@ class Menulist extends Component
 
     render () {
         return (
-            <div id="MenulistPane" onAnimationEnd={this.aniendEvent_Menulist.bind(this)}>
-                <div style={{ float : "left", width : "50%" }}>
-                    <ul className="NoMargin">
-                        <li key="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Archive</h3></li>
-                        <li key="sidemenu_board" className="selectorList" onClick={() => {this.visibie_subwnd('board')}}><h3>Board</h3></li>
-                        <li key="sidemenu_Introduce" className="selectorList" onClick={() => {this.onClick_route('/Introduce')}}><h3>Introduce</h3></li>
-                        <li key="sidemenu_user" className="selectorList" onClick={() => {this.onClick_route('/user')}}><h3>User</h3></li>
-                        <li key="sidemenu_logout" className="selectorList" onClick={this.onClick_logout}><h3>Logout</h3></li>
-                        <li key="sidemenu_contact" className="selectorList" onClick={() => {this.onClick_route('/contact')}}><h3>Contact</h3></li>
-                    </ul>
-                </div>
-                <div className="sub_category" ref={(mount) => { this.subCategory = mount;}} style={{
-                    float: "right", width: "50%",
-                    visibility: (this.state.subCategory) ? "visible" : "hidden"
-                }}>
-                    <ul><h2>[ {this.state.subCategory_name} ]</h2></ul>    
-                    <ul>
-                        {this.render_subwnd()}
-                    </ul>
+            <div id="virtual-cover">    
+                <div id="MenulistPane" onAnimationEnd={this.aniendEvent_Menulist.bind(this)}>
+                    <div style={{ float : "left", width : "50%" }}>
+                        <ul className="NoMargin">
+                            <li key="sidemenu_home" className="selectorList" onClick={() => {this.onClick_route('/')}}><h3>Archive</h3></li>
+                            <li key="sidemenu_board" className="selectorList" onClick={() => {this.visibie_subwnd('board')}}><h3>Board</h3></li>
+                            <li key="sidemenu_Introduce" className="selectorList" onClick={() => {this.onClick_route('/Introduce')}}><h3>Introduce</h3></li>
+                            <li key="sidemenu_user" className="selectorList" onClick={() => {this.onClick_route('/user')}}><h3>User</h3></li>
+                            <li key="sidemenu_logout" className="selectorList" onClick={this.onClick_logout}><h3>Logout</h3></li>
+                            <li key="sidemenu_contact" className="selectorList" onClick={() => {this.onClick_route('/contact')}}><h3>Contact</h3></li>
+                        </ul>
+                    </div>
+                    <div className="sub_category" ref={(mount) => { this.subCategory = mount;}} style={{
+                        float: "right", width: "50%",
+                        visibility: (this.state.subCategory) ? "visible" : "hidden"
+                    }}>
+                        <ul><h2>[ {this.state.subCategory_name} ]</h2></ul>    
+                        <ul>
+                            {this.render_subwnd()}
+                        </ul>
+                    </div>
                 </div>
             </div>
         );
@@ -116,4 +121,13 @@ class Menulist extends Component
 
 }
 
-export default Menulist;
+const mapStateToProps = state => ({
+    screenstate: state.screen.screenstate,
+    boardstate: state.board.boardstate,
+});
+
+const mapDispatchToProps = dispatch => ({
+    changeboardstate: boardstate => dispatch(changeboardstate(boardstate)),
+});  
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menulist);
