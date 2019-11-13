@@ -1,4 +1,4 @@
-const BOARD_STATE = 'screen/BOARD_STATE';
+const BOARD_STATE = 'board/BOARD_STATE';
 
 export const changeboardstate = boardstate => ({ type : BOARD_STATE, boardstate });
 

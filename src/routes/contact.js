@@ -8,7 +8,7 @@ function Contact () {
     const navermail = "https://cdn0.iconfinder.com/data/icons/address-book-providers-in-colors/512/naver-2-512.png";
 
     return (
-        <div className="btn-style box" style={{ backgroundColor : 'transparent', cursor : 'auto'}}>
+        <div className="box" style={{ backgroundColor : 'transparent', cursor : 'auto'}}>
             <ul style={{ padding : '20px'}}>
                 <li className="box-child-contact" style={{ fontSize : '30px' }}>Contact</li>
                 <div className="box-child" style={{ display : "flex", alignItems : 'center', justifyContent : 'center', minWidth : "350px" }}>

@@ -123,6 +123,7 @@ footer {
 }
 
 #main {
+    overflow:auto; 
     width: 100%;
     margin-top: 70px;
 }
