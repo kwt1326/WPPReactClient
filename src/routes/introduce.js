@@ -8,11 +8,6 @@ import { connect } from 'react-redux';
 import { changeviewstate } from '../reducer/toggle';
 import '../css/style.css';
 
-const btn_ex_style = {
-    width : "50px",
-    height : "50px",
-}
-
 function ToggleButton(changeviewstate) {
     return (
         <Grid item style={{ padding : '24px', backgroundColor : 'whitesmoke', textAlign : 'center'}}>

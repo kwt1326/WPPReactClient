@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, CssBaseline, Typography, Container, Grid, Paper,
-    GridList, GridListTile } from '@material-ui/core';
+import { CssBaseline, Typography, Container, Grid, Paper, GridList, GridListTile } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +54,22 @@ const skills ={
         'Windows MFC',
         'Unity3D',
         'Heroku, Netlify CloudService'
-    ]
+    ],
+    seoul_skills : [
+        'JQuery', 'Three.js', 'CSS + HTML', 'gulp'
+    ],
+    blog_skills : [
+        'React',
+        'React-Redux',
+        'MaterialUI',
+        'Express',
+        'multer',
+        'passport',
+        'MySql',
+        'jwt',
+        'bcrypt',
+        'cloudinary',
+    ],
 }
 
 function Introduce2D ({ screenstate }) {
@@ -156,9 +170,9 @@ function Introduce2D ({ screenstate }) {
                                             spacing={5}
                                             className={classes.padding_small}
                                         >
-                                            <Paper elevation={5} className={classes.padding_small}>JQuery</Paper>
-                                            <Paper elevation={5} className={classes.padding_small}>Three.js</Paper>
-                                            <Paper elevation={5} className={classes.padding_small}>CSS + HTML</Paper>
+                                            {skills.seoul_skills.map(elem => (
+                                                <Paper elevation={5} className={classes.padding_small}>{elem}</Paper>    
+                                            ))}
                                         </Grid>
                                         <br/>
                                         <li>사내 업무 프로젝트</li>
@@ -193,9 +207,9 @@ function Introduce2D ({ screenstate }) {
                                         spacing={5}
                                         className={classes.padding_small}
                                     >
-                                        <Paper elevation={5} className={classes.padding_small}>React</Paper>
-                                        <Paper elevation={5} className={classes.padding_small}>Redux</Paper>
-                                        <Paper elevation={5} className={classes.padding_small}>MaterialUI('/Introduce' only)</Paper>
+                                        {skills.blog_skills.map(elem => (
+                                            <Paper elevation={5} className={classes.padding_small}>{elem}</Paper>    
+                                        ))}
                                     </Grid>
                                     <br/>
                                     <li>개인 웹 개발 프로젝트</li>
