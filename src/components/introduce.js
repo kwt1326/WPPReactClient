@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CssBaseline, Typography, Container, Grid, Paper, GridList, GridListTile } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -96,7 +97,7 @@ function Introduce2D ({ screenstate }) {
                                     <li style={style.list}>Front-end - React</li>
                                     <li style={style.list}>Back-end - Node.js (Framework - Express)</li>
                                     <h3><a href="https://github.com/kwt1326">GitHub</a></h3>
-                                    <h3><a href="/contact">Contact</a></h3>
+                                    <h3><Link to="/contact">Contact</Link></h3>
                                 </ul>
                             </Grid>
                             <Grid container 
