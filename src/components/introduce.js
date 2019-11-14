@@ -155,13 +155,13 @@ function Introduce2D ({ screenstate }) {
                                 <Paper>
                                     <GridList cellHeight={'auto'} className={classes.gridList} cols={(screenstate === 'desktop') ? 3 : 1}>
                                         <GridListTile cols={1}>
-                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619954/seoul1_cj7qgr.png/" alt='seoul1'></img>
+                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619954/seoul1_cj7qgr.png" alt='seoul1'></img>
                                         </GridListTile>
                                         <GridListTile cols={1}>
-                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619955/seoul2_g9vlvy.png/" alt='seoul2'></img>
+                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619955/seoul2_g9vlvy.png" alt='seoul2'></img>
                                         </GridListTile>
                                         <GridListTile cols={1}>
-                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619955/seoul3_bbbbkp.png/" alt='seoul3'></img>
+                                            <img style={style.img} src="https://res.cloudinary.com/hwsub5r14/image/upload/v1573619955/seoul3_bbbbkp.png" alt='seoul3'></img>
                                         </GridListTile>
                                         </GridList>
                                         <ul>
