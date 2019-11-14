@@ -212,8 +212,7 @@ class Board extends Component
             {
                 elems.push(
                     <button key={`btn-page-${String(i)}`} className="selector-deep btn-style" onClick={() => {
-                        self.props.history.push(self.props.history.location.pathname + '?page=' + String(i));
-                        self.load();
+                        self.setState({page : i});
                         }}>
                         {String(i) + " "}
                     </button>
@@ -320,7 +319,8 @@ class Board extends Component
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.boardstate !== this.props.boardstate) {
+        if (prevProps.boardstate !== this.props.boardstate ||
+            prevState.page !== this.state.page) {
             this.load();
         }
     }
